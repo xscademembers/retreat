@@ -1,48 +1,198 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+interface HeroSlide {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  mediaType: 'image' | 'video';
+  src: string;
+  position?: 'center' | 'top' | 'bottom';
+}
+
+const SLIDES: HeroSlide[] = [
+  {
+    id: 'nature',
+    title: 'Your Day in Nature',
+    subtitle: 'Just 70 km from Vizag',
+    description: 'Wake up to misty hills, palm trees, and wide open lawns at our 6‑acre retreat in Thatipudi.',
+    mediaType: 'image',
+    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg',
+    position: 'center',
+  },
+  {
+    id: 'pool',
+    title: 'Pool, Rain Dance & BBQ',
+    subtitle: 'All in a Single Day',
+    description: 'Make a splash in the party pool, dance in the rain zone, and unwind with a warm barbecue by the deck.',
+    mediaType: 'image',
+    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745403976516-scaled.jpg',
+    position: 'center',
+  },
+  {
+    id: 'boating',
+    title: 'Boating at Thatipudi',
+    subtitle: '2 Minutes from the Retreat',
+    description: 'Glide over calm waters surrounded by hills before returning to your private farm getaway.',
+    mediaType: 'image',
+    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
+    position: 'center',
+  },
+  {
+    id: 'stay',
+    title: 'Cabana, Cottage & Villa',
+    subtitle: 'Add Rooms to Your Day Pass',
+    description: 'Upgrade your daycation with private cabanas, a cozy cottage, or a serene villa facing lush greens.',
+    mediaType: 'image',
+    src: 'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01969-1024x683.jpeg',
+    position: 'center',
+  },
+];
 
 export const Hero: React.FC = () => {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const interval = window.setInterval(() => {
+      setCurrent((prev) => (prev + 1) % SLIDES.length);
+    }, 8000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const activeSlide = SLIDES[current];
+
+  const goTo = (index: number) => {
+    setCurrent((index + SLIDES.length) % SLIDES.length);
+  };
+
+  const goPrev = () => goTo(current - 1);
+  const goNext = () => goTo(current + 1);
+
   return (
-    <section className="px-6 lg:px-12 pt-32 pb-12 lg:pb-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="flex flex-col gap-8">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-primary hero-animate-in break-words">
-            <span className="block">The Best Day-Out</span>
-            <span className="block font-light italic text-primary/70 mt-2">Spot Near Vizag</span>
-          </h1>
-          <p className="text-lg lg:text-xl text-primary/70 max-w-lg leading-relaxed hero-animate-in hero-animate-in-delay-1">
-            Relax, recharge, and enjoy exclusive access to nature, luxury, and adventure—all in a single day.
-          </p>
-          <div className="flex flex-wrap gap-4 pt-4 hero-animate-in hero-animate-in-delay-2">
-            <a href="#contact" className="bg-primary text-white px-10 py-5 rounded-full text-lg font-bold hover:shadow-xl hover:shadow-primary/25 hover:translate-y-[-4px] transition-all duration-400 ease-out inline-block text-center active:translate-y-0">
-              Book Your Experience
-            </a>
-            <a href="#experiences" className="border-2 border-primary/20 text-primary px-10 py-5 rounded-full text-lg font-bold hover:bg-primary/5 hover:border-primary/40 transition-all duration-400 inline-block text-center">
-              View Packages
-            </a>
-          </div>
-        </div>
-        
-        <div className="relative group hero-animate-in hero-animate-in-delay-3">
-          <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative">
-            <img 
-              className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" 
-              src="https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg" 
-              alt="Salsons Retreat - 6-acre farm stay in Thatipudi with pool, nature, and adventure near Vizag"
+    <section
+      className="relative h-screen min-h-[600px] overflow-hidden"
+      aria-label="Featured experiences at Salsons Retreat"
+    >
+      {/* Slides */}
+      {SLIDES.map((slide, index) => (
+        <div
+          key={slide.id}
+          className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+            index === current ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          aria-hidden={index !== current}
+        >
+          {slide.mediaType === 'image' ? (
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `linear-gradient(120deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35)), url('${slide.src}')`,
+                backgroundPosition:
+                  slide.position === 'top'
+                    ? 'top center'
+                    : slide.position === 'bottom'
+                    ? 'bottom center'
+                    : 'center center',
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+          ) : (
+            <video
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            >
+              <source src={slide.src} />
+            </video>
+          )}
+        </div>
+      ))}
+
+      {/* Content */}
+      <div className="relative z-10 h-full px-6 lg:px-12 flex items-center">
+        <div className="max-w-7xl mx-auto w-full flex flex-col gap-10">
+          <div key={activeSlide.id} className="max-w-3xl space-y-6 text-white">
+            <p className="text-xs font-bold uppercase tracking-[0.4em] text-white/70 hero-animate-in hero-animate-in-delay-1">
+              Day Pass · Near Vizag
+            </p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight hero-animate-in hero-animate-in-delay-2">
+              <span className="block lg:whitespace-nowrap">{activeSlide.title}</span>
+              {activeSlide.subtitle && (
+                <span className="mt-3 block text-lg sm:text-2xl lg:text-3xl font-light italic text-white/80">
+                  {activeSlide.subtitle}
+                </span>
+              )}
+            </h1>
+            <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-xl leading-relaxed hero-animate-in hero-animate-in-delay-3">
+              {activeSlide.description}
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4 hero-animate-in hero-animate-in-delay-3">
+              <a
+                href="/book-now"
+                className="bg-white text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:shadow-xl hover:shadow-black/20 hover:translate-y-[-2px] active:translate-y-0 transition-all duration-300 inline-flex items-center justify-center gap-2"
+              >
+                Book Your Day Pass
+                <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
+                  north_east
+                </span>
+              </a>
+              <a
+                href="/packages"
+                className="border-2 border-white/70 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:bg-white/10 hover:border-white transition-all duration-300 inline-flex items-center justify-center gap-2"
+              >
+                View Packages
+                <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
+                  arrow_forward
+                </span>
+              </a>
+            </div>
           </div>
-          {/* Floating badge */}
-          <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl hidden md:block border border-gray-100 transition-transform duration-500 hover:scale-105">
-             <div className="flex items-center gap-4">
-                <div className="bg-primary/10 p-3 rounded-full text-primary">
-                  <span className="material-symbols-outlined fill-current" aria-hidden="true">star</span>
-                </div>
-                <div>
-                  <p className="text-sm font-bold">6-Acre Farm Stay</p>
-                  <p className="text-xs text-gray-500">Thatipudi, Near Vizag</p>
-                </div>
-             </div>
+
+        </div>
+      </div>
+
+      {/* Bottom-right controls: dots + arrows */}
+      <div className="absolute inset-x-0 bottom-6 px-6 lg:px-12 z-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-end gap-4">
+          <div className="flex gap-2" aria-hidden="true">
+            {SLIDES.map((slide, index) => (
+              <button
+                key={slide.id}
+                type="button"
+                onClick={() => goTo(index)}
+                className={`h-[6px] rounded-full transition-all duration-300 ${
+                  index === current ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={goPrev}
+              className="p-2.5 sm:p-3 rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
+              aria-label="Previous slide"
+            >
+              <span className="material-symbols-outlined text-2xl" aria-hidden="true">
+                chevron_left
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={goNext}
+              className="p-2.5 sm:p-3 rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
+              aria-label="Next slide"
+            >
+              <span className="material-symbols-outlined text-2xl" aria-hidden="true">
+                chevron_right
+              </span>
+            </button>
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({ tier }) => {
         ))}
       </ul>
 
-      <a href="#contact" className={`w-full py-4 rounded-full font-bold transition-all duration-300 text-sm tracking-wide text-center mt-6 shrink-0 ${tier.recommended ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-95 hover:shadow-xl' : 'bg-gray-100 text-primary hover:bg-primary hover:text-white'}`}>
+      <a href="/book-now" className={`w-full py-4 rounded-full font-bold transition-all duration-300 text-sm tracking-wide text-center mt-6 shrink-0 ${tier.recommended ? 'bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-95 hover:shadow-xl' : 'bg-gray-100 text-primary hover:bg-primary hover:text-white'}`}>
         Book Now
       </a>
     </div>
