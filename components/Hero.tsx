@@ -16,36 +16,40 @@ const SLIDES: HeroSlide[] = [
     id: 'nature',
     title: 'Your Day in Nature',
     subtitle: 'Just 70 km from Vizag',
-    description: 'Wake up to misty hills, palm trees, and wide open lawns at our 6‑acre retreat in Thatipudi.',
+    description:
+      'Wake up to misty hills, palm trees, and wide open lawns at our 6‑acre retreat in Thatipudi.',
     mediaType: 'image',
-    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg',
+    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250205_064653.jpg',
     position: 'center',
   },
   {
     id: 'pool',
     title: 'Pool, Rain Dance & BBQ',
     subtitle: 'All in a Single Day',
-    description: 'Make a splash in the party pool, dance in the rain zone, and unwind with a warm barbecue by the deck.',
+    description:
+      'Make a splash in the party pool, dance in the rain zone, and unwind with a warm barbecue by the deck.',
     mediaType: 'image',
-    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745403976516-scaled.jpg',
+    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/_DSC2150%20(2).JPG',
     position: 'center',
   },
   {
     id: 'boating',
     title: 'Boating at Thatipudi',
     subtitle: '2 Minutes from the Retreat',
-    description: 'Glide over calm waters surrounded by hills before returning to your private farm getaway.',
+    description:
+      'Glide over calm waters surrounded by hills before returning to your private farm getaway.',
     mediaType: 'image',
-    src: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
+    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250227_164908.jpg',
     position: 'center',
   },
   {
     id: 'stay',
     title: 'Cabana, Cottage & Villa',
     subtitle: 'Add Rooms to Your Day Pass',
-    description: 'Upgrade your daycation with private cabanas, a cozy cottage, or a serene villa facing lush greens.',
+    description:
+      'Upgrade your daycation with private cabanas, a cozy cottage, or a serene villa facing lush greens.',
     mediaType: 'image',
-    src: 'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01969-1024x683.jpeg',
+    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/DSC07622.JPG',
     position: 'center',
   },
 ];
