@@ -1,8 +1,7 @@
 import React from 'react';
-import { AMENITIES, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
+import { AMENITIES, INCLUDED_FEATURES } from '../constants';
 import { Hero } from '../components/Hero';
 import { AmenitySection } from '../components/AmenitySection';
-import { SanctuaryCard } from '../components/SanctuaryCard';
 import { FeatureGrid } from '../components/FeatureGrid';
 import { Testimonials } from '../components/Testimonials';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
@@ -54,9 +53,9 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
           <header className="mb-16 max-w-2xl">
-            <h2 id="included-heading" className="text-4xl font-extrabold tracking-tight mb-4">Included in Every Pass</h2>
+            <h2 id="included-heading" className="text-4xl font-extrabold tracking-tight mb-4">Included Amenities</h2>
             <div className="h-1.5 w-24 bg-primary rounded-full mb-4"></div>
-            <p className="text-gray-600">All day pass packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
+            <p className="text-gray-600">All packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
           </header>
           </AnimateOnScroll>
           <FeatureGrid features={INCLUDED_FEATURES} />
@@ -77,85 +76,63 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      <section id="sanctuaries" className="py-24 lg:py-32 px-6 lg:px-12 bg-background-soft">
-        <div className="max-w-7xl mx-auto">
-          <AnimateOnScroll animation="fade-up">
-          <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-4">
-              <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em]">Day Pass Add-Ons</h2>
-              <h3 className="text-4xl font-extrabold tracking-tight">Add Rooms to Your Day Pass</h3>
-            </div>
-            <p className="max-w-md text-gray-500">Add rooms to your day pass package for extra comfort. All add-ons available 11 am to 7 pm.</p>
-          </div>
-          </AnimateOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {SANCTUARIES.map((item, idx) => (
-              <AnimateOnScroll key={item.id} animation="fade-up" delay={idx * 120}>
-                <SanctuaryCard sanctuary={item} />
-              </AnimateOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <Testimonials />
 
       <section id="contact" className="py-24 lg:py-32 px-6 lg:px-12 bg-background-soft">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
-          <AnimateOnScroll animation="fade-right">
-          <div>
-            <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Find Us Here</h2>
-            <h3 className="text-4xl font-extrabold tracking-tight mb-8">Your Escape Awaits</h3>
-            <p className="text-gray-500 mb-10 leading-relaxed">Located in peaceful North Andhra, approximately 70km from Vizag. Contact us on WhatsApp for bookings and assistance.</p>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <AnimateOnScroll animation="fade-right">
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Find Us Here</h2>
+              <h3 className="text-4xl font-extrabold tracking-tight mb-4">Your Escape Awaits</h3>
+              <div className="w-16 h-1 bg-primary rounded-full mx-auto mb-8" aria-hidden="true" />
+              <p className="text-gray-500 mb-10 leading-relaxed max-w-lg mx-auto">Located in peaceful North Andhra, approximately 70km from Vizag. Contact us on WhatsApp for bookings and assistance.</p>
 
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white rounded-full shadow-sm">
-                  <span className="material-symbols-outlined text-primary" aria-hidden="true">location_on</span>
-                </div>
-                <div>
-                  <h5 className="font-bold">Salsons Retreat</h5>
-                  <p className="text-sm text-gray-500">Vizianagaram Rd, Thatipudi, Andhra Pradesh 535221</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white rounded-full shadow-sm">
-                  <span className="material-symbols-outlined text-primary" aria-hidden="true">phone</span>
-                </div>
-                <div>
-                  <h5 className="font-bold">Call or WhatsApp</h5>
-                  <a href="tel:+918074799387" className="text-sm text-gray-500 hover:text-primary">+91 80747 99387</a>
-                  <span className="text-gray-400 mx-1">·</span>
-                  <a href="tel:+917569242082" className="text-sm text-gray-500 hover:text-primary">+91 75692 42082</a>
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-left inline-block">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                      <span className="material-symbols-outlined text-primary text-2xl">location_on</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg text-primary mb-1">Salsons Retreat</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">Vizianagaram Rd, Thatipudi, Andhra Pradesh 535221</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-gray-100" aria-hidden="true" />
+                  <div className="flex items-start gap-4">
+                    <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                      <span className="material-symbols-outlined text-primary text-2xl">phone</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg text-primary mb-1">Call or WhatsApp</h4>
+                      <p className="text-sm text-gray-500">
+                        <a href="tel:+918074799387" className="hover:text-primary transition-colors">+91 80747 99387</a>
+                        <span className="text-gray-300 mx-2">·</span>
+                        <a href="tel:+917569242082" className="hover:text-primary transition-colors">+91 75692 42082</a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          </AnimateOnScroll>
+            </AnimateOnScroll>
 
-          <AnimateOnScroll animation="fade-left">
-          <div className="bg-white p-8 lg:p-12 rounded-2xl shadow-xl border border-gray-100">
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()} aria-label="Contact form">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="contact-name" className="text-xs font-bold uppercase text-gray-400">Full Name</label>
-                  <input id="contact-name" type="text" name="name" className="w-full border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary px-4 py-3 bg-gray-50" placeholder="John Doe" required aria-required="true" />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="contact-email" className="text-xs font-bold uppercase text-gray-400">Email Address</label>
-                  <input id="contact-email" type="email" name="email" className="w-full border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary px-4 py-3 bg-gray-50" placeholder="john@example.com" required aria-required="true" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="contact-message" className="text-xs font-bold uppercase text-gray-400">How can we help?</label>
-                <textarea id="contact-message" name="message" rows={4} className="w-full border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary px-4 py-3 bg-gray-50" placeholder="Share your retreat preferences..."></textarea>
-              </div>
-              <button type="submit" className="w-full bg-primary text-white py-4 rounded-full font-bold hover:shadow-lg transition-all active:scale-[0.98]">
-                Send Message
-              </button>
-            </form>
+            <AnimateOnScroll animation="fade-left">
+            <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 bg-white aspect-[4/3] min-h-[280px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741204!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Salsons Retreat location on Google Maps"
+              />
+            </div>
+            </AnimateOnScroll>
           </div>
-          </AnimateOnScroll>
         </div>
       </section>
     </main>

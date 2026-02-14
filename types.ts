@@ -34,4 +34,6 @@ export interface Sanctuary {
   description: string;
   image: string;
   tag?: string;
+  /** Night stay price (food not included) */
+  nightPrice?: number;
 }

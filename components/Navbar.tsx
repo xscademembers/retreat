@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
 
 interface NavbarProps {
   isScrolled: boolean;
@@ -28,14 +29,8 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group lg:-ml-8">
-          <div className={`size-8 ${logoColor}`}>
-            <svg
-              fill="currentColor"
-              viewBox="0 0 48 48"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" />
-            </svg>
+          <div className={logoColor}>
+            <Logo size="navbar" variant={isTransparent ? 'light' : 'dark'} />
           </div>
           <h2
             className={`text-xl font-bold tracking-tighter uppercase ${titleColor}`}
@@ -54,12 +49,32 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           >
             Home
           </Link>
-          <Link
-            className={`text-sm font-semibold transition-colors duration-300 hover:underline underline-offset-4 ${navLinkBase}`}
-            to="/packages"
-          >
-            Packages
-          </Link>
+          <div className="relative group">
+            <Link
+              to="/packages"
+              className={`text-sm font-semibold transition-colors duration-300 hover:underline underline-offset-4 flex items-center gap-0.5 ${navLinkBase}`}
+              aria-haspopup="true"
+            >
+              Pricing
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+            </Link>
+            <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-100 py-2 min-w-[180px]">
+                <Link
+                  to="/packages#packages"
+                  className="block px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors first:rounded-t-xl"
+                >
+                  Day pass
+                </Link>
+                <Link
+                  to="/packages#sanctuaries"
+                  className="block px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors last:rounded-b-xl"
+                >
+                  Rooms
+                </Link>
+              </div>
+            </div>
+          </div>
           <Link
             className={`text-sm font-semibold transition-colors duration-300 hover:underline underline-offset-4 ${navLinkBase}`}
             to="/#amenities"
@@ -78,12 +93,31 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           >
             Testimonials
           </Link>
-          <Link
-            className={`text-sm font-semibold transition-colors duration-300 hover:underline underline-offset-4 ${navLinkBase}`}
-            to="/#contact"
-          >
-            Contact
-          </Link>
+          <div className="relative group">
+            <span
+              className={`text-sm font-semibold transition-colors duration-300 cursor-pointer flex items-center gap-0.5 ${navLinkBase}`}
+              aria-haspopup="true"
+            >
+              Landing
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+            </span>
+            <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-100 py-2 min-w-[180px]">
+                <Link
+                  to="/corporate"
+                  className="block px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors first:rounded-t-xl"
+                >
+                  Corporate
+                </Link>
+                <Link
+                  to="/schools"
+                  className="block px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors last:rounded-b-xl"
+                >
+                  Schools
+                </Link>
+              </div>
+            </div>
+          </div>
         </nav>
 
         <Link

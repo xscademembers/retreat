@@ -20,12 +20,26 @@ export const SanctuaryCard: React.FC<SanctuaryCardProps> = ({ sanctuary }) => {
       <div className="p-8 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-4">
           <h4 className="text-2xl font-bold text-primary">{sanctuary.name}</h4>
-          <span className="text-primary font-extrabold">₹{sanctuary.price.toLocaleString('en-IN')}<span className="text-xs text-gray-400 font-normal ml-1">(11am–7pm)</span></span>
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 mb-4">
+          <span className="text-primary font-extrabold">
+            Day: ₹{sanctuary.price.toLocaleString('en-IN')}
+            <span className="text-xs text-gray-400 font-normal ml-1">(11am–7pm)</span>
+          </span>
+          {sanctuary.nightPrice != null && (
+            <span className="text-primary font-extrabold">
+              Night: ₹{sanctuary.nightPrice.toLocaleString('en-IN')}
+              <span className="text-xs text-gray-400 font-normal ml-1">(food not included)</span>
+            </span>
+          )}
         </div>
         <p className="text-gray-500 text-sm mb-6 leading-relaxed flex-1">
           {sanctuary.description}
         </p>
-        <a href="/book-now" className={`w-full py-3 font-bold rounded-full transition-all duration-300 border border-primary text-center block mt-auto shrink-0 ${sanctuary.tag ? 'bg-primary text-white hover:opacity-90 hover:shadow-lg' : 'text-primary hover:bg-primary hover:text-white'}`}>
+        <a
+          href={`/book-now?visit=night&room=${encodeURIComponent(sanctuary.id)}`}
+          className={`w-full py-3 font-bold rounded-full transition-all duration-300 border border-primary text-center block mt-auto shrink-0 ${sanctuary.tag ? 'bg-primary text-white hover:opacity-90 hover:shadow-lg' : 'text-primary hover:bg-primary hover:text-white'}`}
+        >
           Book Now
         </a>
       </div>

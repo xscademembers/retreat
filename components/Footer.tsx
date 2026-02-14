@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
 
 export const Footer: React.FC = () => {
   return (
@@ -9,10 +10,8 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pb-8 border-b border-white/10">
           <div className="flex items-center gap-3 shrink-0">
             <Link to="/" className="flex items-center gap-3">
-              <div className="size-6 text-white">
-                <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" />
-                </svg>
+              <div className="text-white">
+                <Logo size="footer" variant="light" />
               </div>
               <span className="text-base font-bold tracking-tighter uppercase">Salsons Retreat</span>
             </Link>
@@ -20,12 +19,13 @@ export const Footer: React.FC = () => {
 
           <nav className="flex flex-wrap gap-x-8 gap-y-2 text-sm opacity-80" aria-label="Footer navigation">
             <Link className="hover:opacity-100 transition-opacity" to="/">Home</Link>
-            <Link className="hover:opacity-100 transition-opacity" to="/packages">Packages</Link>
+            <Link className="hover:opacity-100 transition-opacity" to="/packages">Pricing</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/book-now">Book Now</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/#amenities">Amenities</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/gallery">Gallery</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/#testimonials">Testimonials</Link>
-            <Link className="hover:opacity-100 transition-opacity" to="/#contact">Contact</Link>
+            <Link className="hover:opacity-100 transition-opacity" to="/corporate">Corporate</Link>
+            <Link className="hover:opacity-100 transition-opacity" to="/schools">Schools</Link>
           </nav>
         </div>
 

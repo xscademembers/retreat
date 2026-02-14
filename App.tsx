@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Home } from './pages/Home';
 import { Packages } from './pages/Packages';
 import { BookNow } from './pages/BookNow';
 import { GalleryPage } from './pages/GalleryPage';
+import { Corporate } from './pages/Corporate';
+import { Schools } from './pages/Schools';
 
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,9 +61,12 @@ const AppShell: React.FC = () => {
         <Route path="/packages" element={<Packages />} />
         <Route path="/book-now" element={<BookNow />} />
         <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/corporate" element={<Corporate />} />
+        <Route path="/schools" element={<Schools />} />
       </Routes>
 
       <Footer />
+      <WhatsAppFloat />
     </div>
   );
 };
