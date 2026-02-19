@@ -22,7 +22,7 @@ export const WhatsAppFloat: React.FC = () => {
       href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-40 flex size-[63px] items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
+      className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40 flex min-w-[56px] min-h-[56px] sm:size-[63px] items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
       aria-label="Chat on WhatsApp"
     >
       <WhatsAppIcon className="size-8" />

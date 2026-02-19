@@ -2,7 +2,7 @@ import React from 'react';
 import { AMENITIES, INCLUDED_FEATURES } from '../constants';
 import { Hero } from '../components/Hero';
 import { AmenitySection } from '../components/AmenitySection';
-import { FeatureGrid } from '../components/FeatureGrid';
+import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
@@ -13,7 +13,7 @@ export const Home: React.FC = () => {
         <Hero />
       </section>
 
-      <section id="sanctuary" className="bg-primary text-white py-24 lg:py-32 px-6 lg:px-12">
+      <section id="sanctuary" className="bg-primary text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12">
         <AnimateOnScroll animation="fade-up">
         <div className="max-w-4xl mx-auto text-center space-y-12">
           <span className="text-xs font-bold uppercase tracking-[0.4em] opacity-60">Why Visit Salsons Retreat?</span>
@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
         </AnimateOnScroll>
       </section>
 
-      <section id="amenities" className="py-12 bg-background-soft">
+      <section id="amenities" className="py-8 sm:py-12 bg-background-soft">
         {AMENITIES.map((amenity, index) => (
           <AnimateOnScroll key={amenity.id} animation={index % 2 === 0 ? 'fade-right' : 'fade-left'}>
             <AmenitySection
@@ -49,20 +49,20 @@ export const Home: React.FC = () => {
         ))}
       </section>
 
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
+      <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
-          <header className="mb-16 max-w-2xl">
-            <h2 id="included-heading" className="text-4xl font-extrabold tracking-tight mb-4">Included Amenities</h2>
+          <header className="mb-10 sm:mb-16 max-w-2xl">
+            <h2 id="included-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Included Amenities</h2>
             <div className="h-1.5 w-24 bg-primary rounded-full mb-4"></div>
             <p className="text-gray-600">All packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
           </header>
           </AnimateOnScroll>
-          <FeatureGrid features={INCLUDED_FEATURES} />
+          <AmenityTabs features={INCLUDED_FEATURES} />
         </div>
       </section>
 
-      <section className="relative h-[600px] overflow-hidden flex items-center justify-center text-center px-6">
+      <section className="relative min-h-[480px] sm:h-[600px] overflow-hidden flex items-center justify-center text-center px-4 sm:px-6">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -70,7 +70,7 @@ export const Home: React.FC = () => {
           }}
         />
         <div className="relative z-10 max-w-3xl space-y-6">
-          <h2 className="text-white text-4xl md:text-6xl font-extrabold tracking-tighter">Your Perfect Daycation Awaits</h2>
+          <h2 className="text-white text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tighter">Your Perfect Daycation Awaits</h2>
           <p className="text-white/90 text-lg font-medium max-w-xl mx-auto">Unwind, explore, and recharge in a premium resort experience—without an overnight stay. Nature, luxury, and adventure, all in one day.</p>
           <a href="/book-now" className="bg-white text-primary px-10 py-4 rounded-full font-bold hover:bg-background-soft hover:shadow-2xl hover:scale-105 transition-all duration-400 shadow-xl inline-block">Book Your Experience</a>
         </div>
@@ -78,9 +78,9 @@ export const Home: React.FC = () => {
 
       <Testimonials />
 
-      <section id="contact" className="py-24 lg:py-32 px-6 lg:px-12 bg-background-soft">
+      <section id="contact" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-background-soft">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <AnimateOnScroll animation="fade-right">
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Find Us Here</h2>
@@ -88,7 +88,7 @@ export const Home: React.FC = () => {
               <div className="w-16 h-1 bg-primary rounded-full mx-auto mb-8" aria-hidden="true" />
               <p className="text-gray-500 mb-10 leading-relaxed max-w-lg mx-auto">Located in peaceful North Andhra, approximately 70km from Vizag. Contact us on WhatsApp for bookings and assistance.</p>
 
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-left inline-block">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 text-left w-full max-w-md mx-auto sm:mx-0 sm:inline-block">
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">

@@ -6,8 +6,8 @@ import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 export const Packages: React.FC = () => {
   return (
-    <main id="main-content">
-      <section id="packages" className="py-24 lg:py-32 px-6 lg:px-12 bg-white">
+    <main id="main-content" className="pt-20 sm:pt-24">
+      <section id="packages" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up" className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Day Pass Packages</h2>
@@ -24,7 +24,7 @@ export const Packages: React.FC = () => {
         </div>
       </section>
 
-      <section id="sanctuaries" className="py-24 lg:py-32 px-6 lg:px-12 bg-background-soft">
+      <section id="sanctuaries" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-background-soft">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
             <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">

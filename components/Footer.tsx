@@ -5,10 +5,10 @@ import { Logo } from './Logo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-primary text-white py-12 px-6 lg:px-12 border-t border-white/10">
+    <footer className="bg-primary text-white py-8 sm:py-12 px-4 sm:px-6 lg:px-12 border-t border-white/10">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pb-8 border-b border-white/10">
-          <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 pb-6 sm:pb-8 border-b border-white/10">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link to="/" className="flex items-center gap-3">
               <div className="text-white">
                 <Logo size="footer" variant="light" />
@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
             </Link>
           </div>
 
-          <nav className="flex flex-wrap gap-x-8 gap-y-2 text-sm opacity-80" aria-label="Footer navigation">
+          <nav className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-3 sm:gap-y-2 text-sm opacity-80 [&>a]:py-2 [&>a]:sm:py-0 [&>a]:min-h-[44px] [&>a]:sm:min-h-0 [&>a]:flex [&>a]:items-center" aria-label="Footer navigation">
             <Link className="hover:opacity-100 transition-opacity" to="/">Home</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/packages">Pricing</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/book-now">Book Now</Link>

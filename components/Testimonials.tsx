@@ -42,7 +42,7 @@ export const Testimonials: React.FC = () => {
   };
 
   return (
-    <section id="testimonials" className="py-24 lg:py-32 px-6 lg:px-12 bg-primary text-white h-[640px] sm:h-[680px] lg:h-[720px] flex items-center overflow-hidden" aria-label="Testimonials">
+    <section id="testimonials" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-primary text-white min-h-[560px] h-[640px] sm:h-[680px] lg:h-[720px] flex items-center overflow-hidden" aria-label="Testimonials">
       <div className="max-w-4xl mx-auto text-center w-full">
         <div className="flex justify-center gap-1 text-accent-gold mb-8" aria-hidden="true">
           {[...Array(5)].map((_, i) => (
@@ -51,7 +51,7 @@ export const Testimonials: React.FC = () => {
         </div>
 
         <div className="h-[280px] sm:h-[300px] lg:h-[320px] flex items-center justify-center overflow-hidden shrink-0">
-          <blockquote className="text-2xl lg:text-4xl font-light italic leading-relaxed overflow-hidden">
+          <blockquote className="text-xl sm:text-2xl lg:text-4xl font-light italic leading-relaxed overflow-hidden px-1">
             &ldquo;{testimonial.quote}&rdquo;
           </blockquote>
         </div>

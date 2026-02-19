@@ -119,9 +119,9 @@ export const Hero: React.FC = () => {
       ))}
 
       {/* Content */}
-      <div className="relative z-10 h-full px-6 lg:px-12 flex items-center">
-        <div className="max-w-7xl mx-auto w-full flex flex-col gap-10">
-          <div key={activeSlide.id} className="max-w-3xl space-y-6 text-white">
+      <div className="relative z-10 h-full px-4 sm:px-6 lg:px-12 flex items-center">
+        <div className="max-w-7xl mx-auto w-full flex flex-col gap-8 sm:gap-10">
+          <div key={activeSlide.id} className="max-w-3xl space-y-4 sm:space-y-6 text-white">
             <p className="text-xs font-bold uppercase tracking-[0.4em] text-white/70 hero-animate-in hero-animate-in-delay-1">
               Day Pass · Near Vizag
             </p>
@@ -161,18 +161,19 @@ export const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom-right controls: dots + arrows */}
-      <div className="absolute inset-x-0 bottom-6 px-6 lg:px-12 z-20">
-        <div className="max-w-7xl mx-auto flex items-center justify-end gap-4">
+      {/* Bottom-right controls: dots + arrows (touch-friendly, safe area) */}
+      <div className="absolute inset-x-0 bottom-4 sm:bottom-6 px-4 sm:px-6 lg:px-12 z-20">
+        <div className="max-w-7xl mx-auto flex items-center justify-end gap-3 sm:gap-4">
           <div className="flex gap-2" aria-hidden="true">
             {SLIDES.map((slide, index) => (
               <button
                 key={slide.id}
                 type="button"
                 onClick={() => goTo(index)}
-                className={`h-[6px] rounded-full transition-all duration-300 ${
+                className={`h-[6px] rounded-full transition-all duration-300 min-w-[8px] ${
                   index === current ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
                 }`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
@@ -180,7 +181,7 @@ export const Hero: React.FC = () => {
             <button
               type="button"
               onClick={goPrev}
-              className="p-2.5 sm:p-3 rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
               aria-label="Previous slide"
             >
               <span className="material-symbols-outlined text-2xl" aria-hidden="true">
@@ -190,7 +191,7 @@ export const Hero: React.FC = () => {
             <button
               type="button"
               onClick={goNext}
-              className="p-2.5 sm:p-3 rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/35 text-white hover:bg-black/55 focus:outline-none focus:ring-2 focus:ring-white/70 transition-all duration-200"
               aria-label="Next slide"
             >
               <span className="material-symbols-outlined text-2xl" aria-hidden="true">
