@@ -104,7 +104,7 @@ export const SANCTUARIES: Sanctuary[] = [
     id: 'cottage',
     name: 'The Cottage',
     price: 1999,
-    nightPrice: 3999,
+    nightPrice: 2999,
     description: 'A charming cottage with two rooms and a dormitory, surrounded by gardens and open spaces. Spacious and homely, designed for relaxed stays with family or friends. 11 am to 7 pm.',
     image: 'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01969-1024x683.jpeg',
     tag: 'Best Value'

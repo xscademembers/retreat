@@ -2,289 +2,387 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EXPERIENCE_TIERS, SANCTUARIES } from '../constants';
 
-const DAY_ADDON_PRICE = 2999;
-const NIGHT_ROOM_PRICE = 3999;
-const NIGHT_EXTRA_PERSON_PRICE = 999;
+const EXTRA_PERSON_PRICE = 999;
+const MAX_ROOMS_PER_TYPE = 2;
+const DORM_DAY_PRICE = 1999;
+const DORM_NIGHT_PRICE = 1999;
+
+const ROOM_CONFIG: Record<string, { defaultPerRoom: number; maxExtraPerRoom: number; hasDorm?: boolean }> = {
+  cabana: { defaultPerRoom: 3, maxExtraPerRoom: 2 },
+  villa: { defaultPerRoom: 3, maxExtraPerRoom: 2 },
+  cottage: { defaultPerRoom: 2, maxExtraPerRoom: 1, hasDorm: true },
+};
 
 const inputClass =
   'w-full border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary px-4 py-3 bg-gray-50/80 transition-colors';
-const labelClass = 'text-xs font-bold uppercase tracking-wider text-gray-500';
+const labelClass = 'block text-sm font-semibold text-gray-700 mb-1';
 
 const validPassIds = new Set(EXPERIENCE_TIERS.map((t) => t.id));
 const validRoomIds = new Set(SANCTUARIES.map((s) => s.id));
+const initialDayAddonRooms: Record<string, number> = SANCTUARIES.reduce((acc, s) => ({ ...acc, [s.id]: 0 }), {});
+
+function Stepper({
+  value,
+  min,
+  max,
+  onChange,
+  ariaLabel,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  onChange: (n: number) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => onChange(value - 1)}
+        disabled={value <= min}
+        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
+        aria-label={`Decrease ${ariaLabel}`}
+      >
+        −
+      </button>
+      <span className="min-w-[2rem] text-center font-bold text-lg" aria-live="polite">
+        {value}
+      </span>
+      <button
+        type="button"
+        onClick={() => onChange(value + 1)}
+        disabled={value >= max}
+        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
+        aria-label={`Increase ${ariaLabel}`}
+      >
+        +
+      </button>
+    </div>
+  );
+}
 
 export const BookingForm: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [visitType, setVisitType] = useState<'day' | 'night' | ''>('');
-  const [dayPassGuests, setDayPassGuests] = useState<Record<string, number>>({ basic: 0, value: 0, adventure: 0 });
-  const [selectedDayAddon, setSelectedDayAddon] = useState<string>('');
+  const [selectedDayTier, setSelectedDayTier] = useState<string>('');
+  const [dayPassGuests, setDayPassGuests] = useState(1);
+  const [dayAddonRooms, setDayAddonRooms] = useState<Record<string, number>>(initialDayAddonRooms);
+  const [dayAddonDorm, setDayAddonDorm] = useState(0);
   const [selectedNightRoom, setSelectedNightRoom] = useState<string>('');
-  const [nightExtraPersons, setNightExtraPersons] = useState(0);
+  const [nightCabanaRooms, setNightCabanaRooms] = useState(1);
+  const [nightVillaRooms, setNightVillaRooms] = useState(1);
+  const [nightCottageRooms, setNightCottageRooms] = useState(0);
+  const [nightCottageDorm, setNightCottageDorm] = useState(0);
+  const [nightExtraCabana, setNightExtraCabana] = useState(0);
+  const [nightExtraVilla, setNightExtraVilla] = useState(0);
+  const [nightExtraCottageRooms, setNightExtraCottageRooms] = useState(0);
 
   useEffect(() => {
     const visit = searchParams.get('visit');
     const pass = searchParams.get('pass');
-    const addon = searchParams.get('addon');
     const room = searchParams.get('room');
     if (visit === 'day') {
       setVisitType('day');
-      if (pass && validPassIds.has(pass)) setDayPassGuests((prev) => ({ ...prev, [pass]: 1 }));
-      if (addon && validRoomIds.has(addon)) setSelectedDayAddon(addon);
+      if (pass && validPassIds.has(pass)) {
+        setSelectedDayTier(pass);
+        setDayPassGuests(1);
+      }
     } else if (visit === 'night') {
       setVisitType('night');
       if (room && validRoomIds.has(room)) setSelectedNightRoom(room);
     }
   }, [searchParams]);
 
-  const setDayPassGuest = (tierId: string, count: number) => {
-    setDayPassGuests((prev) => ({ ...prev, [tierId]: count < 0 ? 0 : count }));
+  const setDayAddonRoom = (id: string, n: number) => {
+    const val = Math.max(0, Math.min(MAX_ROOMS_PER_TYPE, n));
+    setDayAddonRooms((prev) => ({ ...prev, [id]: val }));
   };
 
-  const toggleDayPass = (tierId: string) => {
-    setDayPassGuests((prev) => ({
-      ...prev,
-      [tierId]: prev[tierId] && prev[tierId] > 0 ? 0 : 1,
-    }));
-  };
+  const dayTotalAmount = useMemo(() => {
+    if (visitType !== 'day' || !selectedDayTier) return 0;
+    const tier = EXPERIENCE_TIERS.find((t) => t.id === selectedDayTier);
+    if (!tier) return 0;
+    let sum = tier.price * dayPassGuests;
+    SANCTUARIES.forEach((s) => { sum += s.price * (dayAddonRooms[s.id] ?? 0); });
+    sum += DORM_DAY_PRICE * dayAddonDorm;
+    return sum;
+  }, [visitType, selectedDayTier, dayPassGuests, dayAddonRooms, dayAddonDorm]);
 
-  const totalAmount = useMemo(() => {
-    if (visitType === 'day') {
-      let sum = 0;
-      EXPERIENCE_TIERS.forEach((tier) => {
-        const guests = dayPassGuests[tier.id] || 0;
-        if (guests > 0) sum += tier.price * guests;
-      });
-      if (selectedDayAddon) sum += DAY_ADDON_PRICE;
-      return sum;
-    }
-    if (visitType === 'night' && selectedNightRoom) {
-      return NIGHT_ROOM_PRICE + nightExtraPersons * NIGHT_EXTRA_PERSON_PRICE;
+  const nightTotalAmount = useMemo(() => {
+    if (visitType !== 'night' || !selectedNightRoom) return 0;
+    const s = SANCTUARIES.find((r) => r.id === selectedNightRoom);
+    if (!s || s.nightPrice == null) return 0;
+    if (selectedNightRoom === 'cabana') return s.nightPrice * nightCabanaRooms + EXTRA_PERSON_PRICE * nightExtraCabana;
+    if (selectedNightRoom === 'villa') return s.nightPrice * nightVillaRooms + EXTRA_PERSON_PRICE * nightExtraVilla;
+    if (selectedNightRoom === 'cottage') {
+      return (s.nightPrice ?? 0) * nightCottageRooms + DORM_NIGHT_PRICE * nightCottageDorm
+        + EXTRA_PERSON_PRICE * nightExtraCottageRooms;
     }
     return 0;
-  }, [visitType, dayPassGuests, selectedDayAddon, selectedNightRoom, nightExtraPersons]);
+  }, [visitType, selectedNightRoom, nightCabanaRooms, nightVillaRooms, nightCottageRooms, nightCottageDorm, nightExtraCabana, nightExtraVilla, nightExtraCottageRooms]);
+
+  const totalAmount = visitType === 'day' ? dayTotalAmount : visitType === 'night' ? nightTotalAmount : 0;
+  const hasDayRoomAddon = visitType === 'day' && ((dayAddonRooms.cabana ?? 0) + (dayAddonRooms.villa ?? 0) + (dayAddonRooms.cottage ?? 0) + dayAddonDorm > 0);
+
+  const resetDay = () => {
+    setSelectedDayTier('');
+    setDayPassGuests(1);
+    setDayAddonRooms(initialDayAddonRooms);
+    setDayAddonDorm(0);
+  };
+  const resetNight = () => {
+    setSelectedNightRoom('');
+    setNightCabanaRooms(1);
+    setNightVillaRooms(1);
+    setNightCottageRooms(0);
+    setNightCottageDorm(0);
+    setNightExtraCabana(0);
+    setNightExtraVilla(0);
+    setNightExtraCottageRooms(0);
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-      <div className="border-l-4 border-primary bg-primary/5 px-4 sm:px-6 py-4">
-        <h2 className="text-primary font-bold text-base sm:text-lg">Booking details</h2>
-        <p className="text-gray-600 text-sm mt-0.5">Fill in the form below</p>
-      </div>
-
-      <form className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8" onSubmit={(e) => e.preventDefault()} aria-label="Booking form">
-        <div className="space-y-4 sm:space-y-5">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-2">Your details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            <div className="space-y-2">
-              <label htmlFor="book-name" className={labelClass}>Name</label>
-              <input id="book-name" type="text" name="name" className={inputClass} placeholder="Your name" required aria-required="true" />
+      <form className="p-6 sm:p-8 space-y-8" onSubmit={(e) => e.preventDefault()} aria-label="Booking form">
+        {/* 1. Details */}
+        <section aria-labelledby="details-heading">
+          <h2 id="details-heading" className="text-lg font-bold text-primary mb-4">Details</h2>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="book-name" className={labelClass}>Name</label>
+                <input id="book-name" type="text" name="name" className={inputClass} placeholder="Your name" required aria-required="true" />
+              </div>
+              <div>
+                <label htmlFor="book-phone" className={labelClass}>Phone</label>
+                <input id="book-phone" type="tel" name="phone" defaultValue="+91 " className={inputClass} placeholder="98765 43210" required aria-required="true" />
+              </div>
             </div>
-            <div className="space-y-2">
-              <label htmlFor="book-phone" className={labelClass}>Phone</label>
-              <input id="book-phone" type="tel" name="phone" defaultValue="+91 " className={inputClass} placeholder="98765 43210" required aria-required="true" />
+            <div>
+              <label htmlFor="book-email" className={labelClass}>Email (optional)</label>
+              <input id="book-email" type="email" name="email" className={inputClass} placeholder="you@example.com" />
             </div>
           </div>
-          <div className="space-y-2">
-            <label htmlFor="book-email" className={labelClass}>Email</label>
-            <input id="book-email" type="email" name="email" className={inputClass} placeholder="you@example.com" />
-          </div>
-        </div>
+        </section>
 
-        <div className="space-y-5">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-2">Visit option</h3>
-          <div className="space-y-2">
-            <label htmlFor="book-visit-type" className={labelClass}>Day or night</label>
-            <select
-              id="book-visit-type"
-              name="visitType"
-              value={visitType}
-              onChange={(e) => {
-                const v = e.target.value as 'day' | 'night' | '';
-                setVisitType(v);
-                if (v !== 'day') setDayPassGuests({ basic: 0, value: 0, adventure: 0 });
-                if (v !== 'day') setSelectedDayAddon('');
-                if (v !== 'night') setSelectedNightRoom('');
-                if (v !== 'night') setNightExtraPersons(0);
-              }}
-              className={inputClass}
-              required
-              aria-required="true"
+        {/* 2. Choose your visit */}
+        <section aria-labelledby="visit-type-heading">
+          <h2 id="visit-type-heading" className="text-lg font-bold text-primary mb-4">Choose your visit</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => { setVisitType('day'); resetNight(); if (!selectedDayTier) setDayPassGuests(1); }}
+              className={`rounded-2xl border-2 p-6 text-left transition-all ${visitType === 'day' ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-primary/40 bg-white'}`}
             >
-              <option value="">Select — Day or Night</option>
-              <option value="day">Day visit</option>
-              <option value="night">Night stay</option>
-            </select>
+              <span className="material-symbols-outlined text-3xl text-primary mb-2 block" aria-hidden="true">wb_sunny</span>
+              <span className="font-bold text-lg text-primary block">Day visit</span>
+              <span className="text-sm text-gray-500 mt-0.5 block">9 AM – 7 PM · Pool, lunch & more</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { setVisitType('night'); resetDay(); if (!selectedNightRoom) setSelectedNightRoom('cabana'); }}
+              className={`rounded-2xl border-2 p-6 text-left transition-all ${visitType === 'night' ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-primary/40 bg-white'}`}
+            >
+              <span className="material-symbols-outlined text-3xl text-primary mb-2 block" aria-hidden="true">nightlight</span>
+              <span className="font-bold text-lg text-primary block">Night stay</span>
+              <span className="text-sm text-gray-500 mt-0.5 block">Rooms & cabanas</span>
+            </button>
           </div>
-        </div>
+        </section>
 
+        {/* 3. Stay (day pass or night stay) */}
         {visitType === 'day' && (
-          <div className="space-y-6 rounded-xl bg-gray-50/50 p-4 sm:p-6 border border-gray-100">
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-primary">Choose day pass(es) — select one or more</h4>
-              <div className="space-y-4">
+          <section aria-labelledby="day-pass-heading" className="space-y-6">
+            <h2 id="day-pass-heading" className="text-lg font-bold text-primary">Stay</h2>
+
+            <div>
+              <p className={labelClass}>Select one pass</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {EXPERIENCE_TIERS.map((tier) => {
-                  const guests = dayPassGuests[tier.id] ?? 0;
-                  const isSelected = guests > 0;
+                  const isSelected = selectedDayTier === tier.id;
                   return (
-                    <div
+                    <button
                       key={tier.id}
-                      className={`rounded-xl border-2 transition-all ${isSelected ? 'border-primary bg-white shadow-md' : 'border-gray-200 bg-white'}`}
+                      type="button"
+                      onClick={() => { setSelectedDayTier(tier.id); setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests); }}
+                      className={`rounded-xl border-2 p-4 text-left transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 bg-white hover:border-primary/30'}`}
                     >
-                      <label className="block p-4 cursor-pointer">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <input
-                            type="checkbox"
-                            name="dayPass"
-                            value={tier.id}
-                            checked={isSelected}
-                            onChange={() => toggleDayPass(tier.id)}
-                            className="rounded border-gray-300 text-primary focus:ring-primary"
-                          />
-                          <span className="font-bold text-primary text-lg">{tier.name}</span>
-                          <span className="text-gray-600 font-semibold">₹{tier.price.toLocaleString('en-IN')}/person</span>
-                        </div>
-                        <p className="text-sm text-gray-500 mt-2 ml-6">{tier.description}</p>
-                        <ul className="mt-2 ml-6 space-y-1 text-sm text-gray-600">
-                          {tier.features.map((feature, i) => (
-                            <li key={i} className="flex items-center gap-2">
-                              <span className="text-primary">·</span> {feature}
-                            </li>
-                          ))}
-                        </ul>
-                      </label>
-                      {isSelected && (
-                        <div className="px-4 pb-4 pt-0 flex flex-wrap items-center gap-4 border-t border-gray-100 mt-0 pt-4">
-                          <span className="text-sm font-medium text-gray-600">No. of guests</span>
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setDayPassGuest(tier.id, guests - 1)}
-                              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
-                              aria-label={`Decrease guests for ${tier.name}`}
-                            >
-                              −
-                            </button>
-                            <span className="min-w-[2rem] text-center font-semibold">{guests}</span>
-                            <button
-                              type="button"
-                              onClick={() => setDayPassGuest(tier.id, guests + 1)}
-                              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
-                              aria-label={`Increase guests for ${tier.name}`}
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                      <span className="font-bold text-primary">{tier.name}</span>
+                      <span className="block text-sm font-semibold text-gray-600 mt-0.5">₹{tier.price.toLocaleString('en-IN')}/person</span>
+                      <p className="text-xs text-gray-500 mt-2 line-clamp-2">{tier.description}</p>
+                    </button>
                   );
                 })}
               </div>
             </div>
-            <div className="space-y-2 pt-2 border-t border-gray-200">
-              <h4 className="text-sm font-bold text-primary">Add-on room for day (optional)</h4>
-              <p className="text-sm text-gray-500">₹{DAY_ADDON_PRICE.toLocaleString('en-IN')} per room for the day.</p>
-              <select
-                name="dayAddon"
-                value={selectedDayAddon}
-                onChange={(e) => setSelectedDayAddon(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">None</option>
-                {SANCTUARIES.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name} — ₹{DAY_ADDON_PRICE.toLocaleString('en-IN')} (day)</option>
-                ))}
-              </select>
-            </div>
-          </div>
+
+            {selectedDayTier && (
+              <>
+                <div>
+                  <label className={labelClass}>Number of guests</label>
+                  <Stepper value={dayPassGuests} min={1} max={99} onChange={setDayPassGuests} ariaLabel="guests" />
+                </div>
+
+                <div>
+                  <p className={labelClass}>Add rooms (optional)</p>
+                  <p className="text-xs text-gray-500 mb-3">Max 2 per type. Breakfast free with any room add-on.</p>
+                  <div className="space-y-3">
+                    {SANCTUARIES.map((s) => {
+                      const n = dayAddonRooms[s.id] ?? 0;
+                      const cfg = ROOM_CONFIG[s.id];
+                      return (
+                        <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
+                          <div>
+                            <span className="font-semibold text-primary text-sm">{s.name}</span>
+                            <span className="text-xs text-gray-500 ml-2">₹{s.price.toLocaleString('en-IN')}/room · {cfg?.defaultPerRoom ?? 3} per room</span>
+                          </div>
+                          <Stepper value={n} min={0} max={2} onChange={(v) => setDayAddonRoom(s.id, v)} ariaLabel={s.name} />
+                        </div>
+                      );
+                    })}
+                    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
+                      <div>
+                        <span className="font-semibold text-primary text-sm">Cottage dorm (4 beds)</span>
+                        <span className="text-xs text-gray-500 ml-2">₹{DORM_DAY_PRICE.toLocaleString('en-IN')} · 1 room, 4 people (no extra persons)</span>
+                      </div>
+                      <Stepper value={dayAddonDorm} min={0} max={1} onChange={setDayAddonDorm} ariaLabel="dorm" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {dayTotalAmount > 0 && (
+              <div className="rounded-2xl bg-primary/10 border border-primary/20 p-5">
+                <p className="text-sm font-bold uppercase tracking-wider text-primary mb-0.5">Total</p>
+                <p className="text-2xl font-extrabold text-primary">₹{dayTotalAmount.toLocaleString('en-IN')}</p>
+                <p className="text-sm text-gray-500 mt-1">We’ll confirm on WhatsApp.</p>
+              </div>
+            )}
+          </section>
         )}
 
         {visitType === 'night' && (
-          <div className="space-y-6 rounded-xl bg-gray-50/50 p-4 sm:p-6 border border-gray-100">
+          <section aria-labelledby="night-stay-heading" className="space-y-6">
+            <h2 id="night-stay-heading" className="text-lg font-bold text-primary">Stay</h2>
             <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm">
-              <span className="material-symbols-outlined text-amber-600 shrink-0" aria-hidden="true">info</span>
-              <p>Food is not provided for night stays; it has to be bought separately. Max 3 persons per room included; extra person ₹{NIGHT_EXTRA_PERSON_PRICE.toLocaleString('en-IN')}.</p>
+              <span className="material-symbols-outlined shrink-0" aria-hidden="true">info</span>
+              <p>Food not included. Extra person ₹{EXTRA_PERSON_PRICE.toLocaleString('en-IN')} each.</p>
             </div>
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-primary">Choose your room for night stay</h4>
-              <input type="hidden" name="nightRoom" value={selectedNightRoom} />
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4">
-                {SANCTUARIES.map((room) => (
-                  <label
-                    key={room.id}
-                    className={`rounded-xl border-2 overflow-hidden cursor-pointer transition-all block ${
-                      selectedNightRoom === room.id ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200 hover:border-primary/40'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="nightRoomRadio"
-                      value={room.id}
-                      checked={selectedNightRoom === room.id}
-                      onChange={() => setSelectedNightRoom(room.id)}
-                      className="sr-only"
-                    />
-                    <div className="aspect-[4/3] overflow-hidden bg-gray-100">
-                      <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="p-4">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-primary">{room.name}</span>
-                        {room.tag && <span className="text-xs font-bold uppercase text-primary bg-primary/10 px-2 py-0.5 rounded-full">{room.tag}</span>}
+
+            <div>
+              <p className={labelClass}>Room type</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {SANCTUARIES.map((room) => {
+                  const isSelected = selectedNightRoom === room.id;
+                  return (
+                    <button
+                      key={room.id}
+                      type="button"
+                      onClick={() => { setSelectedNightRoom(room.id); if (room.id === 'cottage') { setNightCottageRooms(0); setNightCottageDorm(0); setNightExtraCottageRooms(0); } }}
+                      className={`rounded-xl border-2 overflow-hidden text-left transition-all ${isSelected ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200 hover:border-primary/40'}`}
+                    >
+                      <div className="aspect-[4/3] bg-gray-100">
+                        <img src={room.image} alt="" className="w-full h-full object-cover" />
                       </div>
-                      <p className="text-gray-600 font-semibold mt-1">₹{NIGHT_ROOM_PRICE.toLocaleString('en-IN')} (3 persons)</p>
-                    </div>
-                  </label>
-                ))}
+                      <div className="p-3">
+                        <span className="font-bold text-primary">{room.name}</span>
+                        <span className="block text-sm font-semibold text-gray-600">₹{(room.nightPrice ?? room.price).toLocaleString('en-IN')}/night</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-              {selectedNightRoom && (
-                <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">Extra persons (₹{NIGHT_EXTRA_PERSON_PRICE.toLocaleString('en-IN')}/person)</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setNightExtraPersons((n) => (n > 0 ? n - 1 : 0))}
-                      className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
-                      aria-label="Decrease extra persons"
-                    >
-                      −
-                    </button>
-                    <span className="min-w-[2rem] text-center font-semibold">{nightExtraPersons}</span>
-                    <button
-                      type="button"
-                      onClick={() => setNightExtraPersons((n) => n + 1)}
-                      className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
-                      aria-label="Increase extra persons"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
+
+            {selectedNightRoom === 'cabana' && (
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Rooms (max 2)</label>
+                  <Stepper value={nightCabanaRooms} min={1} max={2} onChange={setNightCabanaRooms} ariaLabel="Cabana rooms" />
+                </div>
+                <div>
+                  <label className={labelClass}>Extra persons (₹{EXTRA_PERSON_PRICE}/person, max 2 per room)</label>
+                  <Stepper value={nightExtraCabana} min={0} max={nightCabanaRooms * 2} onChange={setNightExtraCabana} ariaLabel="extra persons" />
+                </div>
+              </div>
+            )}
+            {selectedNightRoom === 'villa' && (
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Rooms (max 2)</label>
+                  <Stepper value={nightVillaRooms} min={1} max={2} onChange={setNightVillaRooms} ariaLabel="Villa rooms" />
+                </div>
+                <div>
+                  <label className={labelClass}>Extra persons (₹{EXTRA_PERSON_PRICE}/person, max 2 per room)</label>
+                  <Stepper value={nightExtraVilla} min={0} max={nightVillaRooms * 2} onChange={setNightExtraVilla} ariaLabel="extra persons" />
+                </div>
+              </div>
+            )}
+            {selectedNightRoom === 'cottage' && (
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Rooms (max 2)</label>
+                  <Stepper value={nightCottageRooms} min={0} max={2} onChange={setNightCottageRooms} ariaLabel="Cottage rooms" />
+                </div>
+                <div>
+                  <label className={labelClass}>Dorm (1 room, 4 people — no extra persons)</label>
+                  <Stepper value={nightCottageDorm} min={0} max={1} onChange={setNightCottageDorm} ariaLabel="dorm" />
+                </div>
+                {nightCottageRooms > 0 && (
+                  <div>
+                    <label className={labelClass}>Extra persons in rooms (max 1 per room)</label>
+                    <Stepper value={nightExtraCottageRooms} min={0} max={nightCottageRooms} onChange={setNightExtraCottageRooms} ariaLabel="extra in rooms" />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {nightTotalAmount > 0 && (
+              <div className="rounded-2xl bg-primary/10 border border-primary/20 p-5">
+                <p className="text-sm font-bold uppercase tracking-wider text-primary mb-0.5">Total</p>
+                <p className="text-2xl font-extrabold text-primary">₹{nightTotalAmount.toLocaleString('en-IN')}</p>
+                <p className="text-sm text-gray-500 mt-1">We’ll confirm on WhatsApp.</p>
+              </div>
+            )}
+          </section>
         )}
 
-        <div className="space-y-2">
-          <label htmlFor="book-date" className={labelClass}>Entry date</label>
-          <input id="book-date" type="date" name="date" className={inputClass} required aria-required="true" />
-        </div>
-
-        {totalAmount > 0 && (
-          <div className="rounded-xl bg-primary/10 border border-primary/20 p-6">
-            <p className="text-sm font-bold uppercase tracking-wider text-primary mb-1">Total amount</p>
-            <p className="text-3xl font-extrabold text-primary">₹{totalAmount.toLocaleString('en-IN')}</p>
-            <p className="text-sm text-gray-500 mt-1">Calculated from your selection. We’ll confirm on WhatsApp.</p>
+        {/* 4. When */}
+        <section aria-labelledby="date-heading">
+          <h2 id="date-heading" className="text-lg font-bold text-primary mb-4">When</h2>
+          <div>
+            <label htmlFor="book-date" className={labelClass}>Entry date</label>
+            <input id="book-date" type="date" name="date" className={inputClass} required aria-required="true" />
           </div>
-        )}
+        </section>
 
-        <div className="pt-2">
+        {/* Hidden fields for submission */}
+        {visitType === 'day' && <input type="hidden" name="visitType" value="day" />}
+        {visitType === 'night' && <input type="hidden" name="visitType" value="night" />}
+        {selectedDayTier && <input type="hidden" name="dayPass" value={selectedDayTier} />}
+        {visitType === 'day' && <input type="hidden" name="dayPassGuests" value={dayPassGuests} />}
+        {SANCTUARIES.map((s) => <input key={s.id} type="hidden" name={`dayRoom_${s.id}`} value={dayAddonRooms[s.id] ?? 0} />)}
+        <input type="hidden" name="dayDorm" value={dayAddonDorm} />
+        {selectedNightRoom && <input type="hidden" name="nightRoom" value={selectedNightRoom} />}
+        <input type="hidden" name="nightCabanaRooms" value={nightCabanaRooms} />
+        <input type="hidden" name="nightVillaRooms" value={nightVillaRooms} />
+        <input type="hidden" name="nightCottageRooms" value={nightCottageRooms} />
+        <input type="hidden" name="nightCottageDorm" value={nightCottageDorm} />
+        <input type="hidden" name="nightExtra_cabana" value={nightExtraCabana} />
+        <input type="hidden" name="nightExtra_villa" value={nightExtraVilla} />
+        <input type="hidden" name="nightExtra_cottageRooms" value={nightExtraCottageRooms} />
+
+        {/* Submit */}
+        <section className="pt-4 border-t-2 border-gray-100">
           <button
             type="submit"
-            className="w-full min-h-[48px] sm:min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all active:scale-[0.99]"
+            disabled={!visitType || (visitType === 'day' && !selectedDayTier) || (visitType === 'night' && !selectedNightRoom)}
+            className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
           >
             Submit booking request
           </button>
-        </div>
+        </section>
       </form>
     </div>
   );
