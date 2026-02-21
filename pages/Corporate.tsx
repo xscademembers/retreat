@@ -47,7 +47,7 @@ export const Corporate: React.FC = () => {
             </h2>
             <div className="w-20 h-px bg-white/30 mx-auto" aria-hidden="true" />
             <p className="text-lg lg:text-xl font-light opacity-90 leading-relaxed max-w-2xl mx-auto">
-              A 6-acre retreat with pool, rain dance, BBQ, sports, and boating. Farm-to-table lunch, Wi-Fi, and space for 9 AM–7 PM. We’ve hosted regional meets and team outings—we’ll help you plan yours.
+              A 6-acre retreat with pool, rain dance, BBQ, sports, and boating. Farm-to-table lunch and space for 9 AM–7 PM. We’ve hosted regional meets and team outings—we’ll help you plan yours.
             </p>
             <div className="flex flex-wrap justify-center gap-8 pt-4">
               <div className="flex items-center gap-3">

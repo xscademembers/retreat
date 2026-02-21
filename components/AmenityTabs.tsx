@@ -1,35 +1,6 @@
 import React, { useState } from 'react';
 import { Feature } from '../types';
-
-/** Map of feature id → image URLs for the home-page amenity tabs. */
-const AMENITY_IMAGES: Record<string, string[]> = {
-  '1': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745403976516-scaled.jpg',
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg',
-  ],
-  '2': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745823767758-scaled.jpg',
-  ],
-  '3': [
-    'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250222_095648.jpg',
-  ],
-  '4': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg',
-  ],
-  '5': [
-    'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250220_164134.jpg',
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
-  ],
-  '6': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745403976516-scaled.jpg',
-  ],
-  '7': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01969-1024x683.jpeg',
-  ],
-  '8': [
-    'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg',
-  ],
-};
+import { AMENITY_IMAGES } from '../constants';
 
 interface AmenityTabsProps {
   features: Feature[];
@@ -83,19 +54,25 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
         })}
       </div>
 
-      {/* Panel: images only (heading/description removed) */}
+      {/* Panel: masonry layout, images shown fully (no crop) */}
       <div
         id={`amenity-panel-${activeId}`}
         role="tabpanel"
         aria-labelledby={`amenity-tab-${activeId}`}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 md:gap-5">
           {images.map((src, idx) => (
-            <div key={`${activeId}-${idx}`} className="aspect-[4/3] overflow-hidden rounded-lg">
+            <div
+              key={`${activeId}-${idx}`}
+              className="break-inside-avoid mb-4 overflow-hidden rounded-xl sm:rounded-2xl"
+            >
               <img
                 src={src}
                 alt={`${activeFeature.title} — image ${idx + 1}`}
-                className="w-full h-full object-cover"
+                loading={idx < 8 ? 'eager' : 'lazy'}
+                decoding="async"
+                fetchPriority={idx < 4 ? 'high' : undefined}
+                className="w-full h-auto block"
               />
             </div>
           ))}
