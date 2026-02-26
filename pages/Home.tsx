@@ -41,26 +41,12 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
             <header className="mb-10 sm:mb-16 max-w-2xl">
-            <h2 id="included-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Amenities</h2>
-            <div className="h-1.5 w-24 bg-primary rounded-full mb-4"></div>
-            <p className="text-gray-600">All packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
-          </header>
+              <h2 id="included-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Amenities</h2>
+              <div className="h-1.5 w-24 bg-primary rounded-full mb-4"></div>
+              <p className="text-gray-600">All packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
+            </header>
           </AnimateOnScroll>
           <AmenityTabs features={INCLUDED_FEATURES} />
-        </div>
-      </section>
-
-      <section className="relative min-h-[480px] sm:h-[600px] overflow-hidden flex items-center justify-center text-center px-4 sm:px-6">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url("https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg")',
-          }}
-        />
-        <div className="relative z-10 max-w-3xl space-y-6">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tighter">Your Perfect Daycation Awaits</h2>
-          <p className="text-white/90 text-lg font-medium max-w-xl mx-auto">Unwind, explore, and recharge in a premium resort experience—without an overnight stay. Nature, luxury, and adventure, all in one day.</p>
-          <a href="/book-now" className="bg-white text-primary px-10 py-4 rounded-full font-bold hover:bg-background-soft hover:shadow-2xl hover:scale-105 transition-all duration-400 shadow-xl inline-block">Book Your Experience</a>
         </div>
       </section>
 
@@ -102,6 +88,12 @@ export const Home: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                <a
+                  href="/book-now"
+                  className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
+                >
+                  Book Now
+                </a>
               </div>
             </div>
             </AnimateOnScroll>

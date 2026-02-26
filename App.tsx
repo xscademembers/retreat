@@ -6,7 +6,6 @@ import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Home } from './pages/Home';
 import { Packages } from './pages/Packages';
 import { BookNow } from './pages/BookNow';
-import { GalleryPage } from './pages/GalleryPage';
 import { Corporate } from './pages/Corporate';
 import { Schools } from './pages/Schools';
 import { Amenities } from './pages/Amenities';
@@ -61,7 +60,6 @@ const AppShell: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/book-now" element={<BookNow />} />
-        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/corporate" element={<Corporate />} />
         <Route path="/schools" element={<Schools />} />
         <Route path="/amenities" element={<Amenities />} />

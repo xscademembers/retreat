@@ -81,14 +81,14 @@ export const AMENITIES: Amenity[] = [
 ];
 
 export const INCLUDED_FEATURES: Feature[] = [
+  { id: '5', title: 'Nature Walks', description: 'Explore our 6-acre farm stay with peaceful greenery and open lawns.', icon: 'park' },
+  { id: '3', title: 'Sports Amenities', description: 'Cricket, basketball, football, volleyball, and throwball for all ages.', icon: 'sports_soccer' },
+  { id: '9', title: 'Rooms', description: 'More views of Salsons Retreat — rooms, grounds, and atmosphere.', icon: 'photo_library' },
   { id: '1', title: 'Pool Access', description: 'Party pool and rain dance pool for fun-filled splashes with family and friends.', icon: 'pool' },
   { id: '2', title: 'Farm-to-Table Lunch', description: 'Fresh hot Andhra-style lunch with locally sourced ingredients.', icon: 'restaurant' },
-  { id: '3', title: 'Sports Amenities', description: 'Cricket, basketball, football, volleyball, and throwball for all ages.', icon: 'sports_soccer' },
-  { id: '5', title: 'Nature Walks', description: 'Explore our 6-acre farm stay with peaceful greenery and open lawns.', icon: 'park' },
   { id: '6', title: "Children's Park", description: 'Kid-friendly spaces with safe areas for little ones to explore.', icon: 'child_care' },
   { id: '7', title: 'Indoor Games', description: 'Board games and indoor activities for relaxed downtime.', icon: 'casino' },
-  { id: '8', title: 'Free Parking', description: 'Complimentary on-site parking for all guests.', icon: 'local_parking' },
-  { id: '9', title: 'Rooms', description: 'More views of Salsons Retreat — rooms, grounds, and atmosphere.', icon: 'photo_library' }
+  { id: '8', title: 'Free Parking', description: 'Complimentary on-site parking for all guests.', icon: 'local_parking' }
 ];
 
 /** Images per amenity tab (feature id → URLs). Used by AmenityTabs and Gallery. */
