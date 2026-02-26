@@ -28,13 +28,13 @@ export const Home: React.FC = () => {
                 <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
                   directions_car
                 </span>
-                <span className="font-medium">80 min from Vizag</span>
+                <span className="font-medium">80 min Vizag</span>
               </div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
                 <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
                   distance
                 </span>
-                <span className="font-medium">30 min from Vizianagaram</span>
+                <span className="font-medium">30 min Vizianagaram</span>
               </div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
                 <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
