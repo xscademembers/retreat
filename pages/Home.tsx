@@ -14,26 +14,51 @@ export const Home: React.FC = () => {
 
       <section id="sanctuary" className="bg-primary text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12">
         <AnimateOnScroll animation="fade-up">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
-          <span className="text-xs font-bold uppercase tracking-[0.4em] opacity-60">Why Visit Salsons Retreat?</span>
-          <h2 className="text-3xl lg:text-5xl font-semibold leading-snug">
-            Escape the city. Relax in nature.
-          </h2>
-          <div className="w-20 h-px bg-white/30 mx-auto"></div>
-          <p className="text-lg lg:text-xl font-light opacity-80 leading-relaxed max-w-2xl mx-auto">
-            Leave the noise behind and unwind in pure, peaceful greenery. Our 6-acre farm stay in Thatipudi offers a serene escape—approximately 70km from Vizag and just 2 minutes from Thatipudi Reservoir.
-          </p>
-          <div className="flex flex-wrap justify-center gap-8 pt-4">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">child_care</span>
-              <span className="text-sm font-medium">Complimentary for kids under 5 yrs</span>
+          <div className="max-w-5xl mx-auto text-center space-y-10">
+            <span className="text-xs font-bold uppercase tracking-[0.4em] opacity-60">
+              Why Visit Salsons Retreat?
+            </span>
+            <h2 className="text-3xl lg:text-5xl font-semibold leading-snug">
+              Escape the city. Relax in nature.
+            </h2>
+            <div className="w-20 h-px bg-white/30 mx-auto" aria-hidden="true" />
+
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
+                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
+                  directions_car
+                </span>
+                <span className="font-medium">80 min from Vizag</span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
+                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
+                  distance
+                </span>
+                <span className="font-medium">30 min from Vizianagaram</span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
+                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
+                  nature
+                </span>
+                <span className="font-medium">6 acre farm stay</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">schedule</span>
-              <span className="text-sm font-medium">9 AM – 7 PM · Available all days</span>
+
+            <div className="flex flex-wrap justify-center gap-8 pt-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
+                  child_care
+                </span>
+                <span className="text-sm font-medium">Complimentary for kids under 5 yrs</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
+                  schedule
+                </span>
+                <span className="text-sm font-medium">9 AM – 7 PM · Available all days</span>
+              </div>
             </div>
           </div>
-        </div>
         </AnimateOnScroll>
       </section>
 
