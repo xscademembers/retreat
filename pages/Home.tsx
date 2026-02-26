@@ -44,20 +44,6 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8 pt-4">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
-                  child_care
-                </span>
-                <span className="text-sm font-medium">Complimentary for kids under 5 yrs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
-                  schedule
-                </span>
-                <span className="text-sm font-medium">9 AM – 7 PM · Available all days</span>
-              </div>
-            </div>
           </div>
         </AnimateOnScroll>
       </section>
