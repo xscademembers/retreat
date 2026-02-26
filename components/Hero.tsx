@@ -147,10 +147,10 @@ export const Hero: React.FC = () => {
                 </span>
               </a>
               <a
-                href="/packages"
+                href="/packages#sanctuaries"
                 className="border-2 border-white/70 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:bg-white/10 hover:border-white transition-all duration-300 inline-flex items-center justify-center gap-2"
               >
-                View Packages
+                Book Your Night Stay
                 <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
                   arrow_forward
                 </span>

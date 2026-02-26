@@ -1,7 +1,6 @@
 import React from 'react';
-import { AMENITIES, INCLUDED_FEATURES } from '../constants';
+import { INCLUDED_FEATURES } from '../constants';
 import { Hero } from '../components/Hero';
-import { AmenitySection } from '../components/AmenitySection';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
@@ -38,22 +37,11 @@ export const Home: React.FC = () => {
         </AnimateOnScroll>
       </section>
 
-      <section id="amenities" className="py-8 sm:py-12 bg-background-soft">
-        {AMENITIES.map((amenity, index) => (
-          <AnimateOnScroll key={amenity.id} animation={index % 2 === 0 ? 'fade-right' : 'fade-left'}>
-            <AmenitySection
-              amenity={amenity}
-              reverse={index % 2 !== 0}
-            />
-          </AnimateOnScroll>
-        ))}
-      </section>
-
       <section id="included-amenities" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
-          <header className="mb-10 sm:mb-16 max-w-2xl">
-            <h2 id="included-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Included Amenities</h2>
+            <header className="mb-10 sm:mb-16 max-w-2xl">
+            <h2 id="included-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Amenities</h2>
             <div className="h-1.5 w-24 bg-primary rounded-full mb-4"></div>
             <p className="text-gray-600">All packages include access to these amenities. Enjoy our 6-acre farm stay from 9 AM to 7 PM.</p>
           </header>

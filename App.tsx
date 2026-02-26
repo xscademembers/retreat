@@ -9,6 +9,7 @@ import { BookNow } from './pages/BookNow';
 import { GalleryPage } from './pages/GalleryPage';
 import { Corporate } from './pages/Corporate';
 import { Schools } from './pages/Schools';
+import { Amenities } from './pages/Amenities';
 
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -63,6 +64,7 @@ const AppShell: React.FC = () => {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/corporate" element={<Corporate />} />
         <Route path="/schools" element={<Schools />} />
+        <Route path="/amenities" element={<Amenities />} />
       </Routes>
 
       <Footer />

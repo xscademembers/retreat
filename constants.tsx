@@ -88,7 +88,7 @@ export const INCLUDED_FEATURES: Feature[] = [
   { id: '6', title: "Children's Park", description: 'Kid-friendly spaces with safe areas for little ones to explore.', icon: 'child_care' },
   { id: '7', title: 'Indoor Games', description: 'Board games and indoor activities for relaxed downtime.', icon: 'casino' },
   { id: '8', title: 'Free Parking', description: 'Complimentary on-site parking for all guests.', icon: 'local_parking' },
-  { id: '9', title: 'Others', description: 'More views of Salsons Retreat — rooms, grounds, and atmosphere.', icon: 'photo_library' }
+  { id: '9', title: 'Rooms', description: 'More views of Salsons Retreat — rooms, grounds, and atmosphere.', icon: 'photo_library' }
 ];
 
 /** Images per amenity tab (feature id → URLs). Used by AmenityTabs and Gallery. */
