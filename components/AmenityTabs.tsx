@@ -6,18 +6,17 @@ interface AmenityTabsProps {
   features: Feature[];
 }
 
-const DEFAULT_ACTIVE_ID = '1'; // Pool Access
-
 export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
-  const [activeId, setActiveId] = useState<string>(DEFAULT_ACTIVE_ID);
+  const defaultId = (features[0] && features[0].id) || '5'; // Nature Walks fallback
+  const [activeId, setActiveId] = useState<string>(defaultId);
   const activeFeature = features.find((f) => f.id === activeId) ?? features[0];
-  const images = AMENITY_IMAGES[activeId] ?? AMENITY_IMAGES[DEFAULT_ACTIVE_ID];
+  const images = AMENITY_IMAGES[activeId] ?? AMENITY_IMAGES[defaultId];
 
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Tabs: icon + label, left-aligned, touch-friendly on mobile */}
       <div
-        className="flex flex-wrap justify-start gap-2 sm:gap-3 -mx-1 px-1"
+        className="flex flex-wrap justify-start gap-2 sm:gap-3"
         role="tablist"
         aria-label="Amenity categories"
       >

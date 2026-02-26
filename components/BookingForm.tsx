@@ -191,7 +191,7 @@ export const BookingForm: React.FC = () => {
               <div className="relative">
                 <div
                   ref={dayTierScrollRef}
-                  className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory"
+                  className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 snap-x snap-mandatory"
                 >
                   {EXPERIENCE_TIERS.map((tier) => {
                     const isSelected = selectedDayTier === tier.id;
