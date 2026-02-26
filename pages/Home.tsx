@@ -49,7 +49,7 @@ export const Home: React.FC = () => {
         ))}
       </section>
 
-      <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
+      <section id="included-amenities" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
           <header className="mb-10 sm:mb-16 max-w-2xl">

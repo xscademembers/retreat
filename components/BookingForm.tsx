@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EXPERIENCE_TIERS, SANCTUARIES } from '../constants';
 
@@ -141,31 +141,22 @@ export const BookingForm: React.FC = () => {
     setNightExtraCottageRooms(0);
   };
 
+  const [showDayAddons, setShowDayAddons] = useState(false);
+  const dayTierScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollDayTiers = (direction: 'prev' | 'next') => {
+    const container = dayTierScrollRef.current;
+    if (!container) return;
+    const card = container.querySelector<HTMLButtonElement>('button');
+    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth;
+    const delta = direction === 'next' ? cardWidth + 16 : -cardWidth - 16;
+    container.scrollBy({ left: delta, behavior: 'smooth' });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       <form className="p-6 sm:p-8 space-y-8" onSubmit={(e) => e.preventDefault()} aria-label="Booking form">
-        {/* 1. Details */}
-        <section aria-labelledby="details-heading">
-          <h2 id="details-heading" className="text-lg font-bold text-primary mb-4">Details</h2>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="book-name" className={labelClass}>Name</label>
-                <input id="book-name" type="text" name="name" className={inputClass} placeholder="Your name" required aria-required="true" />
-              </div>
-              <div>
-                <label htmlFor="book-phone" className={labelClass}>Phone</label>
-                <input id="book-phone" type="tel" name="phone" defaultValue="+91 " className={inputClass} placeholder="98765 43210" required aria-required="true" />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="book-email" className={labelClass}>Email (optional)</label>
-              <input id="book-email" type="email" name="email" className={inputClass} placeholder="you@example.com" />
-            </div>
-          </div>
-        </section>
-
-        {/* 2. Choose your visit */}
+        {/* 1. Choose your visit */}
         <section aria-labelledby="visit-type-heading">
           <h2 id="visit-type-heading" className="text-lg font-bold text-primary mb-4">Choose your visit</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -190,29 +181,63 @@ export const BookingForm: React.FC = () => {
           </div>
         </section>
 
-        {/* 3. Stay (day pass or night stay) */}
+        {/* 2. Stay (day pass or night stay) */}
         {visitType === 'day' && (
           <section aria-labelledby="day-pass-heading" className="space-y-6">
             <h2 id="day-pass-heading" className="text-lg font-bold text-primary">Stay</h2>
 
             <div>
               <p className={labelClass}>Select one pass</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {EXPERIENCE_TIERS.map((tier) => {
-                  const isSelected = selectedDayTier === tier.id;
-                  return (
-                    <button
-                      key={tier.id}
-                      type="button"
-                      onClick={() => { setSelectedDayTier(tier.id); setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests); }}
-                      className={`rounded-xl border-2 p-4 text-left transition-all ${isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 bg-white hover:border-primary/30'}`}
-                    >
-                      <span className="font-bold text-primary">{tier.name}</span>
-                      <span className="block text-sm font-semibold text-gray-600 mt-0.5">₹{tier.price.toLocaleString('en-IN')}/person</span>
-                      <p className="text-xs text-gray-500 mt-2 line-clamp-2">{tier.description}</p>
-                    </button>
-                  );
-                })}
+              <div className="relative">
+                <div
+                  ref={dayTierScrollRef}
+                  className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory"
+                >
+                  {EXPERIENCE_TIERS.map((tier) => {
+                    const isSelected = selectedDayTier === tier.id;
+                    return (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        onClick={() => { setSelectedDayTier(tier.id); setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests); }}
+                        className={`rounded-xl border-2 p-4 text-left transition-all snap-start min-w-[82%] sm:min-w-0 ${
+                          isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 bg-white hover:border-primary/30'
+                        }`}
+                      >
+                        <span className="font-bold text-primary">{tier.name}</span>
+                        <span className="block text-sm font-semibold text-gray-600 mt-0.5">₹{tier.price.toLocaleString('en-IN')}/person</span>
+                        <p className="text-xs text-gray-500 mt-2">{tier.description}</p>
+                        <ul className="mt-2 space-y-1 text-[11px] text-gray-500">
+                          {tier.features.map((feature) => (
+                            <li key={feature} className="flex gap-1">
+                              <span aria-hidden="true">•</span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex sm:hidden justify-end gap-2 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => scrollDayTiers('prev')}
+                    className="min-w-[36px] min-h-[36px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm"
+                    aria-label="Previous pass"
+                  >
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">chevron_left</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollDayTiers('next')}
+                    className="min-w-[36px] min-h-[36px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm"
+                    aria-label="Next pass"
+                  >
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">chevron_right</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -224,30 +249,45 @@ export const BookingForm: React.FC = () => {
                 </div>
 
                 <div>
-                  <p className={labelClass}>Add rooms (optional)</p>
-                  <p className="text-xs text-gray-500 mb-3">Max 2 per type. Breakfast free with any room add-on.</p>
-                  <div className="space-y-3">
-                    {SANCTUARIES.map((s) => {
-                      const n = dayAddonRooms[s.id] ?? 0;
-                      const cfg = ROOM_CONFIG[s.id];
-                      return (
-                        <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
-                          <div>
-                            <span className="font-semibold text-primary text-sm">{s.name}</span>
-                            <span className="text-xs text-gray-500 ml-2">₹{s.price.toLocaleString('en-IN')}/room · {cfg?.defaultPerRoom ?? 3} per room</span>
-                          </div>
-                          <Stepper value={n} min={0} max={2} onChange={(v) => setDayAddonRoom(s.id, v)} ariaLabel={s.name} />
-                        </div>
-                      );
-                    })}
-                    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
-                      <div>
-                        <span className="font-semibold text-primary text-sm">Cottage dorm (4 beds)</span>
-                        <span className="text-xs text-gray-500 ml-2">₹{DORM_DAY_PRICE.toLocaleString('en-IN')} · 1 room, 4 people (no extra persons)</span>
-                      </div>
-                      <Stepper value={dayAddonDorm} min={0} max={1} onChange={setDayAddonDorm} ariaLabel="dorm" />
+                  <button
+                    type="button"
+                    onClick={() => setShowDayAddons((prev) => !prev)}
+                    className="flex items-center justify-between w-full rounded-xl border border-gray-200 bg-gray-50/60 px-4 py-3 text-left text-sm font-semibold text-primary hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                    aria-expanded={showDayAddons}
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-primary">Add rooms (optional)</p>
+                      <p className="text-xs text-gray-500">Max 2 per type. Breakfast free with any room add-on.</p>
                     </div>
-                  </div>
+                    <span className="material-symbols-outlined text-base text-primary" aria-hidden="true">
+                      {showDayAddons ? 'expand_less' : 'expand_more'}
+                    </span>
+                  </button>
+
+                  {showDayAddons && (
+                    <div className="mt-4 space-y-3">
+                      {SANCTUARIES.map((s) => {
+                        const n = dayAddonRooms[s.id] ?? 0;
+                        const cfg = ROOM_CONFIG[s.id];
+                        return (
+                          <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
+                            <div>
+                              <span className="font-semibold text-primary text-sm">{s.name}</span>
+                              <span className="text-xs text-gray-500 ml-2">₹{s.price.toLocaleString('en-IN')}/room · {cfg?.defaultPerRoom ?? 3} per room</span>
+                            </div>
+                            <Stepper value={n} min={0} max={2} onChange={(v) => setDayAddonRoom(s.id, v)} ariaLabel={s.name} />
+                          </div>
+                        );
+                      })}
+                      <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
+                        <div>
+                          <span className="font-semibold text-primary text-sm">Cottage dorm (4 beds)</span>
+                          <span className="text-xs text-gray-500 ml-2">₹{DORM_DAY_PRICE.toLocaleString('en-IN')} · 1 room, 4 people (no extra persons)</span>
+                        </div>
+                        <Stepper value={dayAddonDorm} min={0} max={1} onChange={setDayAddonDorm} ariaLabel="dorm" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -348,12 +388,29 @@ export const BookingForm: React.FC = () => {
           </section>
         )}
 
-        {/* 4. When */}
+        {/* 3. When */}
         <section aria-labelledby="date-heading">
           <h2 id="date-heading" className="text-lg font-bold text-primary mb-4">When</h2>
           <div>
             <label htmlFor="book-date" className={labelClass}>Entry date</label>
             <input id="book-date" type="date" name="date" className={inputClass} required aria-required="true" />
+          </div>
+        </section>
+
+        {/* 4. Your details */}
+        <section aria-labelledby="details-heading">
+          <h2 id="details-heading" className="text-lg font-bold text-primary mb-4">Your details</h2>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="book-name" className={labelClass}>Name</label>
+                <input id="book-name" type="text" name="name" className={inputClass} placeholder="Your name" required aria-required="true" />
+              </div>
+              <div>
+                <label htmlFor="book-phone" className={labelClass}>Phone</label>
+                <input id="book-phone" type="tel" name="phone" defaultValue="+91 " className={inputClass} placeholder="98765 43210" required aria-required="true" />
+              </div>
+            </div>
           </div>
         </section>
 

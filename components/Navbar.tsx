@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
               </div>
             </div>
           </div>
-          <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/#amenities">Amenities</Link>
+          <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/#included-amenities">Amenities</Link>
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/gallery">Gallery</Link>
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/#testimonials">Testimonials</Link>
           <div className="relative group">
@@ -110,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           <Link to="/packages" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Pricing</Link>
           <Link to="/packages#packages" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Day pass</Link>
           <Link to="/packages#sanctuaries" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Rooms</Link>
-          <Link to="/#amenities" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Amenities</Link>
+          <Link to="/#included-amenities" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Amenities</Link>
           <Link to="/gallery" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Gallery</Link>
           <Link to="/#testimonials" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Testimonials</Link>
           <Link to="/corporate" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Corporate</Link>
