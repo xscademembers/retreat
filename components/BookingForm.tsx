@@ -416,10 +416,10 @@ export const BookingForm: React.FC = () => {
 
   return (
     <div className="rounded-2xl overflow-visible">
-      <div className="p-6 sm:p-8 md:grid md:grid-cols-[minmax(0,720px)_minmax(260px,1fr)] md:gap-8 items-start">
+      <div className="p-6 sm:p-8 md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,1fr)] md:gap-8 items-start">
         <form
           id="booking-form"
-          className="space-y-8 max-w-[720px] w-full"
+          className="space-y-8 max-w-[820px] w-full"
           onSubmit={(e) => e.preventDefault()}
           aria-label="Booking form"
         >
@@ -494,7 +494,7 @@ export const BookingForm: React.FC = () => {
                 <div className="relative">
                   <div
                     ref={dayTierScrollRef}
-                    className="flex sm:grid sm:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 snap-x snap-mandatory"
+                    className="flex sm:grid sm:grid-cols-3 lg:grid-cols-3 gap-4 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 snap-x snap-mandatory"
                   >
                     {EXPERIENCE_TIERS.map((tier) => {
                       const isSelected = selectedDayTier === tier.id;
@@ -506,25 +506,57 @@ export const BookingForm: React.FC = () => {
                             setSelectedDayTier(tier.id);
                             setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests);
                           }}
-                          className={`rounded-xl border-2 p-4 text-left transition-all snap-start min-w-[82%] sm:min-w-0 ${
-                            isSelected
-                              ? 'border-primary bg-primary/5'
-                              : 'border-gray-200 bg-white hover:border-primary/30'
-                          }`}
+                          className="text-left snap-start min-w-[82%] sm:min-w-0 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background-soft"
                         >
-                          <span className="font-bold text-primary">{tier.name}</span>
-                          <span className="block text-sm font-semibold text-gray-600 mt-0.5">
-                            ₹{tier.price.toLocaleString('en-IN')}/person
-                          </span>
-                          <p className="text-xs text-gray-500 mt-2">{tier.description}</p>
-                          <ul className="mt-2 space-y-1 text-[11px] text-gray-500">
-                            {tier.features.map((feature) => (
-                              <li key={feature} className="flex gap-1">
-                                <span aria-hidden="true">•</span>
-                                <span>{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
+                          <div
+                            className={`flex flex-col h-full rounded-3xl border bg-white p-6 sm:p-7 relative transition-all duration-500 hover-lift ${
+                              isSelected
+                                ? 'border-primary shadow-xl ring-1 ring-primary/20'
+                                : 'border-gray-200 hover:border-primary/30 hover:shadow-xl'
+                            }`}
+                          >
+
+                            <div className="space-y-3 shrink-0">
+                              <div className="flex items-center justify-between gap-3">
+                                <h3 className="text-primary font-bold text-sm uppercase tracking-[0.18em]">
+                                  {tier.name}
+                                </h3>
+                                <span
+                                  className="material-symbols-outlined text-primary group-hover:rotate-12 motion-safe:transition-transform"
+                                  aria-hidden="true"
+                                >
+                                  {tier.icon}
+                                </span>
+                              </div>
+                              <div className="flex items-baseline gap-1">
+                                <span
+                                  className={`font-extrabold tracking-tight ${
+                                    isSelected ? 'text-primary text-4xl' : 'text-gray-900 text-3xl'
+                                  }`}
+                                >
+                                  ₹{tier.price.toLocaleString('en-IN')}
+                                </span>
+                                <span className="text-gray-500 text-sm font-medium">/person</span>
+                              </div>
+                              <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                                {tier.description}
+                              </p>
+                            </div>
+
+                            <ul className="space-y-2 pt-4 border-t border-gray-100 mt-4">
+                              {tier.features.map((feature) => (
+                                <li key={feature} className="flex items-center gap-2 text-xs sm:text-sm text-gray-700">
+                                  <span
+                                    className="material-symbols-outlined text-primary text-base sm:text-lg shrink-0"
+                                    aria-hidden="true"
+                                  >
+                                    check_circle
+                                  </span>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </button>
                       );
                     })}
@@ -1254,7 +1286,7 @@ export const BookingForm: React.FC = () => {
         {/* Booking summary: outside form, sticky beside the form */}
         {shouldShowSummary && (
           <aside
-            className="mt-8 md:mt-0 md:sticky md:top-24 md:self-start md:w-[280px]"
+            className="mt-8 md:mt-0 md:sticky md:top-24 md:self-start md:w-[300px] md:ml-10"
             aria-label="Booking summary"
           >
             <div className="rounded-2xl border border-primary/20 bg-white shadow-xl px-4 py-4 sm:px-5 sm:py-5">

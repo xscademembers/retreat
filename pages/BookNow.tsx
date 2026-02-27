@@ -17,7 +17,7 @@ export const BookNow: React.FC = () => {
       </section>
 
       <section className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-12 bg-background-soft">
-        <div className="max-w-5xl mx-auto space-y-10">
+        <div className="max-w-6xl lg:max-w-7xl mx-auto space-y-10">
           <div>
             <AnimateOnScroll animation="fade-up">
               <BookingForm />
@@ -26,38 +26,53 @@ export const BookNow: React.FC = () => {
 
           <div>
             <AnimateOnScroll animation="fade-up">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div className="bg-primary/5 px-6 py-4 border-b border-gray-100">
-                  <h2 className="text-primary font-bold text-lg">Find Us Here</h2>
-                  <p className="text-primary/70 text-sm mt-0.5">Your escape awaits</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start lg:justify-items-center">
+                <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                  <div className="bg-primary/5 px-6 py-4 border-b border-gray-100">
+                    <h2 className="text-primary font-bold text-lg">Find Us Here</h2>
+                    <p className="text-primary/70 text-sm mt-0.5">Your escape awaits</p>
+                  </div>
+                  <div className="p-6 space-y-6">
+                    <div className="flex gap-4">
+                      <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                        <span className="material-symbols-outlined text-primary text-xl">location_on</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Salsons Retreat</p>
+                        <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">
+                          Vizianagaram Rd, Thatipudi, Andhra Pradesh 535221
+                        </p>
+                      </div>
+                    </div>
+                    <div className="h-px bg-gray-100" aria-hidden="true" />
+                    <div className="flex gap-4">
+                      <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                        <span className="material-symbols-outlined text-primary text-xl">phone</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Call or WhatsApp</p>
+                        <p className="text-sm text-gray-500 mt-0.5">
+                          <a href="tel:+918074799387" className="text-primary hover:underline">+91 80747 99387</a>
+                          <span className="text-gray-300 mx-1">·</span>
+                          <a href="tel:+917569242082" className="text-primary hover:underline">+91 75692 42082</a>
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-500 pt-2">~70 km from Vizag. We’ll confirm your booking on WhatsApp.</p>
+                  </div>
                 </div>
-                <div className="p-6 space-y-6">
-                  <div className="flex gap-4">
-                    <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
-                      <span className="material-symbols-outlined text-primary text-xl">location_on</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Salsons Retreat</p>
-                      <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">
-                        Vizianagaram Rd, Thatipudi, Andhra Pradesh 535221
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-px bg-gray-100" aria-hidden="true" />
-                  <div className="flex gap-4">
-                    <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
-                      <span className="material-symbols-outlined text-primary text-xl">phone</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Call or WhatsApp</p>
-                      <p className="text-sm text-gray-500 mt-0.5">
-                        <a href="tel:+918074799387" className="text-primary hover:underline">+91 80747 99387</a>
-                        <span className="text-gray-300 mx-1">·</span>
-                        <a href="tel:+917569242082" className="text-primary hover:underline">+91 75692 42082</a>
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-500 pt-2">~70 km from Vizag. We’ll confirm your booking on WhatsApp.</p>
+
+                <div className="max-w-lg w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100 bg-white aspect-[4/3] min-h-[220px]">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741204!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Salsons Retreat location"
+                  />
                 </div>
               </div>
             </AnimateOnScroll>
