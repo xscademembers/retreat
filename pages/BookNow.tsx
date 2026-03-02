@@ -1,32 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 import { BookingForm } from '../components/BookingForm';
 
 export const BookNow: React.FC = () => {
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   return (
     <main id="main-content" className="pt-20 sm:pt-24">
-      <section className="bg-primary text-white py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-white/80 text-sm font-bold uppercase tracking-[0.2em] mb-2">Reservations</p>
-          <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight">Book Your Visit</h1>
-          <div className="w-12 h-1 bg-accent-gold rounded-full mx-auto mt-4" aria-hidden="true" />
-          <p className="text-white/90 mt-6 max-w-xl mx-auto text-lg">
-            Share your details and we’ll confirm your day or night at Salsons Retreat.
-          </p>
-        </div>
-      </section>
-
       <section className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-12 bg-background-soft">
         <div className="max-w-6xl lg:max-w-7xl mx-auto space-y-10">
+          <header className="text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+              Book Your Visit
+            </h1>
+            <div className="w-12 h-1 bg-accent-gold rounded-full mx-auto mt-4" aria-hidden="true" />
+          </header>
           <div>
             <AnimateOnScroll animation="fade-up">
-              <BookingForm />
+              <BookingForm onSubmitSuccess={() => setHasSubmitted(true)} />
             </AnimateOnScroll>
           </div>
 
-          <div>
-            <AnimateOnScroll animation="fade-up">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start lg:justify-items-center">
+          {hasSubmitted && (
+            <div>
+              <AnimateOnScroll animation="fade-up">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start lg:justify-items-center">
                 <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                   <div className="bg-primary/5 px-6 py-4 border-b border-gray-100">
                     <h2 className="text-primary font-bold text-lg">Find Us Here</h2>
@@ -62,21 +60,22 @@ export const BookNow: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="max-w-lg w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100 bg-white aspect-[4/3] min-h-[220px]">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741204!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Salsons Retreat location"
-                  />
+                  <div className="max-w-lg w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100 bg-white aspect-[4/3] min-h-[220px]">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741204!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Salsons Retreat location"
+                    />
+                  </div>
                 </div>
-              </div>
-            </AnimateOnScroll>
-          </div>
+              </AnimateOnScroll>
+            </div>
+          )}
         </div>
       </section>
     </main>

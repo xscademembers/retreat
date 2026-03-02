@@ -78,7 +78,11 @@ const calculateNightRoomCost = (
   return basePrice + EXTRA_PERSON_PRICE * extraPersons;
 };
 
-export const BookingForm: React.FC = () => {
+interface BookingFormProps {
+  onSubmitSuccess?: () => void;
+}
+
+export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => {
   const [searchParams] = useSearchParams();
   const [visitType, setVisitType] = useState<'day' | 'night' | ''>('');
   const [selectedDayTier, setSelectedDayTier] = useState<string>('');
@@ -105,6 +109,10 @@ export const BookingForm: React.FC = () => {
   const [cottageDormSelected, setCottageDormSelected] = useState(false);
   const [cottageDormPersons, setCottageDormPersons] = useState<number>(1);
 
+  const [entryDate, setEntryDate] = useState('');
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+
   useEffect(() => {
     const visit = searchParams.get('visit');
     const pass = searchParams.get('pass');
@@ -118,19 +126,8 @@ export const BookingForm: React.FC = () => {
     } else if (visit === 'night') {
       setVisitType('night');
       if (room && validRoomIds.has(room)) {
-        // Pre-select a sensible default based on the room coming from Accommodation
-        if (room === 'cabana') {
-          setNightActiveType('cabana');
-          setCabanaRoom1Selected(true);
-          setCabanaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-        } else if (room === 'villa') {
-          setNightActiveType('villa');
-          setVillaRoom1Selected(true);
-          setVillaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-        } else if (room === 'cottage') {
-          setNightActiveType('cottage');
-          setCottageRoom1Selected(true);
-          setCottageRoom1Persons(COTTAGE_ROOM1_DEFAULT);
+        if (room === 'cabana' || room === 'villa' || room === 'cottage') {
+          setNightActiveType(room);
         }
       }
     }
@@ -150,6 +147,15 @@ export const BookingForm: React.FC = () => {
     sum += DORM_DAY_PRICE * dayAddonDorm;
     return sum;
   }, [visitType, selectedDayTier, dayPassGuests, dayAddonRooms, dayAddonDorm]);
+
+  const nightNightsCount = useMemo(() => {
+    if (!checkInDate || !checkOutDate) return 1;
+    const start = new Date(checkInDate);
+    const end = new Date(checkOutDate);
+    const diffMs = end.getTime() - start.getTime();
+    const nights = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    return nights > 0 ? nights : 1;
+  }, [checkInDate, checkOutDate]);
 
   const nightTotalAmount = useMemo(() => {
     if (visitType !== 'night') return 0;
@@ -198,12 +204,12 @@ export const BookingForm: React.FC = () => {
       NIGHT_COTTAGE_BASE_PRICE,
     );
 
-    // Cottage dorm – 499 per person
+    // Cottage dorm – 499 per person, per night
     if (cottageDormSelected) {
       sum += DORM_NIGHT_PRICE * cottageDormPersons;
     }
 
-    return sum;
+    return sum * nightNightsCount;
   }, [
     visitType,
     cabanaRoom1Selected,
@@ -220,6 +226,7 @@ export const BookingForm: React.FC = () => {
     cottageRoom2Persons,
     cottageDormSelected,
     cottageDormPersons,
+    nightNightsCount,
   ]);
 
   const totalAmount = visitType === 'day' ? dayTotalAmount : visitType === 'night' ? nightTotalAmount : 0;
@@ -280,7 +287,7 @@ export const BookingForm: React.FC = () => {
 
     if (cabanaRoom1Selected) {
       items.push({
-        label: `Cabana – Room 1 (${cabanaRoom1Persons} persons)`,
+        label: `Cabana – Room 1 (${cabanaRoom1Persons} persons / night)`,
         amount: calculateNightRoomCost(
           cabanaRoom1Selected,
           cabanaRoom1Persons,
@@ -291,7 +298,7 @@ export const BookingForm: React.FC = () => {
     }
     if (cabanaRoom2Selected) {
       items.push({
-        label: `Cabana – Room 2 (${cabanaRoom2Persons} persons)`,
+        label: `Cabana – Room 2 (${cabanaRoom2Persons} persons / night)`,
         amount: calculateNightRoomCost(
           cabanaRoom2Selected,
           cabanaRoom2Persons,
@@ -303,7 +310,7 @@ export const BookingForm: React.FC = () => {
 
     if (villaRoom1Selected) {
       items.push({
-        label: `Villa – Room 1 (${villaRoom1Persons} persons)`,
+        label: `Villa – Room 1 (${villaRoom1Persons} persons / night)`,
         amount: calculateNightRoomCost(
           villaRoom1Selected,
           villaRoom1Persons,
@@ -314,7 +321,7 @@ export const BookingForm: React.FC = () => {
     }
     if (villaRoom2Selected) {
       items.push({
-        label: `Villa – Room 2 (${villaRoom2Persons} persons)`,
+        label: `Villa – Room 2 (${villaRoom2Persons} persons / night)`,
         amount: calculateNightRoomCost(
           villaRoom2Selected,
           villaRoom2Persons,
@@ -326,7 +333,7 @@ export const BookingForm: React.FC = () => {
 
     if (cottageRoom1Selected) {
       items.push({
-        label: `Cottage – Room 1 (${cottageRoom1Persons} persons)`,
+        label: `Cottage – Room 1 (${cottageRoom1Persons} persons / night)`,
         amount: calculateNightRoomCost(
           cottageRoom1Selected,
           cottageRoom1Persons,
@@ -337,7 +344,7 @@ export const BookingForm: React.FC = () => {
     }
     if (cottageRoom2Selected) {
       items.push({
-        label: `Cottage – Room 2 (${cottageRoom2Persons} persons)`,
+        label: `Cottage – Room 2 (${cottageRoom2Persons} persons / night)`,
         amount: calculateNightRoomCost(
           cottageRoom2Selected,
           cottageRoom2Persons,
@@ -349,7 +356,7 @@ export const BookingForm: React.FC = () => {
 
     if (cottageDormSelected && cottageDormPersons > 0) {
       items.push({
-        label: `Cottage – Dorm (${cottageDormPersons} persons)`,
+        label: `Cottage – Dorm (${cottageDormPersons} persons / night)`,
         amount: DORM_NIGHT_PRICE * cottageDormPersons,
       });
     }
@@ -375,11 +382,31 @@ export const BookingForm: React.FC = () => {
 
   const summaryBreakdown = visitType === 'day' ? dayBreakdown : nightBreakdown;
 
+  const canShowDateSection =
+    (visitType === 'day' && !!selectedDayTier) ||
+    (visitType === 'night' && hasNightSelection);
+
+  const canShowDetailsSection =
+    (visitType === 'day' && !!entryDate) ||
+    (visitType === 'night' && !!checkInDate && !!checkOutDate);
+
+  const nightPricingNote = useMemo(() => {
+    if (visitType !== 'night') return '';
+    if (checkInDate && checkOutDate) {
+      const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+      const from = new Date(checkInDate).toLocaleDateString('en-IN', opts);
+      const to = new Date(checkOutDate).toLocaleDateString('en-IN', opts);
+      return `These prices are calculated from ${from} to ${to}.`;
+    }
+    return 'These prices are for one night.';
+  }, [visitType, checkInDate, checkOutDate]);
+
   const resetDay = () => {
     setSelectedDayTier('');
     setDayPassGuests(1);
     setDayAddonRooms(initialDayAddonRooms);
     setDayAddonDorm(0);
+    setEntryDate('');
   };
   const resetNight = () => {
     setNightActiveType('cabana');
@@ -400,10 +427,17 @@ export const BookingForm: React.FC = () => {
 
     setCottageDormSelected(false);
     setCottageDormPersons(1);
+
+    setCheckInDate('');
+    setCheckOutDate('');
   };
 
   const [showDayAddons, setShowDayAddons] = useState(false);
   const dayTierScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const cabanaSectionRef = useRef<HTMLDivElement | null>(null);
+  const cottageSectionRef = useRef<HTMLDivElement | null>(null);
+  const villaSectionRef = useRef<HTMLDivElement | null>(null);
 
   const scrollDayTiers = (direction: 'prev' | 'next') => {
     const container = dayTierScrollRef.current;
@@ -414,21 +448,43 @@ export const BookingForm: React.FC = () => {
     container.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
+  const scrollToNightSection = (ref: React.RefObject<HTMLDivElement>) => {
+    if (typeof window === 'undefined') return;
+    if (window.innerWidth >= 640) return; // only adjust scroll on mobile
+    window.requestAnimationFrame(() => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const current = window.scrollY || window.pageYOffset;
+      const offset = 80; // keep heading visible
+      const target = rect.top + current - offset;
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    });
+  };
+
   return (
     <div className="rounded-2xl overflow-visible">
-      <div className="p-6 sm:p-8 md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,1fr)] md:gap-8 items-start">
+      <div
+        className={`p-6 sm:p-8 ${
+          shouldShowSummary
+            ? 'md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,1fr)] md:gap-8 items-start'
+            : 'max-w-[820px] mx-auto'
+        }`}
+      >
         <form
           id="booking-form"
           className="space-y-8 max-w-[820px] w-full"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmitSuccess?.();
+          }}
           aria-label="Booking form"
         >
-          {/* 1. Choose your visit */}
           <section aria-labelledby="visit-type-heading">
-            <h2 id="visit-type-heading" className="text-lg font-bold text-primary mb-4">
+            <h2 id="visit-type-heading" className="sr-only">
               Choose your visit
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <button
                 type="button"
                 onClick={() => {
@@ -436,48 +492,67 @@ export const BookingForm: React.FC = () => {
                   resetNight();
                   if (!selectedDayTier) setDayPassGuests(1);
                 }}
-                className={`rounded-2xl border-2 p-6 text-left transition-all ${
+                className={`relative aspect-[4/3] rounded-3xl border-2 overflow-hidden text-left transition-all group ${
                   visitType === 'day'
-                    ? 'border-primary bg-primary/5 shadow-md'
-                    : 'border-gray-200 hover:border-primary/40 bg-white'
+                    ? 'border-primary shadow-lg'
+                    : 'border-gray-200 hover:border-primary/40 hover:shadow-md'
                 }`}
+                style={{
+                  backgroundImage:
+                    'linear-gradient(to top, rgba(6, 57, 46, 0.7), rgba(6, 57, 46, 0.15)), url("https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1200")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
               >
-                <span
-                  className="material-symbols-outlined text-3xl text-primary mb-2 block"
-                  aria-hidden="true"
-                >
-                  wb_sunny
-                </span>
-                <span className="font-bold text-lg text-primary block">Day visit</span>
-                <span className="text-sm text-gray-500 mt-0.5 block">
-                  9 AM – 7 PM · Pool, lunch & more
-                </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/30 to-black/10 opacity-70 group-hover:opacity-80 transition-opacity" />
+                <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-6 text-white">
+                  <span
+                    className="material-symbols-outlined text-3xl mb-2 block"
+                    aria-hidden="true"
+                  >
+                    wb_sunny
+                  </span>
+                  <div>
+                    <span className="font-bold text-lg sm:text-xl block">Day visit</span>
+                    <span className="hidden sm:block text-sm text-white/80 mt-0.5">
+                      9 AM – 7 PM · Pool, lunch &amp; more
+                    </span>
+                  </div>
+                </div>
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setVisitType('night');
                   resetDay();
-                  if (!hasNightSelection) {
-                    setNightActiveType('cabana');
-                    setCabanaRoom1Selected(true);
-                    setCabanaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                  }
                 }}
-                className={`rounded-2xl border-2 p-6 text-left transition-all ${
+                className={`relative aspect-[4/3] rounded-3xl border-2 overflow-hidden text-left transition-all group ${
                   visitType === 'night'
-                    ? 'border-primary bg-primary/5 shadow-md'
-                    : 'border-gray-200 hover:border-primary/40 bg-white'
+                    ? 'border-primary shadow-lg'
+                    : 'border-gray-200 hover:border-primary/40 hover:shadow-md'
                 }`}
+                style={{
+                  backgroundImage:
+                    'linear-gradient(to top, rgba(5, 31, 51, 0.8), rgba(5, 31, 51, 0.25)), url("https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1200")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
               >
-                <span
-                  className="material-symbols-outlined text-3xl text-primary mb-2 block"
-                  aria-hidden="true"
-                >
-                  nightlight
-                </span>
-                <span className="font-bold text-lg text-primary block">Night stay</span>
-                <span className="text-sm text-gray-500 mt-0.5 block">Rooms & cabanas</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10 opacity-75 group-hover:opacity-85 transition-opacity" />
+                <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-6 text-white">
+                  <span
+                    className="material-symbols-outlined text-3xl mb-2 block"
+                    aria-hidden="true"
+                  >
+                    nightlight
+                  </span>
+                  <div>
+                    <span className="font-bold text-lg sm:text-xl block">Night stay</span>
+                    <span className="hidden sm:block text-sm text-white/80 mt-0.5">
+                      Rooms &amp;&nbsp;cabanas
+                    </span>
+                  </div>
+                </div>
               </button>
             </div>
           </section>
@@ -591,13 +666,46 @@ export const BookingForm: React.FC = () => {
                 <>
                   <div>
                     <label className={labelClass}>Number of guests</label>
-                    <Stepper
-                      value={dayPassGuests}
-                      min={1}
-                      max={99}
-                      onChange={setDayPassGuests}
-                      ariaLabel="guests"
-                    />
+                    <div className="flex items-center gap-3 max-w-xs">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDayPassGuests((prev) => Math.max(1, Math.min(99, prev - 1)))
+                        }
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
+                        aria-label="Decrease guests"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        value={dayPassGuests === 0 ? '' : dayPassGuests}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^\d]/g, '');
+                          if (raw === '') {
+                            setDayPassGuests(0);
+                            return;
+                          }
+                          const next = parseInt(raw, 10);
+                          if (Number.isNaN(next)) return;
+                          setDayPassGuests(Math.max(1, Math.min(99, next)));
+                        }}
+                        className="w-20 text-center font-bold text-lg border border-gray-200 rounded-xl py-2 px-2 bg-white focus:ring-2 focus:ring-primary focus:border-primary"
+                        aria-label="Number of guests"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDayPassGuests((prev) => Math.max(1, Math.min(99, prev + 1)))
+                        }
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
+                        aria-label="Increase guests"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -688,15 +796,12 @@ export const BookingForm: React.FC = () => {
                         type="button"
                         onClick={() => {
                           setNightActiveType(id as 'cabana' | 'cottage' | 'villa');
-                          if (id === 'cabana' && !hasCabanaSelection) {
-                            setCabanaRoom1Selected(true);
-                            setCabanaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                          } else if (id === 'cottage' && !hasCottageSelection) {
-                            setCottageRoom1Selected(true);
-                            setCottageRoom1Persons(COTTAGE_ROOM1_DEFAULT);
-                          } else if (id === 'villa' && !hasVillaSelection) {
-                            setVillaRoom1Selected(true);
-                            setVillaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
+                          if (id === 'cabana') {
+                            scrollToNightSection(cabanaSectionRef);
+                          } else if (id === 'cottage') {
+                            scrollToNightSection(cottageSectionRef);
+                          } else {
+                            scrollToNightSection(villaSectionRef);
                           }
                         }}
                         className={`rounded-xl border-2 overflow-hidden text-left transition-all ${
@@ -722,7 +827,7 @@ export const BookingForm: React.FC = () => {
 
               {/* 1. Cabana */}
               {nightActiveType === 'cabana' && (
-                <div className="space-y-3">
+                <div ref={cabanaSectionRef} className="space-y-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-semibold text-primary">1. Cabana</h3>
                     <p className="text-xs text-gray-500">
@@ -841,7 +946,7 @@ export const BookingForm: React.FC = () => {
 
               {/* 2. Cottage */}
               {nightActiveType === 'cottage' && (
-                <div className="space-y-3">
+                <div ref={cottageSectionRef} className="space-y-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-semibold text-primary">2. Cottage</h3>
                     <p className="text-xs text-gray-500">
@@ -1012,7 +1117,7 @@ export const BookingForm: React.FC = () => {
 
               {/* 3. Villa */}
               {nightActiveType === 'villa' && (
-                <div className="space-y-3">
+                <div ref={villaSectionRef} className="space-y-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-semibold text-primary">3. Villa</h3>
                     <p className="text-xs text-gray-500">
@@ -1131,72 +1236,113 @@ export const BookingForm: React.FC = () => {
             </section>
           )}
 
-          {/* 3. When */}
           <section aria-labelledby="date-heading">
-            <h2 id="date-heading" className="text-lg font-bold text-primary mb-4">
+            <h2 id="date-heading" className="sr-only">
               When
             </h2>
-            <div>
-              <label htmlFor="book-date" className={labelClass}>
-                Entry date
-              </label>
-              <input
-                id="book-date"
-                type="date"
-                name="date"
-                className={inputClass}
-                required
-                aria-required="true"
-              />
-            </div>
+            {canShowDateSection && (
+              <>
+                {visitType === 'night' ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="book-checkin" className={labelClass}>
+                        Check-in date
+                      </label>
+                      <input
+                        id="book-checkin"
+                        type="date"
+                        name="checkInDate"
+                        className={inputClass}
+                        value={checkInDate}
+                        onChange={(e) => setCheckInDate(e.target.value)}
+                        required
+                        aria-required="true"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="book-checkout" className={labelClass}>
+                        Check-out date
+                      </label>
+                      <input
+                        id="book-checkout"
+                        type="date"
+                        name="checkOutDate"
+                        className={inputClass}
+                        value={checkOutDate}
+                        onChange={(e) => setCheckOutDate(e.target.value)}
+                        required
+                        aria-required="true"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label htmlFor="book-date" className={labelClass}>
+                      Entry date
+                    </label>
+                    <input
+                      id="book-date"
+                      type="date"
+                      name="date"
+                      className={inputClass}
+                      value={entryDate}
+                      onChange={(e) => setEntryDate(e.target.value)}
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </section>
 
-          {/* 4. Your details */}
-          <section aria-labelledby="details-heading">
-            <h2 id="details-heading" className="text-lg font-bold text-primary mb-4">
-              Your details
-            </h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="book-name" className={labelClass}>
-                    Name
-                  </label>
-                  <input
-                    id="book-name"
-                    type="text"
-                    name="name"
-                    className={inputClass}
-                    placeholder="Your name"
-                    required
-                    aria-required="true"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="book-phone" className={labelClass}>
-                    Phone
-                  </label>
-                  <input
-                    id="book-phone"
-                    type="tel"
-                    name="phone"
-                    defaultValue="+91 "
-                    className={inputClass}
-                    placeholder="98765 43210"
-                    required
-                    aria-required="true"
-                  />
+          {canShowDetailsSection && (
+            <section aria-labelledby="details-heading">
+              <h2 id="details-heading" className="sr-only">
+                Your details
+              </h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="book-name" className={labelClass}>
+                      Name
+                    </label>
+                    <input
+                      id="book-name"
+                      type="text"
+                      name="name"
+                      className={inputClass}
+                      placeholder="Your name"
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="book-phone" className={labelClass}>
+                      Phone
+                    </label>
+                    <input
+                      id="book-phone"
+                      type="tel"
+                      name="phone"
+                      defaultValue="+91 "
+                      className={inputClass}
+                      placeholder="98765 43210"
+                      required
+                      aria-required="true"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* Hidden fields for submission */}
           {visitType === 'day' && <input type="hidden" name="visitType" value="day" />}
           {visitType === 'night' && <input type="hidden" name="visitType" value="night" />}
           {selectedDayTier && <input type="hidden" name="dayPass" value={selectedDayTier} />}
           {visitType === 'day' && (
-            <input type="hidden" name="dayPassGuests" value={dayPassGuests} />
+            <input type="hidden" name="dayPassGuests" value={Math.max(1, dayPassGuests || 0)} />
           )}
           {SANCTUARIES.map((s) => (
             <input
@@ -1286,18 +1432,23 @@ export const BookingForm: React.FC = () => {
         {/* Booking summary: outside form, sticky beside the form */}
         {shouldShowSummary && (
           <aside
-            className="mt-8 md:mt-0 md:sticky md:top-24 md:self-start md:w-[300px] md:ml-10"
+            className="mt-8 md:mt-0 md:sticky md:top-24 md:self-start md:w-[360px] md:ml-10"
             aria-label="Booking summary"
           >
             <div className="rounded-2xl border border-primary/20 bg-white shadow-xl px-4 py-4 sm:px-5 sm:py-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-2">
                   Booking summary
                 </p>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-gray-600 mb-1">
                   {visitType === 'day'
                     ? 'Day visit with selected pass and rooms.'
                     : 'Night stay with selected rooms and persons.'}
                 </p>
+                {visitType === 'night' && nightPricingNote && (
+                  <p className="text-[11px] text-gray-500 mb-3">
+                    {nightPricingNote}
+                  </p>
+                )}
                 <div className="flex items-baseline justify-between gap-3 mb-2">
                   <span className="text-sm font-semibold text-primary">Estimated total</span>
                   <span className="text-2xl font-extrabold text-primary">
