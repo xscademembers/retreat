@@ -2,6 +2,7 @@ import React from 'react';
 import { AMENITIES, INCLUDED_FEATURES } from '../constants';
 import { AmenitySection } from '../components/AmenitySection';
 import { AmenityTabs } from '../components/AmenityTabs';
+import { InstagramFeed } from '../components/InstagramFeed';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 export const Amenities: React.FC = () => {
@@ -60,6 +61,8 @@ export const Amenities: React.FC = () => {
           <AmenityTabs features={INCLUDED_FEATURES} />
         </div>
       </section>
+
+      <InstagramFeed />
     </main>
   );
 };

@@ -1,44 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EXPERIENCE_TIERS, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
 import { Hero } from '../components/Hero';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
+import { InstagramFeed } from '../components/InstagramFeed';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 type RoomId = 'cabana' | 'cottage' | 'villa';
-
-const InstagramFeed: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const existing = document.querySelector('script[src*="sociablekit.com/instagram-reels"]');
-    if (!existing) {
-      const script = document.createElement('script');
-      script.src = 'https://widgets.sociablekit.com/instagram-reels/widget.js';
-      script.defer = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  return (
-    <section id="instagram" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-background-soft">
-      <div className="max-w-7xl mx-auto">
-        <AnimateOnScroll animation="fade-up">
-          <header className="text-center mb-10 sm:mb-14">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
-              Follow Us on Instagram
-            </h2>
-            <p className="text-gray-600 mt-3 text-base sm:text-lg max-w-xl mx-auto">
-              Watch our latest reels and stay updated with life at Salsons Retreat.
-            </p>
-          </header>
-        </AnimateOnScroll>
-        <div ref={containerRef} className="sk-ww-instagram-reels" data-embed-id="25660055" />
-      </div>
-    </section>
-  );
-};
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
