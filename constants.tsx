@@ -17,7 +17,6 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     price: 1299,
     description: 'Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.',
     image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745823767758-scaled.jpg',
-    recommended: true,
     icon: 'restaurant',
     features: ['Everything in Basic', 'Barbecue (veg & non-veg options available)']
   },
@@ -27,8 +26,9 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     price: 1499,
     description: 'Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.',
     image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
+    recommended: true,
     icon: 'sailing',
-    features: ['Everything in Value', 'Boating at Thatipudi Reservoir']
+    features: ['Everything in Basic', 'Barbecue (veg & non-veg options available)', 'Boating at Thatipudi Reservoir']
   }
 ];
 

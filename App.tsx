@@ -49,10 +49,10 @@ const AppShell: React.FC = () => {
   const isHome = location.pathname === '/';
 
   return (
-    <div className="relative min-h-screen bg-white">
+    <div className="relative min-h-screen bg-white w-full">
       <a
         href="#main-content"
-        className="absolute left-[-9999px] w-px h-px overflow-hidden focus:left-4 focus:top-4 focus:w-auto focus:h-auto focus:overflow-visible focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
       >
         Skip to main content
       </a>
@@ -60,7 +60,7 @@ const AppShell: React.FC = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/packages" element={<Packages />} />
+        <Route path="/day-spend" element={<Packages />} />
         <Route path="/book-now" element={<BookNow />} />
         <Route path="/corporate" element={<Corporate />} />
         <Route path="/schools" element={<Schools />} />
@@ -82,3 +82,4 @@ const App: React.FC = () => (
 );
 
 export default App;
+

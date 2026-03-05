@@ -52,7 +52,7 @@ export const Amenities: React.FC = () => {
               </h2>
               <div className="h-1.5 w-24 bg-primary rounded-full mb-4" aria-hidden="true" />
               <p className="text-gray-600">
-                All day pass packages include access to these amenities. Enjoy our 6-acre farm stay
+                All day spend packages include access to these amenities. Enjoy our 6-acre farm stay
                 from 9 AM to 7 PM.
               </p>
             </header>

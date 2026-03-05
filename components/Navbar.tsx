@@ -52,13 +52,13 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
         >
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/">Home</Link>
           <div className="relative group">
-            <Link to="/packages" className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 flex items-center gap-0.5 min-h-[44px] ${navLinkBase}`} aria-haspopup="true">
+            <span className={`text-sm font-semibold cursor-pointer transition-colors hover:underline underline-offset-4 flex items-center gap-0.5 min-h-[44px] ${navLinkBase}`} aria-haspopup="true">
               Pricing
               <span className="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
-            </Link>
+            </span>
             <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <div className="bg-white rounded-xl shadow-lg border border-gray-100 py-2 min-w-[180px]">
-                <Link to="/packages" className="block px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5 transition-colors first:rounded-t-xl">Day pass</Link>
+                <Link to="/day-spend" className="block px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5 transition-colors first:rounded-t-xl">Day spend</Link>
                 <Link to="/night-visit" className="block px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5 transition-colors last:rounded-b-xl">Night stay</Link>
               </div>
             </div>
@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg -mr-2 text-current hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-current hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-primary/50"
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
@@ -106,8 +106,8 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
       >
         <nav className="px-4 py-4 space-y-1" aria-label="Mobile navigation">
           <Link to="/" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Home</Link>
-          <Link to="/packages" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Pricing</Link>
-          <Link to="/packages" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Day pass</Link>
+          <span className="block py-3 px-4 rounded-xl text-primary font-semibold">Pricing</span>
+          <Link to="/day-spend" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Day spend</Link>
           <Link to="/night-visit" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Night stay</Link>
           <Link to="/amenities" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Amenities</Link>
           <Link to="/#testimonials" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Testimonials</Link>

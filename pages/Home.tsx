@@ -1,11 +1,20 @@
 import React from 'react';
-import { INCLUDED_FEATURES } from '../constants';
+import { useNavigate } from 'react-router-dom';
+import { EXPERIENCE_TIERS, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
 import { Hero } from '../components/Hero';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
+type RoomId = 'cabana' | 'cottage' | 'villa';
+
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleViewMore = (roomId: RoomId) => {
+    navigate(`/accommodation?room=${roomId}`);
+  };
+
   return (
     <main id="main-content">
       <section id="hero">
@@ -19,7 +28,7 @@ export const Home: React.FC = () => {
               Why Visit Salsons Retreat?
             </span>
             <h2 className="text-3xl lg:text-5xl font-semibold leading-snug">
-              Escape the city. Relax in nature.
+              6 Acre Farm Stay Near Vizag
             </h2>
             <div className="w-20 h-px bg-white/30 mx-auto" aria-hidden="true" />
 
@@ -36,19 +45,134 @@ export const Home: React.FC = () => {
                 </span>
                 <span className="font-medium">30 min Vizianagaram</span>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-4 py-2 text-sm sm:text-base">
-                <span className="material-symbols-outlined text-accent-gold" aria-hidden="true">
-                  nature
-                </span>
-                <span className="font-medium">6 acre farm stay</span>
-              </div>
             </div>
 
           </div>
         </AnimateOnScroll>
       </section>
 
-      <section id="included-amenities" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
+      <section id="day-spend" className="pt-16 pb-8 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14 px-4 sm:px-6 lg:px-12 bg-white">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <AnimateOnScroll animation="fade-up">
+            <div className="max-w-3xl">
+              <p className="text-primary/70 text-xs sm:text-sm font-bold uppercase tracking-[0.3em] mb-3">
+                Day Spend
+              </p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
+                Choose your day spend package
+              </h2>
+              <p className="text-gray-600 text-base sm:text-lg max-w-xl">
+                Pick from Basic, Value, or Adventure packages. Tap &ldquo;View more&rdquo; to
+                see what&rsquo;s included in each.
+              </p>
+            </div>
+          </AnimateOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {EXPERIENCE_TIERS.map((tier, idx) => (
+              <AnimateOnScroll
+                key={tier.id}
+                animation="fade-up"
+                delay={idx * 120}
+                className="h-full"
+              >
+                <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
+                  <div className="relative pb-[70%]">
+                    <img
+                      src={tier.image}
+                      alt={tier.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
+                  </div>
+
+                  <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
+                    <div className="flex-1" />
+                    <div>
+                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
+                        {tier.name}
+                      </h3>
+                      <a
+                        href="/day-spend"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                      >
+                        View more
+                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                          arrow_outward
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              </AnimateOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="night-stay" className="pt-8 pb-8 sm:pt-12 sm:pb-12 lg:pt-14 lg:pb-14 px-4 sm:px-6 lg:px-12 bg-white">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <AnimateOnScroll animation="fade-up">
+            <div className="max-w-3xl">
+              <p className="text-primary/70 text-xs sm:text-sm font-bold uppercase tracking-[0.3em] mb-3">
+                Night Stay
+              </p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
+                Choose your stay for the night
+              </h2>
+              <p className="text-gray-600 text-base sm:text-lg max-w-xl">
+                Browse our cabana, cottage, and villa options. Tap &ldquo;View more&rdquo; on any stay to
+                see full details, photos, and guest capacity.
+              </p>
+            </div>
+          </AnimateOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {SANCTUARIES.map((s, idx) => (
+              <AnimateOnScroll
+                key={s.id}
+                animation="fade-up"
+                delay={idx * 120}
+                className="h-full"
+              >
+                <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
+                  <div className="relative pb-[70%]">
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
+                  </div>
+
+                  <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
+                    <div className="flex-1" />
+                    <div>
+                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
+                        {s.name}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => handleViewMore(s.id as RoomId)}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                      >
+                        View more
+                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                          arrow_outward
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </AnimateOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="included-amenities" className="pt-8 pb-16 sm:pt-12 sm:pb-24 lg:pt-14 lg:pb-32 px-4 sm:px-6 lg:px-12 bg-white" aria-labelledby="included-heading">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up">
             <header className="mb-10 sm:mb-16 max-w-2xl">
@@ -90,7 +214,7 @@ export const Home: React.FC = () => {
                       <span className="material-symbols-outlined text-primary text-2xl">phone</span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg text-primary mb-1">Call or WhatsApp</h4>
+                      <h4 className="font-bold text-lg text-primary mb-1">Call or WhatsApp <span className="font-normal text-base text-gray-500">(Mr. Vishnu)</span></h4>
                       <p className="text-sm text-gray-500">
                         <a href="tel:+918074799387" className="hover:text-primary transition-colors">+91 80747 99387</a>
                         <span className="text-gray-300 mx-2">·</span>

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 interface HeroSlide {
   id: string;
   title: string;
-  subtitle?: string;
   description: string;
   mediaType: 'image' | 'video';
   src: string;
@@ -15,7 +14,6 @@ const SLIDES: HeroSlide[] = [
   {
     id: 'nature',
     title: 'Your Day in Nature',
-    subtitle: 'Just 70 km from Vizag',
     description:
       'Wake up to misty hills, palm trees, and wide open lawns at our 6‑acre retreat in Thatipudi.',
     mediaType: 'image',
@@ -25,7 +23,6 @@ const SLIDES: HeroSlide[] = [
   {
     id: 'pool',
     title: 'Pool, Rain Dance & BBQ',
-    subtitle: 'All in a Single Day',
     description:
       'Make a splash in the party pool, dance in the rain zone, and unwind with a warm barbecue by the deck.',
     mediaType: 'image',
@@ -35,7 +32,6 @@ const SLIDES: HeroSlide[] = [
   {
     id: 'boating',
     title: 'Boating at Thatipudi',
-    subtitle: '2 Minutes from the Retreat',
     description:
       'Glide over calm waters surrounded by hills before returning to your private farm getaway.',
     mediaType: 'image',
@@ -45,7 +41,6 @@ const SLIDES: HeroSlide[] = [
   {
     id: 'stay',
     title: 'Cabana, Cottage & Villa',
-    subtitle: 'Add Rooms to Your Day Pass',
     description:
       'Upgrade your daycation with private cabanas, a cozy cottage, or a serene villa facing lush greens.',
     mediaType: 'image',
@@ -122,32 +117,24 @@ export const Hero: React.FC = () => {
       <div className="relative z-10 h-full px-4 sm:px-6 lg:px-12 flex items-center">
         <div className="max-w-7xl mx-auto w-full flex flex-col gap-8 sm:gap-10">
           <div key={activeSlide.id} className="max-w-3xl space-y-4 sm:space-y-6 text-white">
-            <p className="text-xs font-bold uppercase tracking-[0.4em] text-white/70 hero-animate-in hero-animate-in-delay-1">
-              Day Pass · Near Vizag
-            </p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight hero-animate-in hero-animate-in-delay-2">
               <span className="block lg:whitespace-nowrap">{activeSlide.title}</span>
-              {activeSlide.subtitle && (
-                <span className="mt-3 block text-lg sm:text-2xl lg:text-3xl font-light italic text-white/80">
-                  {activeSlide.subtitle}
-                </span>
-              )}
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-xl leading-relaxed hero-animate-in hero-animate-in-delay-3">
               {activeSlide.description}
             </p>
             <div className="flex flex-wrap gap-4 pt-4 hero-animate-in hero-animate-in-delay-3">
               <a
-                href="/book-now"
+                href="/day-spend"
                 className="bg-white text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:shadow-xl hover:shadow-black/20 hover:translate-y-[-2px] active:translate-y-0 transition-all duration-300 inline-flex items-center justify-center gap-2"
               >
-                Book Your Day Pass
+                Book Your Day Spend
                 <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
                   north_east
                 </span>
               </a>
               <a
-                href="/packages#sanctuaries"
+                href="/night-visit"
                 className="border-2 border-white/70 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:bg-white/10 hover:border-white transition-all duration-300 inline-flex items-center justify-center gap-2"
               >
                 Book Your Night Stay

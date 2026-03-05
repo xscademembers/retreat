@@ -19,7 +19,7 @@ export const Footer: React.FC = () => {
 
           <nav className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-3 sm:gap-y-2 text-sm opacity-80 [&>a]:py-2 [&>a]:sm:py-0 [&>a]:min-h-[44px] [&>a]:sm:min-h-0 [&>a]:flex [&>a]:items-center" aria-label="Footer navigation">
             <Link className="hover:opacity-100 transition-opacity" to="/">Home</Link>
-            <Link className="hover:opacity-100 transition-opacity" to="/packages">Pricing</Link>
+            <Link className="hover:opacity-100 transition-opacity" to="/day-spend">Pricing</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/book-now">Book Now</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/amenities">Amenities</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/#testimonials">Testimonials</Link>

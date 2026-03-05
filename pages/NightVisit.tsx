@@ -18,7 +18,7 @@ export const NightVisit: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="max-w-3xl">
             <p className="text-primary/70 text-xs sm:text-sm font-bold uppercase tracking-[0.3em] mb-3">
-              Night Visit
+              Night Stay
             </p>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
               Choose your stay for the night

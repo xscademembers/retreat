@@ -41,24 +41,24 @@ function Stepper({
   ariaLabel: string;
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       <button
         type="button"
         onClick={() => onChange(value - 1)}
         disabled={value <= min}
-        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
+        className="size-9 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold text-sm hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
         aria-label={`Decrease ${ariaLabel}`}
       >
         −
       </button>
-      <span className="min-w-[2rem] text-center font-bold text-lg" aria-live="polite">
+      <span className="w-7 text-center font-bold text-base" aria-live="polite">
         {value}
       </span>
       <button
         type="button"
         onClick={() => onChange(value + 1)}
         disabled={value >= max}
-        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
+        className="size-9 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 font-bold text-sm hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none"
         aria-label={`Increase ${ariaLabel}`}
       >
         +
@@ -112,6 +112,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   const [entryDate, setEntryDate] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     const visit = searchParams.get('visit');
@@ -433,20 +434,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   };
 
   const [showDayAddons, setShowDayAddons] = useState(false);
-  const dayTierScrollRef = useRef<HTMLDivElement | null>(null);
-
+  const [mobileCardIndex, setMobileCardIndex] = useState(0);
   const cabanaSectionRef = useRef<HTMLDivElement | null>(null);
   const cottageSectionRef = useRef<HTMLDivElement | null>(null);
   const villaSectionRef = useRef<HTMLDivElement | null>(null);
-
-  const scrollDayTiers = (direction: 'prev' | 'next') => {
-    const container = dayTierScrollRef.current;
-    if (!container) return;
-    const card = container.querySelector<HTMLButtonElement>('button');
-    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth;
-    const delta = direction === 'next' ? cardWidth + 16 : -cardWidth - 16;
-    container.scrollBy({ left: delta, behavior: 'smooth' });
-  };
 
   const scrollToNightSection = (ref: React.RefObject<HTMLDivElement>) => {
     if (typeof window === 'undefined') return;
@@ -462,12 +453,164 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     });
   };
 
+  const summaryBlock = shouldShowSummary ? (
+    <div className="rounded-2xl border border-primary/20 bg-white shadow-xl px-4 py-4 sm:px-5 sm:py-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-3">
+        Booking summary
+      </p>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-sm text-gray-700">
+        {visitType === 'day' && (
+          <>
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">group</span>
+              <span>{dayPassGuests} guest{dayPassGuests > 1 ? 's' : ''}</span>
+            </div>
+            {entryDate && (
+              <>
+                <span className="text-gray-300">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">calendar_today</span>
+                  <span>{new Date(entryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                </div>
+              </>
+            )}
+          </>
+        )}
+        {visitType === 'night' && (
+          <>
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">group</span>
+              <span>
+                {[
+                  cabanaRoom1Selected ? cabanaRoom1Persons : 0,
+                  cabanaRoom2Selected ? cabanaRoom2Persons : 0,
+                  cottageRoom1Selected ? cottageRoom1Persons : 0,
+                  cottageRoom2Selected ? cottageRoom2Persons : 0,
+                  cottageDormSelected ? cottageDormPersons : 0,
+                  villaRoom1Selected ? villaRoom1Persons : 0,
+                  villaRoom2Selected ? villaRoom2Persons : 0,
+                ].reduce((a, b) => a + b, 0)} guest{[
+                  cabanaRoom1Selected ? cabanaRoom1Persons : 0,
+                  cabanaRoom2Selected ? cabanaRoom2Persons : 0,
+                  cottageRoom1Selected ? cottageRoom1Persons : 0,
+                  cottageRoom2Selected ? cottageRoom2Persons : 0,
+                  cottageDormSelected ? cottageDormPersons : 0,
+                  villaRoom1Selected ? villaRoom1Persons : 0,
+                  villaRoom2Selected ? villaRoom2Persons : 0,
+                ].reduce((a, b) => a + b, 0) > 1 ? 's' : ''}
+              </span>
+            </div>
+            <span className="text-gray-300">|</span>
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary text-base" aria-hidden="true">dark_mode</span>
+              <span>{nightNightsCount} night{nightNightsCount > 1 ? 's' : ''}</span>
+            </div>
+          </>
+        )}
+      </div>
+      <div className="flex items-baseline justify-between gap-3 mb-2">
+        <span className="text-sm font-semibold text-primary">Estimated total</span>
+        <span className="text-2xl font-extrabold text-primary">
+          ₹{totalAmount.toLocaleString('en-IN')}
+        </span>
+      </div>
+      {summaryBreakdown.length > 0 && (
+        <ul className="mt-2 space-y-1 text-xs sm:text-sm text-gray-700">
+          {summaryBreakdown.map((item) => (
+            <li key={item.label} className="flex items-baseline justify-between gap-3">
+              <span className="flex-1">{item.label}</span>
+              <span className="font-semibold whitespace-nowrap">
+                ₹{item.amount.toLocaleString('en-IN')}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {visitType === 'night' && (
+        <div className="flex items-center gap-2 mt-3 px-2.5 py-2 rounded-lg bg-emerald-50 border border-emerald-200">
+          <span className="material-symbols-outlined text-emerald-600 text-base" aria-hidden="true">restaurant</span>
+          <span className="text-xs font-semibold text-emerald-700">Complimentary – Breakfast included</span>
+        </div>
+      )}
+    </div>
+  ) : null;
+
+  if (formSubmitted) {
+    return (
+      <div className="rounded-2xl overflow-visible">
+        <div className="p-6 sm:p-8 max-w-[820px] mx-auto space-y-10">
+          <div className="text-center py-12 sm:py-16 space-y-6">
+            <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+              <span className="material-symbols-outlined text-primary text-4xl" aria-hidden="true">check_circle</span>
+            </div>
+            <div className="space-y-3">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">Thank you for submitting your request!</h2>
+              <p className="text-gray-600 text-base sm:text-lg max-w-md mx-auto">
+                Mr. Vishnu (<a href="tel:+918555079190" className="text-primary font-semibold hover:underline">8555079190</a>) will contact you shortly.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-6 items-stretch">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
+              <div className="bg-primary/5 px-6 py-5 border-b border-gray-100">
+                <h3 className="text-primary font-bold text-lg">Find Us Here</h3>
+                <p className="text-primary/70 text-sm mt-0.5">Your escape awaits</p>
+              </div>
+              <div className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-center">
+                <div className="flex gap-4">
+                  <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                    <span className="material-symbols-outlined text-primary text-xl">location_on</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Salsons Retreat</p>
+                    <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">
+                      Vizianagaram Rd, Thatipudi, Andhra Pradesh 535221
+                    </p>
+                  </div>
+                </div>
+                <div className="h-px bg-gray-100" aria-hidden="true" />
+                <div className="flex gap-4">
+                  <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
+                    <span className="material-symbols-outlined text-primary text-xl">phone</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Call or WhatsApp <span className="font-normal text-gray-500">(Mr. Vishnu)</span></p>
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      <a href="tel:+918074799387" className="text-primary hover:underline">+91 80747 99387</a>
+                      <span className="text-gray-300 mx-1">·</span>
+                      <a href="tel:+917569242082" className="text-primary hover:underline">+91 75692 42082</a>
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500 pt-2">~70 km from Vizag. We'll confirm your booking on WhatsApp.</p>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-2xl shadow-lg border border-gray-100 bg-white min-h-[300px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741204!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Salsons Retreat location"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-2xl overflow-visible">
       <div
         className={`p-6 sm:p-8 ${
           shouldShowSummary
-            ? 'md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,1fr)] md:gap-8 items-start'
+            ? 'md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,360px)] md:gap-8 md:items-start'
             : 'max-w-[820px] mx-auto'
         }`}
       >
@@ -476,6 +619,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
           className="space-y-8 max-w-[820px] w-full"
           onSubmit={(e) => {
             e.preventDefault();
+            setFormSubmitted(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             onSubmitSuccess?.();
           }}
           aria-label="Booking form"
@@ -484,7 +629,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
             <h2 id="visit-type-heading" className="sr-only">
               Choose your visit
             </h2>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <button
                 type="button"
                 onClick={() => {
@@ -492,32 +637,37 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                   resetNight();
                   if (!selectedDayTier) setDayPassGuests(1);
                 }}
-                className={`relative aspect-[4/3] rounded-3xl border-2 overflow-hidden text-left transition-all group ${
+                className={`relative rounded-2xl sm:rounded-3xl border-2 overflow-hidden text-left transition-all group ${
                   visitType === 'day'
-                    ? 'border-primary shadow-lg'
+                    ? 'border-primary shadow-lg ring-2 ring-primary/20'
                     : 'border-gray-200 hover:border-primary/40 hover:shadow-md'
                 }`}
                 style={{
                   backgroundImage:
-                    'linear-gradient(to top, rgba(6, 57, 46, 0.7), rgba(6, 57, 46, 0.15)), url("https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1200")',
+                    'linear-gradient(to right, rgba(6, 57, 46, 0.45), rgba(6, 57, 46, 0.05)), url("https://storage.googleapis.com/new_client_files/salsons%20retreat/book%20now%20images/20250227_165703.jpg")',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/30 to-black/10 opacity-70 group-hover:opacity-80 transition-opacity" />
-                <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-6 text-white">
+                <div className="absolute inset-0 bg-gradient-to-r sm:bg-gradient-to-t from-black/50 via-black/15 to-transparent opacity-60 group-hover:opacity-70 transition-opacity" />
+                <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-start sm:justify-between gap-4 sm:gap-0 px-5 py-7 sm:p-6 sm:h-full sm:aspect-[4/3] text-white">
                   <span
-                    className="material-symbols-outlined text-3xl mb-2 block"
+                    className="material-symbols-outlined text-3xl sm:mb-2 shrink-0"
                     aria-hidden="true"
                   >
                     wb_sunny
                   </span>
-                  <div>
-                    <span className="font-bold text-lg sm:text-xl block">Day visit</span>
-                    <span className="hidden sm:block text-sm text-white/80 mt-0.5">
+                  <div className="min-w-0" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                    <span className="font-bold text-base sm:text-xl block">Day spend</span>
+                    <span className="text-xs sm:text-sm text-white/90 mt-0.5 block">
                       9 AM – 7 PM · Pool, lunch &amp; more
                     </span>
                   </div>
+                  {visitType === 'day' && (
+                    <span className="material-symbols-outlined text-xl ml-auto sm:hidden text-white/90" aria-hidden="true">
+                      check_circle
+                    </span>
+                  )}
                 </div>
               </button>
               <button
@@ -526,38 +676,43 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                   setVisitType('night');
                   resetDay();
                 }}
-                className={`relative aspect-[4/3] rounded-3xl border-2 overflow-hidden text-left transition-all group ${
+                className={`relative rounded-2xl sm:rounded-3xl border-2 overflow-hidden text-left transition-all group ${
                   visitType === 'night'
-                    ? 'border-primary shadow-lg'
+                    ? 'border-primary shadow-lg ring-2 ring-primary/20'
                     : 'border-gray-200 hover:border-primary/40 hover:shadow-md'
                 }`}
                 style={{
                   backgroundImage:
-                    'linear-gradient(to top, rgba(5, 31, 51, 0.8), rgba(5, 31, 51, 0.25)), url("https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1200")',
+                    'linear-gradient(to right, rgba(5, 31, 51, 0.45), rgba(5, 31, 51, 0.05)), url("https://storage.googleapis.com/new_client_files/salsons%20retreat/book%20now%20images/KOLORO_1745403976156.jpg.jpeg")',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10 opacity-75 group-hover:opacity-85 transition-opacity" />
-                <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-6 text-white">
+                <div className="absolute inset-0 bg-gradient-to-r sm:bg-gradient-to-t from-black/50 via-black/15 to-transparent opacity-60 group-hover:opacity-70 transition-opacity" />
+                <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-start sm:justify-between gap-4 sm:gap-0 px-5 py-7 sm:p-6 sm:h-full sm:aspect-[4/3] text-white">
                   <span
-                    className="material-symbols-outlined text-3xl mb-2 block"
+                    className="material-symbols-outlined text-3xl sm:mb-2 shrink-0"
                     aria-hidden="true"
                   >
                     nightlight
                   </span>
-                  <div>
-                    <span className="font-bold text-lg sm:text-xl block">Night stay</span>
-                    <span className="hidden sm:block text-sm text-white/80 mt-0.5">
+                  <div className="min-w-0" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                    <span className="font-bold text-base sm:text-xl block">Night stay</span>
+                    <span className="text-xs sm:text-sm text-white/90 mt-0.5 block">
                       Rooms &amp;&nbsp;cabanas
                     </span>
                   </div>
+                  {visitType === 'night' && (
+                    <span className="material-symbols-outlined text-xl ml-auto sm:hidden text-white/90" aria-hidden="true">
+                      check_circle
+                    </span>
+                  )}
                 </div>
               </button>
             </div>
           </section>
 
-          {/* 2. Stay (day pass or night stay) */}
+          {/* 2. Stay (day spend or night stay) */}
           {visitType === 'day' && (
             <section aria-labelledby="day-pass-heading" className="space-y-6">
               <h2 id="day-pass-heading" className="text-lg font-bold text-primary">
@@ -566,14 +721,78 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
 
               <div>
                 <p className={labelClass}>Select one pass</p>
-                <div className="relative">
-                  <div
-                    ref={dayTierScrollRef}
-                    className="flex sm:grid sm:grid-cols-3 lg:grid-cols-3 gap-4 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 snap-x snap-mandatory"
-                  >
-                    {EXPERIENCE_TIERS.map((tier) => {
-                      const isSelected = selectedDayTier === tier.id;
-                      return (
+
+                {/* Desktop: 3-col grid (Basic | Adventure | Value) */}
+                <div className="hidden sm:grid sm:grid-cols-3 gap-4">
+                  {EXPERIENCE_TIERS.map((tier) => {
+                    const isSelected = selectedDayTier === tier.id;
+                    const isTopPick = !!tier.recommended;
+                    return (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedDayTier(tier.id);
+                          setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests);
+                        }}
+                        className={`text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background-soft ${isTopPick ? 'order-2' : tier.id === 'basic' ? 'order-1' : 'order-3'}`}
+                      >
+                        <div
+                          className={`flex flex-col h-full rounded-3xl border bg-white p-7 relative transition-all duration-500 hover-lift ${
+                            isTopPick
+                              ? isSelected
+                                ? 'border-primary shadow-xl ring-2 ring-primary/30 scale-[1.02]'
+                                : 'border-primary/50 shadow-lg hover:shadow-xl hover:border-primary'
+                              : isSelected
+                                ? 'border-primary shadow-xl ring-1 ring-primary/20'
+                                : 'border-gray-200 hover:border-primary/30 hover:shadow-xl'
+                          }`}
+                        >
+                          {isTopPick && (
+                            <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-[0.15em] px-4 py-1 rounded-full shadow-md whitespace-nowrap">
+                              Top Pick
+                            </span>
+                          )}
+                          <div className="space-y-3 shrink-0">
+                            <div className="flex items-center justify-between gap-3">
+                              <h3 className="text-primary font-bold text-sm uppercase tracking-[0.18em]">{tier.name}</h3>
+                              <span className="material-symbols-outlined text-primary group-hover:rotate-12 motion-safe:transition-transform" aria-hidden="true">{tier.icon}</span>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className={`font-extrabold tracking-tight ${isSelected ? 'text-primary text-4xl' : 'text-gray-900 text-3xl'}`}>
+                                ₹{tier.price.toLocaleString('en-IN')}
+                              </span>
+                              <span className="text-gray-500 text-sm font-medium">/person</span>
+                            </div>
+                            <p className="text-sm text-gray-500 leading-relaxed">{tier.description}</p>
+                          </div>
+                          <ul className="space-y-2 pt-4 border-t border-gray-100 mt-4">
+                            {tier.features.map((feature) => (
+                              <li key={feature} className="flex items-center gap-2 text-sm text-gray-700">
+                                <span className="material-symbols-outlined text-primary text-lg shrink-0" aria-hidden="true">check_circle</span>
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Mobile: one card at a time with arrows */}
+                <div className="sm:hidden">
+                  {(() => {
+                    const mobileOrder = [
+                      EXPERIENCE_TIERS.find((t) => t.id === 'basic')!,
+                      EXPERIENCE_TIERS.find((t) => t.recommended)!,
+                      EXPERIENCE_TIERS.find((t) => t.id === 'value')!,
+                    ];
+                    const tier = mobileOrder[mobileCardIndex];
+                    const isSelected = selectedDayTier === tier.id;
+                    const isTopPick = !!tier.recommended;
+                    return (
+                      <div className="relative pt-4">
                         <button
                           key={tier.id}
                           type="button"
@@ -581,84 +800,86 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                             setSelectedDayTier(tier.id);
                             setDayPassGuests(dayPassGuests < 1 ? 1 : dayPassGuests);
                           }}
-                          className="text-left snap-start min-w-[82%] sm:min-w-0 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background-soft"
+                          className="text-left w-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         >
                           <div
-                            className={`flex flex-col h-full rounded-3xl border bg-white p-6 sm:p-7 relative transition-all duration-500 hover-lift ${
-                              isSelected
-                                ? 'border-primary shadow-xl ring-1 ring-primary/20'
-                                : 'border-gray-200 hover:border-primary/30 hover:shadow-xl'
+                            className={`flex flex-col rounded-3xl border bg-white p-6 relative transition-all duration-300 ${
+                              isTopPick
+                                ? isSelected
+                                  ? 'border-primary shadow-xl ring-2 ring-primary/30'
+                                  : 'border-primary/50 shadow-lg'
+                                : isSelected
+                                  ? 'border-primary shadow-xl ring-1 ring-primary/20'
+                                  : 'border-gray-200'
                             }`}
                           >
-
-                            <div className="space-y-3 shrink-0">
+                            {isTopPick && (
+                              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-[0.15em] px-4 py-1 rounded-full shadow-md whitespace-nowrap">
+                                Top Pick
+                              </span>
+                            )}
+                            <div className="space-y-3">
                               <div className="flex items-center justify-between gap-3">
-                                <h3 className="text-primary font-bold text-sm uppercase tracking-[0.18em]">
-                                  {tier.name}
-                                </h3>
-                                <span
-                                  className="material-symbols-outlined text-primary group-hover:rotate-12 motion-safe:transition-transform"
-                                  aria-hidden="true"
-                                >
-                                  {tier.icon}
-                                </span>
+                                <h3 className="text-primary font-bold text-sm uppercase tracking-[0.18em]">{tier.name}</h3>
+                                <span className="material-symbols-outlined text-primary" aria-hidden="true">{tier.icon}</span>
                               </div>
                               <div className="flex items-baseline gap-1">
-                                <span
-                                  className={`font-extrabold tracking-tight ${
-                                    isSelected ? 'text-primary text-4xl' : 'text-gray-900 text-3xl'
-                                  }`}
-                                >
+                                <span className={`font-extrabold tracking-tight ${isSelected ? 'text-primary text-4xl' : 'text-gray-900 text-3xl'}`}>
                                   ₹{tier.price.toLocaleString('en-IN')}
                                 </span>
                                 <span className="text-gray-500 text-sm font-medium">/person</span>
                               </div>
-                              <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-                                {tier.description}
-                              </p>
+                              <p className="text-xs text-gray-500 leading-relaxed">{tier.description}</p>
                             </div>
-
                             <ul className="space-y-2 pt-4 border-t border-gray-100 mt-4">
                               {tier.features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-2 text-xs sm:text-sm text-gray-700">
-                                  <span
-                                    className="material-symbols-outlined text-primary text-base sm:text-lg shrink-0"
-                                    aria-hidden="true"
-                                  >
-                                    check_circle
-                                  </span>
+                                <li key={feature} className="flex items-center gap-2 text-xs text-gray-700">
+                                  <span className="material-symbols-outlined text-primary text-base shrink-0" aria-hidden="true">check_circle</span>
                                   <span>{feature}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
                         </button>
-                      );
-                    })}
-                  </div>
 
-                  <div className="flex sm:hidden justify-end gap-2 mt-1">
-                    <button
-                      type="button"
-                      onClick={() => scrollDayTiers('prev')}
-                      className="min-w-[36px] min-h-[36px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm"
-                      aria-label="Previous pass"
-                    >
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">
-                        chevron_left
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => scrollDayTiers('next')}
-                      className="min-w-[36px] min-h-[36px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm"
-                      aria-label="Next pass"
-                    >
-                      <span className="material-symbols-outlined text-base" aria-hidden="true">
-                        chevron_right
-                      </span>
-                    </button>
-                  </div>
+                        <div className="flex items-center justify-center gap-4 mt-4">
+                          <button
+                            type="button"
+                            onClick={() => setMobileCardIndex((prev) => Math.max(0, prev - 1))}
+                            disabled={mobileCardIndex === 0}
+                            className="min-w-[40px] min-h-[40px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
+                            aria-label="Previous pass"
+                          >
+                            <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+                          </button>
+
+                          <div className="flex items-center gap-2" aria-label={`Card ${mobileCardIndex + 1} of 3`}>
+                            {[0, 1, 2].map((i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => setMobileCardIndex(i)}
+                                className={`rounded-full transition-all ${
+                                  i === mobileCardIndex ? 'w-6 h-2 bg-primary' : 'w-2 h-2 bg-gray-300'
+                                }`}
+                                aria-label={`Go to card ${i + 1}`}
+                              />
+                            ))}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setMobileCardIndex((prev) => Math.min(2, prev + 1))}
+                            disabled={mobileCardIndex === 2}
+                            className="min-w-[40px] min-h-[40px] rounded-full border border-gray-300 bg-white text-gray-700 flex items-center justify-center shadow-sm disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
+                            aria-label="Next pass"
+                          >
+                            <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -712,62 +933,54 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                     <button
                       type="button"
                       onClick={() => setShowDayAddons((prev) => !prev)}
-                      className="flex items-center justify-between w-full rounded-xl border border-gray-200 bg-gray-50/60 px-4 py-3 text-left text-sm font-semibold text-primary hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                      className="flex items-center justify-between w-full rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-left text-sm font-semibold text-primary hover:border-amber-400 hover:bg-amber-100/70 transition-colors"
                       aria-expanded={showDayAddons}
                     >
-                      <div>
-                        <p className="text-sm font-semibold text-primary">Add rooms (optional)</p>
-                        <p className="text-xs text-gray-500">
-                          Max 2 per type. Breakfast free with any room add-on.
-                        </p>
-                      </div>
+                      <p className="text-sm font-semibold text-primary">Add room to your day spend?</p>
                       <span className="material-symbols-outlined text-base text-primary" aria-hidden="true">
                         {showDayAddons ? 'expand_less' : 'expand_more'}
                       </span>
                     </button>
 
                     {showDayAddons && (
-                      <div className="mt-4 space-y-3">
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 items-stretch">
                         {SANCTUARIES.map((s) => {
                           const n = dayAddonRooms[s.id] ?? 0;
                           const cfg = ROOM_CONFIG[s.id];
                           return (
                             <div
                               key={s.id}
-                              className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3"
+                              className={`rounded-xl border-2 overflow-hidden transition-all h-full flex flex-col ${
+                                n > 0
+                                  ? 'border-primary ring-2 ring-primary/20'
+                                  : 'border-gray-200'
+                              }`}
                             >
-                              <div>
-                                <span className="font-semibold text-primary text-sm">{s.name}</span>
-                                <span className="text-xs text-gray-500 ml-2">
-                                  ₹{s.price.toLocaleString('en-IN')}/room ·{' '}
-                                  {cfg?.defaultPerRoom ?? 3} per room
-                                </span>
+                              <div className="flex flex-row sm:flex-col h-full">
+                                <div className="w-28 h-full shrink-0 sm:w-full sm:h-36 bg-gray-100">
+                                  <img src={s.image} alt={s.name} className="w-full h-full object-cover" loading="lazy" />
+                                </div>
+                                <div className="flex-1 flex items-center justify-between gap-2 p-3 sm:p-2.5">
+                                  <div className="min-w-0">
+                                    <span className="font-bold text-primary text-sm block truncate">{s.name}</span>
+                                    <span className="text-xs text-gray-500 block">
+                                      ₹{s.price.toLocaleString('en-IN')}/room · {cfg?.defaultPerRoom ?? 3} per room
+                                    </span>
+                                  </div>
+                                  <div className="shrink-0">
+                                    <Stepper
+                                      value={n}
+                                      min={0}
+                                      max={2}
+                                      onChange={(v) => setDayAddonRoom(s.id, v)}
+                                      ariaLabel={s.name}
+                                    />
+                                  </div>
+                                </div>
                               </div>
-                              <Stepper
-                                value={n}
-                                min={0}
-                                max={2}
-                                onChange={(v) => setDayAddonRoom(s.id, v)}
-                                ariaLabel={s.name}
-                              />
                             </div>
                           );
                         })}
-                        <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-3">
-                          <div>
-                            <span className="font-semibold text-primary text-sm">Cottage dorm (4 beds)</span>
-                            <span className="text-xs text-gray-500 ml-2">
-                              ₹{DORM_DAY_PRICE.toLocaleString('en-IN')} · 1 room, 4 people (no extra persons)
-                            </span>
-                          </div>
-                          <Stepper
-                            value={dayAddonDorm}
-                            min={0}
-                            max={1}
-                            onChange={setDayAddonDorm}
-                            ariaLabel="dorm"
-                          />
-                        </div>
                       </div>
                     )}
                   </div>
@@ -815,9 +1028,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         </div>
                         <div className="p-3">
                           <span className="font-bold text-primary">{room.name}</span>
-                          <span className="block text-sm font-semibold text-gray-600">
-                            ₹{(room.nightPrice ?? room.price).toLocaleString('en-IN')}/night
-                          </span>
+                          <div className="flex items-center justify-between mt-0.5">
+                            <span className="text-sm font-semibold text-gray-600">
+                              ₹{(room.nightPrice ?? room.price).toLocaleString('en-IN')}/night
+                            </span>
+                            <div className="flex items-center gap-0" aria-label={`${id === 'cottage' ? 2 : 3} persons`}>
+                              {Array.from({ length: id === 'cottage' ? 2 : 3 }).map((_, i) => (
+                                <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">person</span>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </button>
                     );
@@ -1412,6 +1632,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
             value={cottageDormSelected ? cottageDormPersons : 0}
           />
 
+          {/* Mobile summary (above submit) */}
+          {shouldShowSummary && (
+            <div className="md:hidden">
+              {summaryBlock}
+            </div>
+          )}
+
           {/* Submit button (after contact form) */}
           <section className="pt-4 border-t-2 border-gray-100">
             <button
@@ -1429,49 +1656,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
           </section>
         </form>
 
-        {/* Booking summary: outside form, sticky beside the form */}
+        {/* Booking summary: desktop only, sticky beside the form */}
         {shouldShowSummary && (
           <aside
-            className="mt-8 md:mt-0 md:sticky md:top-24 md:self-start md:w-[360px] md:ml-10"
+            className="hidden md:block sticky top-24"
             aria-label="Booking summary"
           >
-            <div className="rounded-2xl border border-primary/20 bg-white shadow-xl px-4 py-4 sm:px-5 sm:py-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary mb-2">
-                  Booking summary
-                </p>
-                <p className="text-sm text-gray-600 mb-1">
-                  {visitType === 'day'
-                    ? 'Day visit with selected pass and rooms.'
-                    : 'Night stay with selected rooms and persons.'}
-                </p>
-                {visitType === 'night' && nightPricingNote && (
-                  <p className="text-[11px] text-gray-500 mb-3">
-                    {nightPricingNote}
-                  </p>
-                )}
-                <div className="flex items-baseline justify-between gap-3 mb-2">
-                  <span className="text-sm font-semibold text-primary">Estimated total</span>
-                  <span className="text-2xl font-extrabold text-primary">
-                    ₹{totalAmount.toLocaleString('en-IN')}
-                  </span>
-                </div>
-                {summaryBreakdown.length > 0 && (
-                  <ul className="mt-2 space-y-1 text-xs sm:text-sm text-gray-700">
-                    {summaryBreakdown.map((item) => (
-                      <li key={item.label} className="flex items-baseline justify-between gap-3">
-                        <span className="flex-1">{item.label}</span>
-                        <span className="font-semibold whitespace-nowrap">
-                          ₹{item.amount.toLocaleString('en-IN')}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <p className="text-[11px] text-gray-500 mt-4">
-                  This is an approximate amount. We’ll confirm the final details and inclusions with you
-                  on WhatsApp.
-                </p>
-              </div>
+            {summaryBlock}
           </aside>
         )}
       </div>

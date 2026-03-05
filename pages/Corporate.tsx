@@ -70,24 +70,24 @@ export const Corporate: React.FC = () => {
             <header className="mb-10 sm:mb-16 max-w-2xl">
               <h2 id="corp-included-heading" className="text-4xl font-extrabold tracking-tight mb-4">Included in every package</h2>
               <div className="h-1.5 w-24 bg-primary rounded-full mb-4" aria-hidden="true" />
-              <p className="text-lg text-gray-600">All day pass packages include access to these amenities. 9 AM to 7 PM.</p>
+              <p className="text-lg text-gray-600">All day spend packages include access to these amenities. 9 AM to 7 PM.</p>
             </header>
           </AnimateOnScroll>
           <AmenityTabs features={INCLUDED_FEATURES} />
         </div>
       </section>
 
-      {/* Pricing - Day pass */}
+      {/* Pricing - Day spend */}
       <section id="pricing" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up" className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Same pricing for corporates</h2>
-            <h3 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">Day pass packages</h3>
+            <h3 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">Day spend packages</h3>
             <p className="text-lg text-gray-600">Choose a package per person. All include pool, lunch, sports, and more.</p>
           </AnimateOnScroll>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 items-stretch">
             {EXPERIENCE_TIERS.map((tier, idx) => (
-              <AnimateOnScroll key={tier.id} animation="fade-up" delay={idx * 100} className="h-full">
+              <AnimateOnScroll key={tier.id} animation="fade-up" delay={idx * 100} className={`h-full ${tier.recommended ? 'md:order-2' : tier.id === 'basic' ? 'md:order-1' : 'md:order-3'}`}>
                 <ExperienceCard tier={tier} />
               </AnimateOnScroll>
             ))}
@@ -146,7 +146,7 @@ export const Corporate: React.FC = () => {
                         <span className="material-symbols-outlined text-primary text-xl">phone</span>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">Call or WhatsApp</p>
+                        <p className="font-semibold text-gray-900">Call or WhatsApp <span className="font-normal text-gray-500">(Mr. Vishnu)</span></p>
                         <p className="text-sm text-gray-500 mt-0.5">
                           <a href="tel:+918074799387" className="text-primary hover:underline">+91 80747 99387</a>
                           <span className="text-gray-300 mx-1">·</span>

@@ -1,10 +1,12 @@
-html {
-  scroll-behavior: smooth;
-}
-
+html,
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* CSS Variables for theme switching */
@@ -58,22 +60,37 @@ body {
 
 .animate-on-scroll.animate-fade-left {
   opacity: 0;
-  transform: translateX(48px);
+  transform: translateY(24px);
 }
 
 .animate-on-scroll.animate-fade-left.is-visible {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
 .animate-on-scroll.animate-fade-right {
   opacity: 0;
-  transform: translateX(-48px);
+  transform: translateY(24px);
 }
 
 .animate-on-scroll.animate-fade-right.is-visible {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .animate-on-scroll.animate-fade-left {
+    transform: translateX(48px);
+  }
+  .animate-on-scroll.animate-fade-left.is-visible {
+    transform: translateX(0);
+  }
+  .animate-on-scroll.animate-fade-right {
+    transform: translateX(-48px);
+  }
+  .animate-on-scroll.animate-fade-right.is-visible {
+    transform: translateX(0);
+  }
 }
 
 .animate-on-scroll.animate-scale-up {
@@ -125,6 +142,11 @@ body {
 .hero-animate-in-delay-1 { animation-delay: 0.15s; opacity: 0; }
 .hero-animate-in-delay-2 { animation-delay: 0.3s; opacity: 0; }
 .hero-animate-in-delay-3 { animation-delay: 0.45s; opacity: 0; }
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
 /* Enhanced hover utilities */
 .hover-lift {

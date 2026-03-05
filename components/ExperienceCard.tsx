@@ -11,7 +11,7 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({ tier }) => {
     <div className={`flex flex-col h-full rounded-3xl border ${tier.recommended ? 'border-primary shadow-2xl ring-1 ring-primary/20' : 'border-gray-200'} bg-white p-8 group relative hover-lift transition-all duration-500 hover:shadow-2xl hover:border-primary/30`}>
       {tier.recommended && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
-          Recommended
+          Top Pick
         </div>
       )}
       
