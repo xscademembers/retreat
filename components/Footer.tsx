@@ -23,8 +23,6 @@ export const Footer: React.FC = () => {
             <Link className="hover:opacity-100 transition-opacity" to="/book-now">Book Now</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/amenities">Amenities</Link>
             <Link className="hover:opacity-100 transition-opacity" to="/#testimonials">Testimonials</Link>
-            <Link className="hover:opacity-100 transition-opacity" to="/corporate">Corporate</Link>
-            <Link className="hover:opacity-100 transition-opacity" to="/schools">Schools</Link>
           </nav>
         </div>
 
