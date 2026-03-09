@@ -535,6 +535,95 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     </div>
   ) : null;
 
+  const buildWhatsAppMessage = (form: HTMLFormElement) => {
+    const formData = new FormData(form);
+    const name = ((formData.get('name') as string) || '').trim() || 'N/A';
+    const phone = ((formData.get('phone') as string) || '').trim() || 'N/A';
+
+    const lines: string[] = [];
+    lines.push('Booking enquiry - Salsons Retreat');
+    lines.push('');
+    lines.push(`Name: ${name}`);
+    lines.push(`Phone: ${phone}`);
+
+    if (visitType === 'day') {
+      const tier = EXPERIENCE_TIERS.find((t) => t.id === selectedDayTier);
+      lines.push('Visit type: Day spend');
+      if (tier) {
+        lines.push(`Pass: ${tier.name}`);
+      }
+      lines.push(`Guests: ${dayPassGuests}`);
+      if (entryDate) {
+        const formatted = new Date(entryDate).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        lines.push(`Date: ${formatted}`);
+      }
+    } else if (visitType === 'night') {
+      const totalGuests =
+        (cabanaRoom1Selected ? cabanaRoom1Persons : 0) +
+        (cabanaRoom2Selected ? cabanaRoom2Persons : 0) +
+        (cottageRoom1Selected ? cottageRoom1Persons : 0) +
+        (cottageRoom2Selected ? cottageRoom2Persons : 0) +
+        (cottageDormSelected ? cottageDormPersons : 0) +
+        (villaRoom1Selected ? villaRoom1Persons : 0) +
+        (villaRoom2Selected ? villaRoom2Persons : 0);
+
+      lines.push('Visit type: Night stay');
+      lines.push(`Guests: ${totalGuests}`);
+      lines.push(`Nights: ${nightNightsCount}`);
+
+      if (checkInDate) {
+        const formatted = new Date(checkInDate).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        lines.push(`Check-in: ${formatted}`);
+      }
+      if (checkOutDate) {
+        const formatted = new Date(checkOutDate).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        lines.push(`Check-out: ${formatted}`);
+      }
+    }
+
+    if (summaryBreakdown.length > 0) {
+      lines.push('');
+      lines.push('Breakdown:');
+      summaryBreakdown.forEach((item) => {
+        lines.push(`- ${item.label}: ₹${item.amount.toLocaleString('en-IN')}`);
+      });
+    }
+
+    if (totalAmount > 0) {
+      lines.push('');
+      lines.push(`Estimated total: ₹${totalAmount.toLocaleString('en-IN')}`);
+    }
+
+    return lines.join('\n');
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const message = buildWhatsAppMessage(form);
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/918555079190?text=${encodedMessage}`;
+
+    if (typeof window !== 'undefined') {
+      window.location.href = whatsappUrl;
+    } else {
+      setFormSubmitted(true);
+      onSubmitSuccess?.();
+    }
+  };
+
   if (formSubmitted) {
     return (
       <div className="rounded-2xl overflow-visible">
@@ -617,12 +706,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
         <form
           id="booking-form"
           className="space-y-8 max-w-[820px] w-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setFormSubmitted(true);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            onSubmitSuccess?.();
-          }}
+          onSubmit={handleSubmit}
           aria-label="Booking form"
         >
           <section aria-labelledby="visit-type-heading">
