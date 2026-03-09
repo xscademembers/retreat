@@ -419,7 +419,7 @@ export const Testimonials: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-gray-900">{avgRating}</span>
               <Stars count={Math.round(Number(avgRating))} />
-              <span className="text-sm text-gray-500">({reviews.length})</span>
+              <span className="text-sm text-gray-500">(476 reviews)</span>
             </div>
           </div>
           <a
