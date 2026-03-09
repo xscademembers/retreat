@@ -2,14 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { AnimateOnScroll } from './AnimateOnScroll';
 
 export const InstagramFeed: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const existing = document.querySelector('script[src*="sociablekit.com/instagram-reels"]');
+    const existing = document.querySelector('script[src*="elfsightcdn.com/platform.js"]');
     if (!existing) {
       const script = document.createElement('script');
-      script.src = 'https://widgets.sociablekit.com/instagram-reels/widget.js';
-      script.defer = true;
+      script.src = 'https://elfsightcdn.com/platform.js';
+      script.async = true;
       document.body.appendChild(script);
     }
   }, []);
@@ -27,7 +25,10 @@ export const InstagramFeed: React.FC = () => {
             </p>
           </header>
         </AnimateOnScroll>
-        <div ref={containerRef} className="sk-ww-instagram-reels" data-embed-id="25660055" />
+        <div
+          className="elfsight-app-95885031-20a4-4fed-89c6-ef2cd731bbe9"
+          data-elfsight-app-lazy
+        />
       </div>
     </section>
   );
