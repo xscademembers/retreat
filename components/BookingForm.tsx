@@ -1048,14 +1048,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                                   <div className="min-w-0">
                                     <span className="font-bold text-primary text-sm block truncate">{s.name}</span>
                                     <span className="text-xs text-gray-500 block">
-                                      ₹{s.price.toLocaleString('en-IN')}/room · {cfg?.defaultPerRoom ?? 3} per room
+                                      ₹{s.price.toLocaleString('en-IN')}/room · 11 AM – 7 PM
                                     </span>
                                   </div>
                                   <div className="shrink-0">
                                     <Stepper
                                       value={n}
                                       min={0}
-                                      max={2}
+                                      max={cfg?.maxExtraPerRoom ?? MAX_ROOMS_PER_TYPE}
                                       onChange={(v) => setDayAddonRoom(s.id, v)}
                                       ariaLabel={s.name}
                                     />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EXPERIENCE_TIERS, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
 import { Hero } from '../components/Hero';
@@ -11,6 +11,19 @@ type RoomId = 'cabana' | 'cottage' | 'villa';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const dayCarouselRef = useRef<HTMLDivElement | null>(null);
+  const nightCarouselRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollCarousel = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
+    const el = ref.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.9;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    });
+  };
 
   const handleViewMore = (roomId: RoomId) => {
     navigate(`/accommodation?room=${roomId}`);
@@ -69,7 +82,71 @@ export const Home: React.FC = () => {
             </div>
           </AnimateOnScroll>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {/* Day spend cards – carousel on mobile, grid on desktop */}
+          <div className="md:hidden -mx-4 px-4 relative">
+            <div
+              ref={dayCarouselRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {EXPERIENCE_TIERS.map((tier) => (
+                <article
+                  key={tier.id}
+                  className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
+                >
+                  <div className="relative pb-[70%]">
+                    <img
+                      src={tier.image}
+                      alt={tier.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-between p-5">
+                    <div className="flex-1" />
+                    <div>
+                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-3 uppercase">
+                        {tier.name}
+                      </h3>
+                      <div className="flex items-center gap-3">
+                        <a
+                          href="/day-spend"
+                          className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                        >
+                          View more
+                          <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                            arrow_outward
+                          </span>
+                        </a>
+                        <span className="text-white/90 text-xs font-semibold whitespace-nowrap">
+                          ₹{tier.price} / person
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => scrollCarousel(dayCarouselRef, 'left')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-gray-200 text-gray-700 hover:bg-white"
+              aria-label="Scroll previous day package"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollCarousel(dayCarouselRef, 'right')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-gray-200 text-gray-700 hover:bg-white"
+              aria-label="Scroll next day package"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
             {EXPERIENCE_TIERS.map((tier, idx) => (
               <AnimateOnScroll
                 key={tier.id}
@@ -94,15 +171,20 @@ export const Home: React.FC = () => {
                       <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
                         {tier.name}
                       </h3>
-                      <a
-                        href="/day-spend"
-                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
-                      >
-                        View more
-                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
-                          arrow_outward
+                      <div className="flex items-center gap-3">
+                        <a
+                          href="/day-spend"
+                          className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                        >
+                          View more
+                          <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                            arrow_outward
+                          </span>
+                        </a>
+                        <span className="text-white/90 text-xs sm:text-sm font-semibold whitespace-nowrap">
+                          ₹{tier.price} / person
                         </span>
-                      </a>
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -129,7 +211,67 @@ export const Home: React.FC = () => {
             </div>
           </AnimateOnScroll>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {/* Night stay cards – carousel on mobile, grid on desktop */}
+          <div className="md:hidden -mx-4 px-4 relative">
+            <div
+              ref={nightCarouselRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {SANCTUARIES.map((s) => (
+                <article
+                  key={s.id}
+                  className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
+                >
+                  <div className="relative pb-[70%]">
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-between p-5">
+                    <div className="flex-1" />
+                    <div>
+                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-3 uppercase">
+                        {s.name}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => handleViewMore(s.id as RoomId)}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                      >
+                        View more
+                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                          arrow_outward
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => scrollCarousel(nightCarouselRef, 'left')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-gray-200 text-gray-700 hover:bg-white"
+              aria-label="Scroll previous night stay"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollCarousel(nightCarouselRef, 'right')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 shadow-md border border-gray-200 text-gray-700 hover:bg-white"
+              aria-label="Scroll next night stay"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
             {SANCTUARIES.map((s, idx) => (
               <AnimateOnScroll
                 key={s.id}

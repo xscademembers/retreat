@@ -26,10 +26,9 @@ const NIGHT_ROOMS: NightRoomConfig[] = [
     baths: '1 ensuite bath',
     images: [
       SANCTUARIES.find((s) => s.id === 'cabana')?.image ?? '',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01837.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01849.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01906.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01942.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/nature%20walk/20250205_063023.jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cabana/cabana1.jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cabana/20250402_004337.jpg',
     ],
     overview: ['Check-in 3 PM', 'Check-out 11 AM', 'Pool access', 'Lounge sit-out', 'Nature views'],
     addons: ['Dinner buffet', 'BBQ by the pool', 'Boating at Thatipudi (2 min away)'],
@@ -43,10 +42,11 @@ const NIGHT_ROOMS: NightRoomConfig[] = [
     baths: '2 baths',
     images: [
       SANCTUARIES.find((s) => s.id === 'cottage')?.image ?? '',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01870.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01872.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01879.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01949.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cottage/cottage.jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cottage/cottage3.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cottage/DSC07433%20(1).jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cottage/DSC07461%20(1).jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/cottage/cottagw2.JPG',
     ],
     overview: ['Check-in 3 PM', 'Check-out 11 AM', 'Spacious living area', 'Garden sit-out', 'Ideal for families & groups'],
     addons: ['Breakfast add-on', 'Evening tea & snacks', 'Bonfire (seasonal)'],
@@ -60,10 +60,12 @@ const NIGHT_ROOMS: NightRoomConfig[] = [
     baths: '2 baths',
     images: [
       SANCTUARIES.find((s) => s.id === 'villa')?.image ?? '',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01953.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC01981.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC02085.JPG',
-      'https://storage.googleapis.com/new_client_files/salsons%20retreat/others/DSC07574.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/DSC01842.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/DSC01849.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/DSC01906.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/DSC01950.JPG',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/villa.jpg',
+      'https://storage.googleapis.com/new_client_files/salsons%20retreat/villa/villa1.jpg',
     ],
     overview: ['Check-in 3 PM', 'Check-out 11 AM', 'Large verandah', 'Garden-facing rooms', 'Ideal for relaxed stays'],
     addons: ['Breakfast add-on', 'Dinner buffet', 'Decor for celebrations'],
@@ -89,6 +91,22 @@ export const Accommodation: React.FC = () => {
   }, [initialRoomId]);
 
   const activeRoom = NIGHT_ROOMS.find((r) => r.id === activeRoomId) ?? NIGHT_ROOMS[0];
+
+  const handlePrevImage = () => {
+    setActiveImageIndex((prev) => {
+      const total = activeRoom.images.length;
+      if (total === 0) return 0;
+      return (prev - 1 + total) % total;
+    });
+  };
+
+  const handleNextImage = () => {
+    setActiveImageIndex((prev) => {
+      const total = activeRoom.images.length;
+      if (total === 0) return 0;
+      return (prev + 1) % total;
+    });
+  };
 
   const handleTabClick = (roomId: RoomId) => {
     navigate(`/accommodation?room=${roomId}`);
@@ -147,8 +165,32 @@ export const Accommodation: React.FC = () => {
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
+                {activeRoom.images.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrevImage}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-md border border-gray-200 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      aria-label="Previous room image"
+                    >
+                      <span className="material-symbols-outlined" aria-hidden="true">
+                        chevron_left
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextImage}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-md border border-gray-200 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      aria-label="Next room image"
+                    >
+                      <span className="material-symbols-outlined" aria-hidden="true">
+                        chevron_right
+                      </span>
+                    </button>
+                  </>
+                )}
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-1">
+              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 {activeRoom.images.map((img, idx) => (
                   <button
                     key={img + idx}
