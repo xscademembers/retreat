@@ -163,6 +163,9 @@ export const Accommodation: React.FC = () => {
                     src={activeRoom.images[activeImageIndex]}
                     alt={activeRoom.title}
                     className="absolute inset-0 w-full h-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                   />
                 </div>
                 {activeRoom.images.length > 1 && (
@@ -204,6 +207,8 @@ export const Accommodation: React.FC = () => {
                       src={img}
                       alt={`${activeRoom.title} image ${idx + 1}`}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </button>
                 ))}

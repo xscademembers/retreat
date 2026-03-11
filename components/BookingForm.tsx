@@ -683,6 +683,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Salsons Retreat location"
               />
@@ -1041,7 +1042,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                             >
                               <div className="flex flex-row sm:flex-col h-full">
                                 <div className="w-28 h-full shrink-0 sm:w-full sm:h-36 bg-gray-100">
-                                  <img src={s.image} alt={s.name} className="w-full h-full object-cover" />
+                                  <img src={s.image} alt={s.name} className="w-full h-full object-cover" loading="lazy" />
                                 </div>
                                 <div className="flex-1 flex items-center justify-between gap-2 p-3 sm:p-2.5">
                                   <div className="min-w-0">

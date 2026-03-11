@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EXPERIENCE_TIERS, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
 import { Hero } from '../components/Hero';
@@ -13,6 +13,19 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const dayCarouselRef = useRef<HTMLDivElement | null>(null);
   const nightCarouselRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const urls = [
+      ...EXPERIENCE_TIERS.map((tier) => tier.image),
+      ...SANCTUARIES.map((s) => s.image),
+    ];
+
+    urls.forEach((src) => {
+      if (!src) return;
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const scrollCarousel = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
     const el = ref.current;
@@ -95,6 +108,12 @@ export const Home: React.FC = () => {
                   className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
                 >
                   <div className="relative pb-[70%]">
+                    <img
+                      src={tier.image}
+                      alt={tier.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
@@ -150,6 +169,12 @@ export const Home: React.FC = () => {
               >
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
+                    <img
+                      src={tier.image}
+                      alt={tier.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
 
@@ -212,6 +237,12 @@ export const Home: React.FC = () => {
                   className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
                 >
                   <div className="relative pb-[70%]">
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
@@ -263,6 +294,12 @@ export const Home: React.FC = () => {
               >
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
 
@@ -362,6 +399,7 @@ export const Home: React.FC = () => {
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Salsons Retreat location on Google Maps"
               />

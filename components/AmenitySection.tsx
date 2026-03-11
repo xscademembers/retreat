@@ -18,7 +18,13 @@ export const AmenitySection: React.FC<AmenitySectionProps> = ({ amenity, reverse
         </p>
       </div>
       <div className="w-full lg:w-1/2 overflow-hidden relative min-h-[280px] sm:min-h-[400px]">
-        <img className="w-full h-full object-cover absolute inset-0 transition-transform duration-[3s] hover:scale-105" src={amenity.image} alt={amenity.title} />
+        <img
+          className="w-full h-full object-cover absolute inset-0 transition-transform duration-[3s] hover:scale-105"
+          src={amenity.image}
+          alt={amenity.title}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </div>
   );

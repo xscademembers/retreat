@@ -31,6 +31,23 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
   }, [activeId, updateScrollState]);
 
   useEffect(() => {
+    const preload = (src: string) => {
+      if (!src) return;
+      const img = new Image();
+      img.src = src;
+    };
+
+    const primaryImages = AMENITY_IMAGES[defaultId] ?? [];
+    primaryImages.slice(0, 4).forEach(preload);
+
+    if (features.length > 1) {
+      const nextId = features[1].id;
+      const nextImages = AMENITY_IMAGES[nextId] ?? [];
+      nextImages.slice(0, 2).forEach(preload);
+    }
+  }, [defaultId, features]);
+
+  useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
     el.addEventListener('scroll', updateScrollState, { passive: true });
