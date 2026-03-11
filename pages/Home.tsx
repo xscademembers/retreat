@@ -95,12 +95,6 @@ export const Home: React.FC = () => {
                   className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
                 >
                   <div className="relative pb-[70%]">
-                    <img
-                      src={tier.image}
-                      alt={tier.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
@@ -156,12 +150,6 @@ export const Home: React.FC = () => {
               >
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
-                    <img
-                      src={tier.image}
-                      alt={tier.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
 
@@ -224,12 +212,6 @@ export const Home: React.FC = () => {
                   className="relative min-w-[300px] max-w-[85%] rounded-3xl overflow-hidden shadow-lg group bg-black/80 snap-start"
                 >
                   <div className="relative pb-[70%]">
-                    <img
-                      src={s.image}
-                      alt={s.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
@@ -281,12 +263,6 @@ export const Home: React.FC = () => {
               >
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
-                    <img
-                      src={s.image}
-                      alt={s.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
 
@@ -386,7 +362,6 @@ export const Home: React.FC = () => {
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
-                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Salsons Retreat location on Google Maps"
               />

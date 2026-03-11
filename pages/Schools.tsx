@@ -165,7 +165,6 @@ export const Schools: React.FC = () => {
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
-                  loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Salsons Retreat location"
                 />
