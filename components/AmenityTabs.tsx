@@ -28,7 +28,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
     if (!el) return;
     el.scrollLeft = 0;
     updateScrollState();
-  }, [activeId, updateScrollState]);
+  }, [activeId, images.length, updateScrollState]);
 
   useEffect(() => {
     const preload = (src: string) => {
@@ -58,6 +58,16 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
       window.removeEventListener('resize', updateScrollState);
     };
   }, [updateScrollState]);
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => {
+      updateScrollState();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [updateScrollState, images.length]);
 
   const scroll = (direction: 'left' | 'right') => {
     const el = trackRef.current;
