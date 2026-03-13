@@ -9,12 +9,19 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobilePricingOpen, setMobilePricingOpen] = useState(false);
   const isTransparent = isHome && !isScrolled && !mobileOpen;
 
   useEffect(() => {
-    if (mobileOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      setMobilePricingOpen(false);
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [mobileOpen]);
 
   const headerClasses = isTransparent
@@ -30,7 +37,10 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
     ? 'bg-white text-primary hover:bg-background-soft'
     : 'bg-primary text-white';
 
-  const closeMenu = () => setMobileOpen(false);
+  const closeMenu = () => {
+    setMobileOpen(false);
+    setMobilePricingOpen(false);
+  };
 
   return (
     <header
@@ -96,10 +106,50 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
         aria-hidden={!mobileOpen}
       >
         <nav className="px-4 py-4 space-y-1" aria-label="Mobile navigation">
-          <Link to="/" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Home</Link>
-          <span className="block py-3 px-4 rounded-xl text-primary font-semibold">Pricing</span>
-          <Link to="/day-spend" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Day spend</Link>
-          <Link to="/night-visit" className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5" onClick={closeMenu}>Night stay</Link>
+          <Link
+            to="/"
+            className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5"
+            onClick={closeMenu}
+          >
+            Home
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setMobilePricingOpen((open) => !open)}
+            className="w-full flex items-center justify-between py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5"
+            aria-expanded={mobilePricingOpen}
+            aria-controls="mobile-pricing-submenu"
+          >
+            <span>Pricing</span>
+            <span
+              className={`material-symbols-outlined text-lg transition-transform ${
+                mobilePricingOpen ? 'rotate-180' : ''
+              }`}
+              aria-hidden="true"
+            >
+              expand_more
+            </span>
+          </button>
+          <div
+            id="mobile-pricing-submenu"
+            className={mobilePricingOpen ? 'space-y-1' : 'hidden'}
+          >
+            <Link
+              to="/day-spend"
+              className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5"
+              onClick={closeMenu}
+            >
+              Day spend
+            </Link>
+            <Link
+              to="/night-visit"
+              className="block py-3 pl-8 pr-4 rounded-xl text-primary/80 text-sm hover:bg-primary/5"
+              onClick={closeMenu}
+            >
+              Night stay
+            </Link>
+          </div>
           <Link to="/amenities" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Amenities</Link>
           <Link to="/#testimonials" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Testimonials</Link>
           <Link to="/book-now" className="block mt-4 py-4 px-4 rounded-xl bg-primary text-white font-bold text-center hover:bg-primary/90" onClick={closeMenu}>Book Now</Link>

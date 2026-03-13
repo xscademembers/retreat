@@ -52,6 +52,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
     if (!el) return;
     el.addEventListener('scroll', updateScrollState, { passive: true });
     window.addEventListener('resize', updateScrollState);
+    updateScrollState();
     return () => {
       el.removeEventListener('scroll', updateScrollState);
       window.removeEventListener('resize', updateScrollState);

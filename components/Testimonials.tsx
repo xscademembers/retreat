@@ -322,6 +322,11 @@ const Stars: React.FC<{ count: number }> = ({ count }) => (
   </div>
 );
 
+function wordCount(text: string): number {
+  if (!text) return 0;
+  return text.trim().split(/\s+/).length;
+}
+
 export const Testimonials: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -334,6 +339,15 @@ export const Testimonials: React.FC = () => {
     reviews.length > 0
       ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
       : '5.0';
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    if (a.rating !== b.rating) {
+      return b.rating - a.rating; // 5★ → 1★
+    }
+    const aWords = wordCount(a.comment);
+    const bWords = wordCount(b.comment);
+    return bWords - aWords; // longer → shorter
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -397,7 +411,7 @@ export const Testimonials: React.FC = () => {
     });
   };
 
-  const totalPages = Math.max(1, Math.ceil(reviews.length / 4));
+  const totalPages = Math.max(1, Math.ceil(sortedReviews.length / 4));
 
   return (
     <section
@@ -460,7 +474,7 @@ export const Testimonials: React.FC = () => {
             className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 scrollbar-hide"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {reviews.map((review) => {
+            {sortedReviews.map((review) => {
               const isExpanded = expandedIds.has(review.id);
               const isLong = review.comment.length > 140;
               const displayText = isLong && !isExpanded

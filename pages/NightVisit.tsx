@@ -49,11 +49,7 @@ export const NightVisit: React.FC = () => {
                   </div>
 
                   <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
-                    <div className="flex-1" />
-                    <div>
-                      <h2 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
-                        {s.name}
-                      </h2>
+                    <div className="flex justify-end">
                       <button
                         type="button"
                         onClick={() => handleViewMore(s.id as RoomId)}
@@ -64,6 +60,11 @@ export const NightVisit: React.FC = () => {
                           arrow_outward
                         </span>
                       </button>
+                    </div>
+                    <div className="pt-1">
+                      <h2 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-2 uppercase">
+                        {s.name}
+                      </h2>
                     </div>
                   </div>
                 </article>

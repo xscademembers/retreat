@@ -17,7 +17,7 @@ const SLIDES: HeroSlide[] = [
     description:
       'Wake up to misty hills, palm trees, and wide open lawns at our 6‑acre retreat in Thatipudi.',
     mediaType: 'image',
-    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250205_064653.jpg',
+    src: 'https://static.wixstatic.com/media/9356bd_f11dba5618f34e2a8b622238d0dfaed3~mv2.jpg',
     position: 'center',
   },
   {
@@ -26,7 +26,7 @@ const SLIDES: HeroSlide[] = [
     description:
       'Make a splash in the party pool, dance in the rain zone, and unwind with a warm barbecue by the deck.',
     mediaType: 'image',
-    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/_DSC2150%20(2).JPG',
+    src: 'https://static.wixstatic.com/media/9356bd_a1c85b59792c45eeb2e6c9adeb867a0a~mv2.webp',
     position: 'center',
   },
   {
@@ -35,7 +35,7 @@ const SLIDES: HeroSlide[] = [
     description:
       'Glide over calm waters surrounded by hills before returning to your private farm getaway.',
     mediaType: 'image',
-    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/20250227_164908.jpg',
+    src: 'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
     position: 'center',
   },
   {
@@ -44,7 +44,7 @@ const SLIDES: HeroSlide[] = [
     description:
       'Upgrade your daycation with private cabanas, a cozy cottage, or a serene villa facing lush greens.',
     mediaType: 'image',
-    src: 'https://storage.googleapis.com/new_client_files/salsons%20retreat/DSC07622.JPG',
+    src: 'https://static.wixstatic.com/media/9356bd_ff7051479d6d42dcb67197b538b55359~mv2.webp',
     position: 'center',
   },
 ];

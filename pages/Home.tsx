@@ -117,25 +117,24 @@ export const Home: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
-                    <div className="flex-1" />
-                    <div>
-                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-3 uppercase">
-                        {tier.name}
-                      </h3>
-                      <div className="flex items-center gap-3">
-                        <a
-                          href="/day-spend"
-                          className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs font-semibold text-white hover:bg-white hover:text-primary transition-all"
-                        >
-                          View more
-                          <span className="material-symbols-outlined text-sm" aria-hidden="true">
-                            arrow_outward
-                          </span>
-                        </a>
-                        <span className="text-white/90 text-xs font-semibold whitespace-nowrap">
-                          ₹{tier.price} / person
+                    <div className="flex justify-end">
+                      <a
+                        href="/day-spend"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                      >
+                        View more
+                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                          arrow_outward
                         </span>
-                      </div>
+                      </a>
+                    </div>
+                    <div className="pt-1">
+                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-2 uppercase">
+                        {tier.name}{' '}
+                        <span className="normal-case text-[13px] font-semibold text-white/90">
+                          (₹{tier.price.toLocaleString('en-IN')} / person)
+                        </span>
+                      </h3>
                     </div>
                   </div>
                 </article>
@@ -179,25 +178,24 @@ export const Home: React.FC = () => {
                   </div>
 
                   <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
-                    <div className="flex-1" />
-                    <div>
-                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
-                        {tier.name}
-                      </h3>
-                      <div className="flex items-center gap-3">
-                        <a
-                          href="/day-spend"
-                          className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
-                        >
-                          View more
-                          <span className="material-symbols-outlined text-sm" aria-hidden="true">
-                            arrow_outward
-                          </span>
-                        </a>
-                        <span className="text-white/90 text-xs sm:text-sm font-semibold whitespace-nowrap">
-                          ₹{tier.price} / person
+                    <div className="flex justify-end">
+                      <a
+                        href="/day-spend"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/5 px-5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-white hover:text-primary transition-all"
+                      >
+                        View more
+                        <span className="material-symbols-outlined text-sm" aria-hidden="true">
+                          arrow_outward
                         </span>
-                      </div>
+                      </a>
+                    </div>
+                    <div className="pt-1">
+                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-2 uppercase">
+                        {tier.name}{' '}
+                        <span className="normal-case text-sm font-semibold text-white/90">
+                          (₹{tier.price.toLocaleString('en-IN')} / person)
+                        </span>
+                      </h3>
                     </div>
                   </div>
                 </article>
@@ -246,11 +244,7 @@ export const Home: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/5" />
                   </div>
                   <div className="absolute inset-0 flex flex-col justify-between p-5">
-                    <div className="flex-1" />
-                    <div>
-                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-3 uppercase">
-                        {s.name}
-                      </h3>
+                    <div className="flex justify-end">
                       <button
                         type="button"
                         onClick={() => handleViewMore(s.id as RoomId)}
@@ -261,6 +255,11 @@ export const Home: React.FC = () => {
                           arrow_outward
                         </span>
                       </button>
+                    </div>
+                    <div className="pt-1">
+                      <h3 className="text-white text-2xl font-extrabold tracking-tight mb-2 uppercase">
+                        {s.name}
+                      </h3>
                     </div>
                   </div>
                 </article>
@@ -304,11 +303,7 @@ export const Home: React.FC = () => {
                   </div>
 
                   <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
-                    <div className="flex-1" />
-                    <div>
-                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-3 uppercase">
-                        {s.name}
-                      </h3>
+                    <div className="flex justify-end">
                       <button
                         type="button"
                         onClick={() => handleViewMore(s.id as RoomId)}
@@ -319,6 +314,11 @@ export const Home: React.FC = () => {
                           arrow_outward
                         </span>
                       </button>
+                    </div>
+                    <div className="pt-1">
+                      <h3 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mb-2 uppercase">
+                        {s.name}
+                      </h3>
                     </div>
                   </div>
                 </article>

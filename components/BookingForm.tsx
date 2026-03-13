@@ -728,7 +728,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                 }`}
                 style={{
                   backgroundImage:
-                    'linear-gradient(to right, rgba(6, 57, 46, 0.45), rgba(6, 57, 46, 0.05)), url("https://storage.googleapis.com/new_client_files/salsons%20retreat/book%20now%20images/20250227_165703.jpg")',
+                    'linear-gradient(to right, rgba(6, 57, 46, 0.45), rgba(6, 57, 46, 0.05)), url("https://static.wixstatic.com/media/9356bd_3b34eead3ee14eb8ac3a8cb75ea1d6ce~mv2.webp")',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
@@ -767,7 +767,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                 }`}
                 style={{
                   backgroundImage:
-                    'linear-gradient(to right, rgba(5, 31, 51, 0.45), rgba(5, 31, 51, 0.05)), url("https://storage.googleapis.com/new_client_files/salsons%20retreat/book%20now%20images/KOLORO_1745403976156.jpg.jpeg")',
+                    'linear-gradient(to right, rgba(5, 31, 51, 0.45), rgba(5, 31, 51, 0.05)), url("https://static.wixstatic.com/media/9356bd_3816a1b00f28406f9c5b34e61a665185~mv2.webp")',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
