@@ -23,11 +23,20 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
     setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
   }, []);
 
+  const handleImageLoad = useCallback(() => {
+    updateScrollState();
+  }, [updateScrollState]);
+
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollLeft = 0;
+    if (images.length > 1) {
+      setCanScrollRight(true);
+    }
     updateScrollState();
+    const timers = [100, 300, 800].map((ms) => setTimeout(updateScrollState, ms));
+    return () => timers.forEach(clearTimeout);
   }, [activeId, images.length, updateScrollState]);
 
   useEffect(() => {
@@ -58,16 +67,6 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
       window.removeEventListener('resize', updateScrollState);
     };
   }, [updateScrollState]);
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(() => {
-      updateScrollState();
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [updateScrollState, images.length]);
 
   const scroll = (direction: 'left' | 'right') => {
     const el = trackRef.current;
@@ -156,7 +155,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
           {images.map((src, idx) => (
             <div
               key={`${activeId}-${idx}`}
-              className="shrink-0 snap-start rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100"
+              className="shrink-0 snap-start rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100 min-w-[280px] sm:min-w-[320px]"
               style={{ height: '360px' }}
             >
               <img
@@ -165,6 +164,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
                 loading={idx < 4 ? 'eager' : 'lazy'}
                 decoding="async"
                 fetchPriority={idx < 2 ? 'high' : undefined}
+                onLoad={handleImageLoad}
                 className="h-full w-auto max-w-none object-contain"
               />
             </div>
