@@ -385,9 +385,16 @@ export const Testimonials: React.FC = () => {
     el.addEventListener('scroll', updateScrollState, { passive: true });
     window.addEventListener('resize', updateScrollState);
     updateScrollState();
+    requestAnimationFrame(updateScrollState);
+
+    const ro = new ResizeObserver(() => updateScrollState());
+    ro.observe(el);
+    for (const child of Array.from(el.children)) ro.observe(child);
+
     return () => {
       el.removeEventListener('scroll', updateScrollState);
       window.removeEventListener('resize', updateScrollState);
+      ro.disconnect();
     };
   }, [updateScrollState, reviews]);
 

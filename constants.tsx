@@ -92,6 +92,22 @@ export const INCLUDED_FEATURES: Feature[] = [
   { id: '8', title: 'Free Parking', description: 'Complimentary on-site parking for all guests.', icon: 'local_parking' }
 ];
 
+/** Images whose pixel data is rotated 90° CCW (EXIF stripped). Rotate 90° CW to display upright. */
+export const ROTATED_90CW: Set<string> = new Set([
+  'https://static.wixstatic.com/media/9356bd_0f7ad23f131d43579af31efc6aff1fc9~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_72b4de6522874b8cb019957a09d9fb79~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_71c947440a164b779bda8ed03c0d3b29~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_eb6eb420ac394650bad2dab7954b40bb~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_3c005c17da944e3e9f9c73647e1c5d51~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_c4eb27d54bc04113bb06dd80f4f4be0d~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_8549bc15056648f89c25e8b7eea7b199~mv2.jpg',
+]);
+
+/** Images whose pixel data is rotated 90° CW (EXIF stripped). Rotate 90° CCW to display upright. */
+export const ROTATED_90CCW: Set<string> = new Set([
+  'https://static.wixstatic.com/media/9356bd_f5a9ad6d0ff04b4caaecd44e11f59bd6~mv2.jpg',
+]);
+
 /** Images per amenity tab (feature id → URLs). Used by AmenityTabs and Gallery. */
 export const AMENITY_IMAGES: Record<string, string[]> = {
   '1': [

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Feature } from '../types';
-import { AMENITY_IMAGES } from '../constants';
+import { AMENITY_IMAGES, ROTATED_90CW, ROTATED_90CCW } from '../constants';
 
 interface AmenityTabsProps {
   features: Feature[];
@@ -23,21 +23,13 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
     setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
   }, []);
 
-  const handleImageLoad = useCallback(() => {
-    updateScrollState();
-  }, [updateScrollState]);
-
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollLeft = 0;
-    if (images.length > 1) {
-      setCanScrollRight(true);
-    }
     updateScrollState();
-    const timers = [100, 300, 800].map((ms) => setTimeout(updateScrollState, ms));
-    return () => timers.forEach(clearTimeout);
-  }, [activeId, images.length, updateScrollState]);
+    requestAnimationFrame(updateScrollState);
+  }, [activeId, updateScrollState]);
 
   useEffect(() => {
     const preload = (src: string) => {
@@ -62,11 +54,22 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
     el.addEventListener('scroll', updateScrollState, { passive: true });
     window.addEventListener('resize', updateScrollState);
     updateScrollState();
+
+    const ro = new ResizeObserver(() => updateScrollState());
+    ro.observe(el);
+    for (const child of Array.from(el.children)) ro.observe(child);
+
+    const handleImgLoad = () => updateScrollState();
+    const imgs = el.querySelectorAll('img');
+    imgs.forEach((img) => img.addEventListener('load', handleImgLoad));
+
     return () => {
       el.removeEventListener('scroll', updateScrollState);
       window.removeEventListener('resize', updateScrollState);
+      ro.disconnect();
+      imgs.forEach((img) => img.removeEventListener('load', handleImgLoad));
     };
-  }, [updateScrollState]);
+  }, [updateScrollState, activeId]);
 
   const scroll = (direction: 'left' | 'right') => {
     const el = trackRef.current;
@@ -152,23 +155,48 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
           className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {images.map((src, idx) => (
-            <div
-              key={`${activeId}-${idx}`}
-              className="shrink-0 snap-start rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100 min-w-[280px] sm:min-w-[320px]"
-              style={{ height: '360px' }}
-            >
-              <img
-                src={src}
-                alt={`${activeFeature.title} — image ${idx + 1}`}
-                loading={idx < 4 ? 'eager' : 'lazy'}
-                decoding="async"
-                fetchPriority={idx < 2 ? 'high' : undefined}
-                onLoad={handleImageLoad}
-                className="h-full w-auto max-w-none object-contain"
-              />
-            </div>
-          ))}
+          {images.map((src, idx) => {
+            const rotateCW = ROTATED_90CW.has(src);
+            const rotateCCW = ROTATED_90CCW.has(src);
+
+            if (rotateCW || rotateCCW) {
+              const deg = rotateCW ? 90 : -90;
+              return (
+                <div
+                  key={`${activeId}-${idx}`}
+                  className="shrink-0 snap-start rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100"
+                  style={{ height: '360px', width: '270px' }}
+                >
+                  <img
+                    src={src}
+                    alt={`${activeFeature.title} — image ${idx + 1}`}
+                    loading={idx < 4 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    fetchPriority={idx < 2 ? 'high' : undefined}
+                    className="w-full h-full object-cover"
+                    style={{ transform: `rotate(${deg}deg) scale(1.334)` }}
+                  />
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={`${activeId}-${idx}`}
+                className="shrink-0 snap-start rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100"
+                style={{ height: '360px' }}
+              >
+                <img
+                  src={src}
+                  alt={`${activeFeature.title} — image ${idx + 1}`}
+                  loading={idx < 4 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  fetchPriority={idx < 2 ? 'high' : undefined}
+                  className="h-full w-auto max-w-none object-contain"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
