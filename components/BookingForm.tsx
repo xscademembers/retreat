@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EXPERIENCE_TIERS, SANCTUARIES } from '../constants';
+import { wixImg } from '../utils/wixImage';
 
 const EXTRA_PERSON_PRICE = 999;
 const MAX_ROOMS_PER_TYPE = 2;
@@ -1042,7 +1043,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                             >
                               <div className="flex flex-row sm:flex-col h-full">
                                 <div className="w-28 h-full shrink-0 sm:w-full sm:h-36 bg-gray-100">
-                                  <img src={s.image} alt={s.name} className="w-full h-full object-cover" loading="lazy" />
+                                  <img src={wixImg(s.image, 160, 144)} alt={s.name} className="w-full h-full object-cover" loading="lazy" />
                                 </div>
                                 <div className="flex-1 flex items-center justify-between gap-2 p-3 sm:p-2.5">
                                   <div className="min-w-0">
@@ -1108,7 +1109,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         }`}
                       >
                         <div className="aspect-[4/3] bg-gray-100">
-                          <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+                          <img src={wixImg(room.image, 240, 180)} alt={room.name} className="w-full h-full object-cover" loading="lazy" />
                         </div>
                         <div className="p-3">
                           <span className="font-bold text-primary">{room.name}</span>

@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { wixImg } from '../utils/wixImage';
 
 interface HeroSlide {
   id: string;
@@ -49,6 +50,9 @@ const SLIDES: HeroSlide[] = [
   },
 ];
 
+const HERO_W = 1920;
+const HERO_H = 1080;
+
 export const Hero: React.FC = () => {
   const [current, setCurrent] = useState(0);
 
@@ -77,7 +81,6 @@ export const Hero: React.FC = () => {
       className="relative h-screen min-h-[600px] overflow-hidden"
       aria-label="Featured experiences at Salsons Retreat"
     >
-      {/* Slides */}
       {SLIDES.map((slide, index) => (
         <div
           key={slide.id}
@@ -87,18 +90,25 @@ export const Hero: React.FC = () => {
           aria-hidden={index !== current}
         >
           {slide.mediaType === 'image' ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `linear-gradient(120deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35)), url('${slide.src}')`,
-                backgroundPosition:
-                  slide.position === 'top'
-                    ? 'top center'
-                    : slide.position === 'bottom'
-                    ? 'bottom center'
-                    : 'center center',
-              }}
-            />
+            <>
+              <img
+                src={wixImg(slide.src, HERO_W, HERO_H)}
+                alt=""
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding={index === 0 ? 'sync' : 'async'}
+                fetchPriority={index === 0 ? 'high' : undefined}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{
+                  objectPosition:
+                    slide.position === 'top'
+                      ? 'top center'
+                      : slide.position === 'bottom'
+                      ? 'bottom center'
+                      : 'center center',
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/55 to-black/35" />
+            </>
           ) : (
             <video
               className="absolute inset-0 w-full h-full object-cover"

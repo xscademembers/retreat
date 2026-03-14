@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Amenity } from '../types';
+import { wixImg } from '../utils/wixImage';
 
 interface AmenitySectionProps {
   amenity: Amenity;
@@ -20,7 +21,7 @@ export const AmenitySection: React.FC<AmenitySectionProps> = ({ amenity, reverse
       <div className="w-full lg:w-1/2 overflow-hidden relative min-h-[280px] sm:min-h-[400px]">
         <img
           className="w-full h-full object-cover absolute inset-0 transition-transform duration-[3s] hover:scale-105"
-          src={amenity.image}
+          src={wixImg(amenity.image, 800, 600)}
           alt={amenity.title}
           loading="lazy"
           decoding="async"

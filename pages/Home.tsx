@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EXPERIENCE_TIERS, INCLUDED_FEATURES, SANCTUARIES } from '../constants';
+import { wixImg } from '../utils/wixImage';
 import { Hero } from '../components/Hero';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
@@ -15,16 +16,16 @@ export const Home: React.FC = () => {
   const nightCarouselRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const urls = [
-      ...EXPERIENCE_TIERS.map((tier) => tier.image),
-      ...SANCTUARIES.map((s) => s.image),
-    ];
-
-    urls.forEach((src) => {
-      if (!src) return;
-      const img = new Image();
-      img.src = src;
-    });
+    if (typeof window === 'undefined') return;
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => {
+        EXPERIENCE_TIERS.forEach((tier) => {
+          if (!tier.image) return;
+          const img = new Image();
+          img.src = tier.image;
+        });
+      });
+    }
   }, []);
 
   const scrollCarousel = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
@@ -109,7 +110,7 @@ export const Home: React.FC = () => {
                 >
                   <div className="relative pb-[70%]">
                     <img
-                      src={tier.image}
+                      src={wixImg(tier.image, 400, 280)}
                       alt={tier.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
@@ -169,7 +170,7 @@ export const Home: React.FC = () => {
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
                     <img
-                      src={tier.image}
+                      src={wixImg(tier.image, 500, 350)}
                       alt={tier.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
@@ -236,7 +237,7 @@ export const Home: React.FC = () => {
                 >
                   <div className="relative pb-[70%]">
                     <img
-                      src={s.image}
+                      src={wixImg(s.image, 400, 280)}
                       alt={s.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
@@ -294,7 +295,7 @@ export const Home: React.FC = () => {
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
                     <img
-                      src={s.image}
+                      src={wixImg(s.image, 400, 280)}
                       alt={s.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"

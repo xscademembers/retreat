@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SANCTUARIES } from '../constants';
+import { wixImg } from '../utils/wixImage';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 type RoomId = 'cabana' | 'cottage' | 'villa';
@@ -40,7 +41,7 @@ export const NightVisit: React.FC = () => {
                 <article className="relative h-full rounded-3xl overflow-hidden shadow-lg group bg-black/80">
                   <div className="relative pb-[70%]">
                     <img
-                      src={s.image}
+                      src={wixImg(s.image, 500, 350)}
                       alt={s.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"

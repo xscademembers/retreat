@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Home } from './pages/Home';
-import { Packages } from './pages/Packages';
-import { BookNow } from './pages/BookNow';
-import { Amenities } from './pages/Amenities';
-import { NightVisit } from './pages/NightVisit';
-import { Accommodation } from './pages/Accommodation';
-import { Corporate } from './pages/Corporate';
-import { Schools } from './pages/Schools';
+
+const Packages = lazy(() => import('./pages/Packages').then((m) => ({ default: m.Packages })));
+const BookNow = lazy(() => import('./pages/BookNow').then((m) => ({ default: m.BookNow })));
+const Amenities = lazy(() => import('./pages/Amenities').then((m) => ({ default: m.Amenities })));
+const NightVisit = lazy(() => import('./pages/NightVisit').then((m) => ({ default: m.NightVisit })));
+const Accommodation = lazy(() => import('./pages/Accommodation').then((m) => ({ default: m.Accommodation })));
+const Corporate = lazy(() => import('./pages/Corporate').then((m) => ({ default: m.Corporate })));
+const Schools = lazy(() => import('./pages/Schools').then((m) => ({ default: m.Schools })));
 
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,16 +59,18 @@ const AppShell: React.FC = () => {
       </a>
       <Navbar isScrolled={isScrolled} isHome={isHome} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/day-spend" element={<Packages />} />
-        <Route path="/book-now" element={<BookNow />} />
-        <Route path="/amenities" element={<Amenities />} />
-        <Route path="/night-visit" element={<NightVisit />} />
-        <Route path="/accommodation" element={<Accommodation />} />
-        <Route path="/corporate" element={<Corporate />} />
-        <Route path="/schools" element={<Schools />} />
-      </Routes>
+      <Suspense fallback={<div className="min-h-screen" />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/day-spend" element={<Packages />} />
+          <Route path="/book-now" element={<BookNow />} />
+          <Route path="/amenities" element={<Amenities />} />
+          <Route path="/night-visit" element={<NightVisit />} />
+          <Route path="/accommodation" element={<Accommodation />} />
+          <Route path="/corporate" element={<Corporate />} />
+          <Route path="/schools" element={<Schools />} />
+        </Routes>
+      </Suspense>
 
       <Footer />
       <WhatsAppFloat />

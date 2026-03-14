@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Sanctuary } from '../types';
+import { wixImg } from '../utils/wixImage';
 
 interface SanctuaryCardProps {
   sanctuary: Sanctuary;
@@ -17,7 +18,7 @@ export const SanctuaryCard: React.FC<SanctuaryCardProps> = ({ sanctuary }) => {
       <div className="h-64 overflow-hidden">
         <img
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          src={sanctuary.image}
+          src={wixImg(sanctuary.image, 400, 256)}
           alt={sanctuary.name}
           loading="lazy"
           decoding="async"

@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SANCTUARIES } from '../constants';
+import { wixImg } from '../utils/wixImage';
 
 type RoomId = 'cabana' | 'cottage' | 'villa';
 
@@ -160,7 +161,7 @@ export const Accommodation: React.FC = () => {
               <div className="relative overflow-hidden rounded-3xl shadow-lg bg-gray-200">
                 <div className="relative pb-[65%]">
                   <img
-                    src={activeRoom.images[activeImageIndex]}
+                    src={wixImg(activeRoom.images[activeImageIndex], 800, 520)}
                     alt={activeRoom.title}
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="eager"
@@ -204,7 +205,7 @@ export const Accommodation: React.FC = () => {
                     }`}
                   >
                     <img
-                      src={img}
+                      src={wixImg(img, 128, 72)}
                       alt={`${activeRoom.title} image ${idx + 1}`}
                       className="w-full h-full object-cover"
                       loading="lazy"

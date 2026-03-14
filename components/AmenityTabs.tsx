@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Feature } from '../types';
 import { AMENITY_IMAGES, ROTATED_90CW, ROTATED_90CCW } from '../constants';
+import { wixImg } from '../utils/wixImage';
 
 interface AmenityTabsProps {
   features: Feature[];
@@ -168,7 +169,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
                   style={{ height: '360px', width: '270px' }}
                 >
                   <img
-                    src={src}
+                    src={wixImg(src, 270, 360)}
                     alt={`${activeFeature.title} — image ${idx + 1}`}
                     loading={idx < 4 ? 'eager' : 'lazy'}
                     decoding="async"
@@ -187,7 +188,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
                 style={{ height: '360px' }}
               >
                 <img
-                  src={src}
+                  src={wixImg(src, 480, 360)}
                   alt={`${activeFeature.title} — image ${idx + 1}`}
                   loading={idx < 4 ? 'eager' : 'lazy'}
                   decoding="async"
