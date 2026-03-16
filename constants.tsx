@@ -7,7 +7,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     name: 'Basic',
     price: 990,
     description: 'Entry, pool access, farm-to-table lunch, and sports. Perfect for a relaxed day in nature.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745403976516-scaled.jpg',
+    image: 'https://static.wixstatic.com/media/9356bd_3816a1b00f28406f9c5b34e61a665185~mv2.webp',
     icon: 'water_drop',
     features: ['Entry & welcome drink', 'Pool access', 'Lunch (farm-to-table, fresh hot Andhra food)', 'Sports (Cricket, Basketball, Football, Volleyball, Throwball)', 'Evening tea & cookies']
   },
@@ -25,7 +25,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     name: 'Adventure',
     price: 1499,
     description: 'Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
+    image: 'https://static.wixstatic.com/media/9356bd_3b34eead3ee14eb8ac3a8cb75ea1d6ce~mv2.webp',
     recommended: true,
     icon: 'sailing',
     features: ['Everything in Basic', 'Barbecue (veg & non-veg options available)', 'Boating at Thatipudi Reservoir']
@@ -38,7 +38,7 @@ export const AMENITIES: Amenity[] = [
     number: '01',
     title: 'Boating at Thatipudi Reservoir',
     description: 'Glide through calm waters with a scenic boating experience at Thatipudi Reservoir, just 2 minutes from our retreat. A peaceful escape surrounded by nature.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745404223339-scaled.jpg',
+    image: 'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
     cta: 'Learn More',
     icon: 'sailing'
   },
@@ -65,7 +65,7 @@ export const AMENITIES: Amenity[] = [
     number: '04',
     title: 'BBQ at the Poolside Deck',
     description: 'Enjoy mouth-watering barbecue served fresh on our breezy poolside deck. Both veg and non-veg options available for the perfect outdoor dining experience.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745823767758-scaled.jpg',
+    image: 'https://static.wixstatic.com/media/9356bd_b9b735c1f92f4b2a94d7db8cfe09eba1~mv2.webp',
     cta: 'Learn More',
     icon: 'restaurant'
   },
@@ -111,12 +111,12 @@ export const ROTATED_90CCW: Set<string> = new Set([
 /** Images per amenity tab (feature id → URLs). Used by AmenityTabs and Gallery. */
 export const AMENITY_IMAGES: Record<string, string[]> = {
   '1': [
-    'https://static.wixstatic.com/media/9356bd_e009e20cd3324bd3897697857c10e2c9~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_0cd3be2497a84062bbec961c4d4f8755~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_2f754596e62b44bfbaf4bf5cb4d09b76~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_6208e3777f554b45bac8222ec20c614f~mv2.jpg',
-    'https://static.wixstatic.com/media/9356bd_30ebc9e931a44442a89dec6fb271711b~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_8d7e3b6c9ba44bdd890d1f62f71333c5~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_b4992d19dffc46869c5b07039e4b47cb~mv2.jpg',
-    'https://static.wixstatic.com/media/9356bd_0d2f28ee3daa400eae63a56be711accd~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_5043d2c8593e4db2beeb30ef46c82fb0~mv2.jpg',
   ],
   '2': [
     'https://static.wixstatic.com/media/9356bd_2bd050337a89460eb03a3ae211182d6a~mv2.webp',
@@ -178,7 +178,7 @@ export const AMENITY_IMAGES: Record<string, string[]> = {
     'https://static.wixstatic.com/media/9356bd_85df8a71399c4cfebc661d8740919d9a~mv2.webp',
     'https://static.wixstatic.com/media/9356bd_1195f96b976648a0945b0a2c4966090d~mv2.webp',
     'https://static.wixstatic.com/media/9356bd_e4912cc4b0934dfcbe16e71fb3de2260~mv2.webp',
-    'https://static.wixstatic.com/media/9356bd_8d09b500edd44f90b88c224646be0be3~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_f5158b166f1442a3943ae4ed3af2e741~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_2a90d80607074ad58a9e61215ad25463~mv2.webp',
     'https://static.wixstatic.com/media/9356bd_4b4d2bcfe26141ae934f57285fe9e223~mv2.webp',
     'https://static.wixstatic.com/media/9356bd_90b0787fb3e64e178cdcbb49b841c4a5~mv2.webp',
@@ -208,7 +208,7 @@ export const SANCTUARIES: Sanctuary[] = [
     price: 2999,
     nightPrice: 3999,
     description: 'Cozy lake-facing cabanas with a private deck and terrace, perfect for glamping in nature. Enjoy stunning views, open skies, and a unique stay experience. 11 am to 7 pm.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/07/20250205_063355-768x1024.jpg'
+    image: 'https://static.wixstatic.com/media/9356bd_463e12e935b94c90b510dd8119516c4a~mv2.jpg'
   },
   {
     id: 'cottage',
@@ -216,7 +216,7 @@ export const SANCTUARIES: Sanctuary[] = [
     price: 1999,
     nightPrice: 2999,
     description: 'A charming cottage with two rooms and a dormitory, surrounded by gardens and open spaces. Spacious and homely, designed for relaxed stays with family or friends. 11 am to 7 pm.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01969-1024x683.jpeg',
+    image: 'https://static.wixstatic.com/media/9356bd_66a79d614dc04d8995eba15e30bf8122~mv2.webp',
     tag: 'Best Value'
   },
   {
@@ -225,6 +225,6 @@ export const SANCTUARIES: Sanctuary[] = [
     price: 2999,
     nightPrice: 3999,
     description: 'An elegant villa with two spacious rooms and large verandahs opening into lush greens. Thoughtfully designed for serene mornings and peaceful stays. 11 am to 7 pm.',
-    image: 'https://salsonsretreat.com/wp-content/uploads/2025/07/DSC01937-1-1024x683.jpeg'
+    image: 'https://static.wixstatic.com/media/9356bd_ff7051479d6d42dcb67197b538b55359~mv2.webp'
   }
 ];
