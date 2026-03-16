@@ -67,6 +67,34 @@ export const Hero: React.FC = () => {
     return () => window.clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Preload first two hero images quickly, others when the browser is idle
+    const preload = (src: string) => {
+      const img = new Image();
+      img.src = wixImg(src, HERO_W, HERO_H);
+    };
+
+    preload(SLIDES[0].src);
+    if (SLIDES[1]) {
+      preload(SLIDES[1].src);
+    }
+
+    const idleCallback =
+      typeof window !== 'undefined' && 'requestIdleCallback' in window
+        ? (window as any).requestIdleCallback
+        : null;
+
+    if (idleCallback) {
+      idleCallback(() => {
+        SLIDES.slice(2).forEach((slide) => {
+          if (slide.mediaType === 'image') {
+            preload(slide.src);
+          }
+        });
+      });
+    }
+  }, []);
+
   const activeSlide = SLIDES[current];
 
   const goTo = (index: number) => {
