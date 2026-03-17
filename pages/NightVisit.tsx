@@ -14,7 +14,7 @@ export const NightVisit: React.FC = () => {
   };
 
   return (
-    <main id="main-content" className="pt-20 sm:pt-24">
+    <main id="main-content" className="pt-12 sm:pt-16">
       <section className="py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12 bg-white">
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="max-w-3xl">

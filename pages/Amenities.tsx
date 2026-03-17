@@ -7,7 +7,7 @@ import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 export const Amenities: React.FC = () => {
   return (
-    <main id="main-content" className="pt-20 sm:pt-24">
+    <main id="main-content" className="pt-12 sm:pt-16">
       {/* Hero / Intro */}
       <section className="bg-primary text-white py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12">
         <div className="max-w-5xl mx-auto text-center space-y-6">

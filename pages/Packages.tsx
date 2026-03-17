@@ -6,7 +6,7 @@ import { AnimateOnScroll } from '../components/AnimateOnScroll';
 
 export const Packages: React.FC = () => {
   return (
-    <main id="main-content" className="pt-20 sm:pt-24">
+    <main id="main-content" className="pt-12 sm:pt-16">
       <section id="packages" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
           <AnimateOnScroll animation="fade-up" className="text-center max-w-2xl mx-auto mb-16">

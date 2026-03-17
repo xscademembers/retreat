@@ -540,12 +540,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     const formData = new FormData(form);
     const name = ((formData.get('name') as string) || '').trim() || 'N/A';
     const phone = ((formData.get('phone') as string) || '').trim() || 'N/A';
+    const company = ((formData.get('company') as string) || '').trim();
 
     const lines: string[] = [];
     lines.push('Booking enquiry - Salsons Retreat');
     lines.push('');
     lines.push(`Name: ${name}`);
     lines.push(`Phone: ${phone}`);
+    if (company) {
+      lines.push(`Company: ${company}`);
+    }
 
     if (visitType === 'day') {
       const tier = EXPERIENCE_TIERS.find((t) => t.id === selectedDayTier);
@@ -1560,6 +1564,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         className={inputClass}
                         value={checkInDate}
                         onChange={(e) => setCheckInDate(e.target.value)}
+                        onClick={(e) => {
+                          const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+                          input.showPicker?.();
+                        }}
                         required
                         aria-required="true"
                       />
@@ -1575,6 +1583,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         className={inputClass}
                         value={checkOutDate}
                         onChange={(e) => setCheckOutDate(e.target.value)}
+                        onClick={(e) => {
+                          const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+                          input.showPicker?.();
+                        }}
                         required
                         aria-required="true"
                       />
@@ -1592,6 +1604,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                       className={inputClass}
                       value={entryDate}
                       onChange={(e) => setEntryDate(e.target.value)}
+                      onClick={(e) => {
+                        const input = e.currentTarget as HTMLInputElement & { showPicker?: () => void };
+                        input.showPicker?.();
+                      }}
                       required
                       aria-required="true"
                     />
@@ -1638,6 +1654,21 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                     />
                   </div>
                 </div>
+                {visitType === 'day' && (
+                  <div>
+                    <label htmlFor="book-company" className={labelClass}>
+                      Company name <span className="text-gray-400 text-xs font-normal">(optional)</span>
+                    </label>
+                    <input
+                      id="book-company"
+                      type="text"
+                      name="company"
+                      className={inputClass}
+                      placeholder="Your company (optional)"
+                      aria-required="false"
+                    />
+                  </div>
+                )}
               </div>
             </section>
           )}

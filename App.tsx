@@ -11,7 +11,7 @@ const Amenities = lazy(() => import('./pages/Amenities').then((m) => ({ default:
 const NightVisit = lazy(() => import('./pages/NightVisit').then((m) => ({ default: m.NightVisit })));
 const Accommodation = lazy(() => import('./pages/Accommodation').then((m) => ({ default: m.Accommodation })));
 const Corporate = lazy(() => import('./pages/Corporate').then((m) => ({ default: m.Corporate })));
-const Schools = lazy(() => import('./pages/Schools').then((m) => ({ default: m.Schools })));
+const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -68,12 +68,12 @@ const AppShell: React.FC = () => {
           <Route path="/night-visit" element={<NightVisit />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/corporate" element={<Corporate />} />
-          <Route path="/schools" element={<Schools />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
 
       <Footer />
-      <WhatsAppFloat />
+      {location.pathname !== '/corporate' && <WhatsAppFloat />}
     </div>
   );
 };

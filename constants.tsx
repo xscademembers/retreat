@@ -199,6 +199,27 @@ export const AMENITY_IMAGES: Record<string, string[]> = {
     'https://static.wixstatic.com/media/9356bd_d054a7523ffe40a19119b7d594c1dc32~mv2.webp',
     'https://static.wixstatic.com/media/9356bd_1409902ce75f464b98a31e88c56c87bf~mv2.webp',
   ],
+  // Corporate activities (reuse existing visuals for now)
+  swim: [
+    'https://static.wixstatic.com/media/9356bd_0cd3be2497a84062bbec961c4d4f8755~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_2f754596e62b44bfbaf4bf5cb4d09b76~mv2.jpg',
+  ],
+  'cricket-activity': [
+    'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_0b96740b7f94421390f2ef977fb2966d~mv2.jpg',
+  ],
+  'volleyball-activity': [
+    'https://static.wixstatic.com/media/9356bd_72b4de6522874b8cb019957a09d9fb79~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_3c005c17da944e3e9f9c73647e1c5d51~mv2.jpg',
+  ],
+  'boating-activity': [
+    'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_cf3a8a3d18cf48e8897bc3c754cba84b~mv2.jpg',
+  ],
+  'bonfire-activity': [
+    'https://static.wixstatic.com/media/9356bd_b9b735c1f92f4b2a94d7db8cfe09eba1~mv2.webp',
+    'https://static.wixstatic.com/media/9356bd_0d3d890ee54b4283966963dd6e6237e6~mv2.jpg',
+  ],
 };
 
 export const SANCTUARIES: Sanctuary[] = [
