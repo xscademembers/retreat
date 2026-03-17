@@ -47,6 +47,15 @@ export default async function handler(req, res) {
     const method = req.method || 'GET';
 
     if (method === 'GET') {
+      const slugParam = req.query?.slug;
+      if (slugParam) {
+        const doc = await collection.findOne({ slug: slugParam, published: true });
+        if (!doc) {
+          return res.status(404).json({ error: 'Not found' });
+        }
+        return res.status(200).json(normalizePost(doc));
+      }
+
       const onlyPublished = req.query?.published === 'true';
       const filter = onlyPublished ? { published: true } : {};
       const docs = await collection.find(filter).sort({ createdAt: -1 }).toArray();

@@ -39,7 +39,7 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const res = await fetch(`/api/blogs/${encodeURIComponent(slug)}`);
+  const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Failed to load post (${res.status})`);
   return res.json();
