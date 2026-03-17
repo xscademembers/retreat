@@ -45,7 +45,7 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const res = await fetch(`/api/blogs-[slug]?slug=${encodeURIComponent(slug)}`);
+  const res = await fetch(`/api/blogs/${encodeURIComponent(slug)}`);
   if (res.status === 404) return null;
   return handleResponse<BlogPost>(res);
 }

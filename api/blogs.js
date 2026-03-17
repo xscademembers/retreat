@@ -1,4 +1,4 @@
-const { MongoClient, ObjectId } = require('mongodb');
+import { MongoClient, ObjectId } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || 'salsons';
@@ -37,7 +37,7 @@ function normalizePost(doc) {
   };
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
   const method = req.method || 'GET';
@@ -114,5 +114,5 @@ module.exports = async (req, res) => {
     console.error('Blog API error', err);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
