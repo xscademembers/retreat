@@ -4,9 +4,32 @@ import { getPublishedPosts, BlogPost } from '../utils/blogStore';
 
 export const BlogList: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setPosts(getPublishedPosts());
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await getPublishedPosts();
+        if (!cancelled) {
+          setPosts(data);
+          setError(null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError('Unable to load blog posts right now.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const formatDate = (iso: string) => {
@@ -39,7 +62,15 @@ export const BlogList: React.FC = () => {
           <div className="mt-6 w-16 h-0.5 bg-accent-gold mx-auto" />
         </header>
 
-        {posts.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <p className="text-lg text-text-muted">Loading posts...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+            <p className="text-lg text-text-muted">{error}</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="text-center py-20">
             <span
               className="material-symbols-outlined text-5xl text-primary/30 mb-4 block"

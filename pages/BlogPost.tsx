@@ -37,18 +37,34 @@ export const BlogPost: React.FC = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!slug) {
-      setNotFound(true);
-      return;
-    }
-    const found = getPostBySlug(slug);
-    if (found) {
-      setPost(found);
-    } else {
-      setNotFound(true);
-    }
+    let cancelled = false;
+    (async () => {
+      if (!slug) {
+        setNotFound(true);
+        return;
+      }
+      try {
+        const found = await getPostBySlug(slug);
+        if (cancelled) return;
+        if (found) {
+          setPost(found);
+          setNotFound(false);
+          setError(null);
+        } else {
+          setNotFound(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Unable to load this post right now.');
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   const formatDate = (iso: string) => {
@@ -90,6 +106,23 @@ export const BlogPost: React.FC = () => {
             <div className="h-4 bg-primary/10 rounded w-1/4" />
             <div className="h-64 bg-primary/10 rounded mt-8" />
           </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main id="main-content" className="pt-20 sm:pt-24 min-h-[70vh] flex items-center justify-center bg-background-soft px-4">
+        <div className="text-center">
+          <p className="text-text-muted mb-4">{error}</p>
+          <Link
+            to="/blogs"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+            Back to Blog
+          </Link>
         </div>
       </main>
     );

@@ -377,28 +377,39 @@ const Dashboard: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editing, setEditing] = useState<Partial<BlogPost> | null | 'new'>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const loadPosts = useCallback(() => {
-    const all = getAllPosts().sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-    setPosts(all);
+  const loadPosts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const all = await getAllPosts();
+      const sorted = all.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setPosts(sorted);
+      setError(null);
+    } catch (err) {
+      setError('Unable to load posts. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    loadPosts();
+    void loadPosts();
   }, [loadPosts]);
 
-  const handleSave = (data: Partial<BlogPost>) => {
-    savePost(data as any);
+  const handleSave = async (data: Partial<BlogPost>) => {
+    await savePost(data as any);
     setEditing(null);
-    loadPosts();
+    void loadPosts();
   };
 
-  const handleDelete = (id: string) => {
-    deletePost(id);
+  const handleDelete = async (id: string) => {
+    await deletePost(id);
     setConfirmDelete(null);
-    loadPosts();
+    void loadPosts();
   };
 
   const handleLogout = () => {
@@ -455,7 +466,15 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
-        {posts.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
+            <p className="text-lg text-text-muted">Loading posts...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
+            <p className="text-lg text-text-muted">{error}</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
             <span className="material-symbols-outlined text-5xl text-primary/20 mb-3 block" aria-hidden="true">
               edit_note
