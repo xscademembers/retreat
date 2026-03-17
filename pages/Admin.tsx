@@ -84,7 +84,8 @@ const BlogEditor: React.FC<{
   post: Partial<BlogPost> | null;
   onSave: (post: Partial<BlogPost>) => void;
   onCancel: () => void;
-}> = ({ post, onSave, onCancel }) => {
+  saving: boolean;
+}> = ({ post, onSave, onCancel, saving }) => {
   const [title, setTitle] = useState(post?.title || '');
   const [featuredImage, setFeaturedImage] = useState(post?.featuredImage || '');
   const [blocks, setBlocks] = useState<BlogBlock[]>(
@@ -125,7 +126,7 @@ const BlogEditor: React.FC<{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim() || saving) return;
     const date = dateInput ? new Date(dateInput + 'T00:00:00') : new Date();
     onSave({
       ...post,
@@ -148,20 +149,21 @@ const BlogEditor: React.FC<{
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm text-text-muted hover:text-primary border border-primary/20 rounded-lg transition-colors cursor-pointer"
+            disabled={saving}
+            className="px-4 py-2 text-sm text-text-muted hover:text-primary border border-primary/20 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-5 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
+            disabled={saving}
+            className="px-5 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50"
           >
-            {post?.id ? 'Update' : 'Publish'}
+            {saving ? 'Saving...' : post?.id ? 'Update' : 'Publish'}
           </button>
         </div>
       </div>
 
-      {/* Title */}
       <div>
         <label htmlFor="blog-title" className="block text-sm font-medium text-primary mb-1.5">
           Title
@@ -182,7 +184,6 @@ const BlogEditor: React.FC<{
         )}
       </div>
 
-      {/* Featured Image */}
       <div>
         <label htmlFor="featured-image" className="block text-sm font-medium text-primary mb-1.5">
           Featured Image URL
@@ -209,7 +210,6 @@ const BlogEditor: React.FC<{
         )}
       </div>
 
-      {/* Published Date */}
       <div>
         <label htmlFor="blog-date" className="block text-sm font-medium text-primary mb-1.5">
           Published Date
@@ -226,7 +226,6 @@ const BlogEditor: React.FC<{
         </p>
       </div>
 
-      {/* Published toggle */}
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -248,7 +247,6 @@ const BlogEditor: React.FC<{
         </span>
       </div>
 
-      {/* Content Blocks */}
       <fieldset>
         <legend className="text-sm font-medium text-primary mb-3">Content Blocks</legend>
         <div className="space-y-4">
@@ -272,9 +270,7 @@ const BlogEditor: React.FC<{
                     className="p-1 text-text-muted hover:text-primary disabled:opacity-30 transition-colors cursor-pointer"
                     aria-label="Move block up"
                   >
-                    <span className="material-symbols-outlined text-base" aria-hidden="true">
-                      arrow_upward
-                    </span>
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_upward</span>
                   </button>
                   <button
                     type="button"
@@ -283,9 +279,7 @@ const BlogEditor: React.FC<{
                     className="p-1 text-text-muted hover:text-primary disabled:opacity-30 transition-colors cursor-pointer"
                     aria-label="Move block down"
                   >
-                    <span className="material-symbols-outlined text-base" aria-hidden="true">
-                      arrow_downward
-                    </span>
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_downward</span>
                   </button>
                   <button
                     type="button"
@@ -293,9 +287,7 @@ const BlogEditor: React.FC<{
                     className="p-1 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
                     aria-label="Remove block"
                   >
-                    <span className="material-symbols-outlined text-base" aria-hidden="true">
-                      close
-                    </span>
+                    <span className="material-symbols-outlined text-base" aria-hidden="true">close</span>
                   </button>
                 </div>
               </div>
@@ -378,19 +370,20 @@ const Dashboard: React.FC = () => {
   const [editing, setEditing] = useState<Partial<BlogPost> | null | 'new'>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadPosts = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const all = await getAllPosts();
       const sorted = all.sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       setPosts(sorted);
-      setError(null);
-    } catch (err) {
-      setError('Unable to load posts. Please try again.');
+    } catch (err: any) {
+      setError(err?.message || 'Unable to load posts. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -401,15 +394,28 @@ const Dashboard: React.FC = () => {
   }, [loadPosts]);
 
   const handleSave = async (data: Partial<BlogPost>) => {
-    await savePost(data as any);
-    setEditing(null);
-    void loadPosts();
+    try {
+      setSaving(true);
+      setError(null);
+      await savePost(data as any);
+      setEditing(null);
+      await loadPosts();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to save post.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
-    await deletePost(id);
-    setConfirmDelete(null);
-    void loadPosts();
+    try {
+      setError(null);
+      await deletePost(id);
+      setConfirmDelete(null);
+      await loadPosts();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to delete post.');
+    }
   };
 
   const handleLogout = () => {
@@ -430,10 +436,16 @@ const Dashboard: React.FC = () => {
     return (
       <main id="main-content" className="pt-20 sm:pt-24 min-h-screen bg-background-soft">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+              {error}
+            </div>
+          )}
           <BlogEditor
             post={editing === 'new' ? null : (editing as Partial<BlogPost>)}
             onSave={handleSave}
             onCancel={() => setEditing(null)}
+            saving={saving}
           />
         </div>
       </main>
@@ -466,13 +478,15 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {loading ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
             <p className="text-lg text-text-muted">Loading posts...</p>
-          </div>
-        ) : error ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
-            <p className="text-lg text-text-muted">{error}</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-primary/10">
@@ -548,9 +562,7 @@ const Dashboard: React.FC = () => {
                       className="p-2 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
                       aria-label={`Delete ${post.title}`}
                     >
-                      <span className="material-symbols-outlined text-xl" aria-hidden="true">
-                        delete
-                      </span>
+                      <span className="material-symbols-outlined text-xl" aria-hidden="true">delete</span>
                     </button>
                   )}
                 </div>

@@ -37,34 +37,31 @@ export const BlogPost: React.FC = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [notFound, setNotFound] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      if (!slug) {
-        setNotFound(true);
-        return;
-      }
-      try {
-        const found = await getPostBySlug(slug);
+    if (!slug) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+    getPostBySlug(slug)
+      .then((found) => {
         if (cancelled) return;
         if (found) {
           setPost(found);
-          setNotFound(false);
-          setError(null);
         } else {
           setNotFound(true);
         }
-      } catch {
-        if (!cancelled) {
-          setError('Unable to load this post right now.');
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+      })
+      .catch(() => {
+        if (!cancelled) setNotFound(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
   }, [slug]);
 
   const formatDate = (iso: string) => {
@@ -75,6 +72,20 @@ export const BlogPost: React.FC = () => {
       day: 'numeric',
     });
   };
+
+  if (loading) {
+    return (
+      <main id="main-content" className="pt-20 sm:pt-24 min-h-screen bg-background-soft">
+        <div className="max-w-3xl mx-auto px-4 py-16">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-primary/10 rounded w-3/4" />
+            <div className="h-4 bg-primary/10 rounded w-1/4" />
+            <div className="h-64 bg-primary/10 rounded mt-8" />
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (notFound) {
     return (
@@ -97,36 +108,7 @@ export const BlogPost: React.FC = () => {
     );
   }
 
-  if (!post) {
-    return (
-      <main id="main-content" className="pt-20 sm:pt-24 min-h-screen bg-background-soft">
-        <div className="max-w-3xl mx-auto px-4 py-16">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-primary/10 rounded w-3/4" />
-            <div className="h-4 bg-primary/10 rounded w-1/4" />
-            <div className="h-64 bg-primary/10 rounded mt-8" />
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main id="main-content" className="pt-20 sm:pt-24 min-h-[70vh] flex items-center justify-center bg-background-soft px-4">
-        <div className="text-center">
-          <p className="text-text-muted mb-4">{error}</p>
-          <Link
-            to="/blogs"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
-            Back to Blog
-          </Link>
-        </div>
-      </main>
-    );
-  }
+  if (!post) return null;
 
   return (
     <main id="main-content" className="pt-20 sm:pt-24 min-h-screen bg-background-soft">

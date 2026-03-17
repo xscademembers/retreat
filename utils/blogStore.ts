@@ -14,13 +14,8 @@ export interface BlogPost {
   published: boolean;
 }
 
-const STORAGE_KEY = 'salsons_blog_posts';
 const AUTH_KEY = 'salsons_admin_auth';
 const ADMIN_PASSWORD = 'admin123';
-
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
 
 export function slugify(text: string): string {
   return text
@@ -31,58 +26,46 @@ export function slugify(text: string): string {
     .replace(/-+/g, '-');
 }
 
-export function getAllPosts(): BlogPost[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as BlogPost[];
-  } catch {
-    return [];
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const res = await fetch('/api/blogs');
+  if (!res.ok) throw new Error(`Failed to load posts (${res.status})`);
+  return res.json();
+}
+
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  const res = await fetch('/api/blogs?published=true');
+  if (!res.ok) throw new Error(`Failed to load posts (${res.status})`);
+  return res.json();
+}
+
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  const res = await fetch(`/api/blogs/${encodeURIComponent(slug)}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`Failed to load post (${res.status})`);
+  return res.json();
+}
+
+export async function savePost(
+  post: Partial<BlogPost> & { title: string; slug: string }
+): Promise<BlogPost> {
+  const method = post.id ? 'PUT' : 'POST';
+  const res = await fetch('/api/blogs', {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(post),
+  });
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => '');
+    throw new Error(errBody || `Failed to save post (${res.status})`);
   }
+  return res.json();
 }
 
-export function getPublishedPosts(): BlogPost[] {
-  return getAllPosts()
-    .filter((p) => p.published)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-}
-
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return getAllPosts().find((p) => p.slug === slug && p.published);
-}
-
-export function savePost(
-  post: Omit<BlogPost, 'id' | 'slug'> & { id?: string; slug?: string }
-): BlogPost {
-  const posts = getAllPosts();
-  const slug = post.slug || slugify(post.title);
-
-  if (post.id) {
-    const idx = posts.findIndex((p) => p.id === post.id);
-    if (idx !== -1) {
-      posts[idx] = { ...posts[idx], ...post, slug } as BlogPost;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-      return posts[idx];
-    }
-  }
-
-  const newPost: BlogPost = {
-    id: generateId(),
-    title: post.title,
-    slug,
-    blocks: post.blocks,
-    featuredImage: post.featuredImage,
-    createdAt: post.createdAt,
-    published: post.published,
-  };
-  posts.push(newPost);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-  return newPost;
-}
-
-export function deletePost(id: string): void {
-  const posts = getAllPosts().filter((p) => p.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+export async function deletePost(id: string): Promise<void> {
+  const res = await fetch(`/api/blogs?id=${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error(`Failed to delete post (${res.status})`);
 }
 
 export function loginAdmin(password: string): boolean {

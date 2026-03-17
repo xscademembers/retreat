@@ -4,24 +4,18 @@ const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || 'salsons';
 const collectionName = 'blogs';
 
-if (!uri) {
-  console.warn('MONGODB_URI is not set. Blog API will fail until this is configured.');
-}
-
 let cachedClient = null;
-let cachedDb = null;
 
 async function getDb() {
-  if (cachedDb) return cachedDb;
-  if (!uri) {
-    throw new Error('MONGODB_URI is not configured');
+  if (cachedClient) {
+    return cachedClient.db(dbName);
   }
-  const client = new MongoClient(uri);
-  await client.connect();
-  const db = client.db(dbName);
-  cachedClient = client;
-  cachedDb = db;
-  return db;
+  if (!uri) {
+    throw new Error('MONGODB_URI environment variable is not set');
+  }
+  cachedClient = new MongoClient(uri);
+  await cachedClient.connect();
+  return cachedClient.db(dbName);
 }
 
 function normalizePost(doc) {
@@ -38,33 +32,30 @@ function normalizePost(doc) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const slug = (req.query && (req.query.slug || req.query['slug'])) || null;
+  const slug = req.query?.slug;
 
   if (!slug) {
-    res.status(400).json({ error: 'slug is required' });
-    return;
+    return res.status(400).json({ error: 'slug is required' });
   }
 
   try {
     const db = await getDb();
     const collection = db.collection(collectionName);
     const doc = await collection.findOne({ slug, published: true });
+
     if (!doc) {
-      res.status(404).json({ error: 'Not found' });
-      return;
+      return res.status(404).json({ error: 'Not found' });
     }
-    const post = normalizePost(doc);
-    res.status(200).json(post);
+
+    return res.status(200).json(normalizePost(doc));
   } catch (err) {
-    console.error('Blog slug API error', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Blog slug API error:', err.message, err.stack);
+    return res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
-
