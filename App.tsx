@@ -12,6 +12,9 @@ const NightVisit = lazy(() => import('./pages/NightVisit').then((m) => ({ defaul
 const Accommodation = lazy(() => import('./pages/Accommodation').then((m) => ({ default: m.Accommodation })));
 const Corporate = lazy(() => import('./pages/Corporate').then((m) => ({ default: m.Corporate })));
 const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
+const BlogList = lazy(() => import('./pages/BlogList').then((m) => ({ default: m.BlogList })));
+const BlogPost = lazy(() => import('./pages/BlogPost').then((m) => ({ default: m.BlogPost })));
+const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,6 +51,8 @@ const AppShell: React.FC = () => {
   }, [location.pathname, location.hash]);
 
   const isHome = location.pathname === '/';
+  const isAdmin = location.pathname === '/admin';
+  const hideWhatsApp = location.pathname === '/corporate' || isAdmin;
 
   return (
     <div className="relative min-h-screen bg-white w-full">
@@ -57,7 +62,7 @@ const AppShell: React.FC = () => {
       >
         Skip to main content
       </a>
-      <Navbar isScrolled={isScrolled} isHome={isHome} />
+      {!isAdmin && <Navbar isScrolled={isScrolled} isHome={isHome} />}
 
       <Suspense fallback={<div className="min-h-screen" />}>
         <Routes>
@@ -68,12 +73,15 @@ const AppShell: React.FC = () => {
           <Route path="/night-visit" element={<NightVisit />} />
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/corporate" element={<Corporate />} />
+          <Route path="/blogs" element={<BlogList />} />
+          <Route path="/blogs/:slug" element={<BlogPost />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
 
-      <Footer />
-      {location.pathname !== '/corporate' && <WhatsAppFloat />}
+      {!isAdmin && <Footer />}
+      {!hideWhatsApp && <WhatsAppFloat />}
     </div>
   );
 };
