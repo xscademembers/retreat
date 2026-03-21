@@ -8,6 +8,10 @@ import { INCLUDED_FEATURES } from '../constants';
 
 const BROCHURE_URL = '#'; // replace with actual brochure link when available
 
+/** Hero banner — team / outdoor image (same CDN as itinerary section) */
+const CORPORATE_HERO_IMAGE =
+  'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg';
+
 const CORPORATE_ACTIVITIES: Feature[] = [
   {
     id: 'swim',
@@ -138,14 +142,16 @@ export const Corporate: React.FC = () => {
         className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
         aria-labelledby="corporate-hero-heading"
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              'url("https://salsonsretreat.com/wp-content/uploads/2025/05/KOLORO_1745829330144.jpg")',
-          }}
-          aria-hidden="true"
-        />
+        <div className="absolute inset-0" aria-hidden="true">
+          <img
+            src={CORPORATE_HERO_IMAGE}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" aria-hidden="true" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
