@@ -86,7 +86,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
   return (
     <div className="space-y-6 sm:space-y-8">
       <div
-        className="flex flex-wrap justify-start gap-2 sm:gap-3"
+        className="flex flex-wrap justify-center gap-2 sm:gap-3"
         role="tablist"
         aria-label="Amenity categories"
       >
@@ -153,7 +153,7 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
 
         <div
           ref={trackRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide"
+          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide justify-center"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {images.map((src, idx) => {

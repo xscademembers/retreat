@@ -1,16 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
 import { Feature } from '../types';
-import { INCLUDED_FEATURES } from '../constants';
+import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES } from '../constants';
 
 const BROCHURE_URL = '#'; // replace with actual brochure link when available
 
 /** Hero banner — team / outdoor image (same CDN as itinerary section) */
 const CORPORATE_HERO_IMAGE =
-  'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg';
+  'https://static.wixstatic.com/media/9356bd_71c8625bb8644c82970cefa10b21629c~mv2.jpg';
 
 const CORPORATE_ACTIVITIES: Feature[] = [
   {
@@ -48,98 +48,178 @@ const CORPORATE_ACTIVITIES: Feature[] = [
 const TRUSTED_CARDS = [
   {
     id: 'card-1',
-    company: 'Radisson',
-    testimonial:
-      'Our regional leadership team had a fantastic offsite at Salsons Retreat. The pool, food, and open spaces made it the perfect break from routine.',
+    company: 'Radisson Blu',
+    people: '180 ppl',
+    package: 'Day Spend (Basic – ₹990)',
+    transport: 'Arranged by Retreat',
     image:
       'https://static.wixstatic.com/media/9356bd_6208e3777f554b45bac8222ec20c614f~mv2.jpg',
   },
   {
     id: 'card-2',
-    company: 'Tech Mahindra',
-    testimonial:
-      'We brought 80+ engineers for a team-building day. The sports, boating, and BBQ kept everyone engaged — highly recommended for large teams.',
+    company: 'Oxford School',
+    people: '120 ppl',
+    package: 'Day Spend (Basic – ₹990)',
+    transport: 'Arranged by Retreat',
     image:
       'https://static.wixstatic.com/media/9356bd_0b96740b7f94421390f2ef977fb2966d~mv2.jpg',
   },
   {
     id: 'card-3',
-    company: 'Infosys',
-    testimonial:
-      'A refreshing change from conference rooms. The farm-to-table lunch and rain dance pool were highlights for our quarterly outing.',
+    company: 'Shriram Life Insurance',
+    people: '50 ppl',
+    package: 'Night Stay (Full Retreat)',
+    transport: 'Own Arrangement',
     image:
       'https://static.wixstatic.com/media/9356bd_b4992d19dffc46869c5b07039e4b47cb~mv2.jpg',
   },
+  {
+    id: 'card-4',
+    company: 'Kotak School',
+    people: '70 ppl',
+    package: 'Day Spend (Basic – ₹990)',
+    transport: 'Own Arrangement',
+    image:
+      'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
+  },
+  {
+    id: 'card-5',
+    company: 'Bothra Shipping',
+    people: '250 ppl',
+    package: 'Day Spend (Basic – ₹990)',
+    transport: 'Own Arrangement',
+    image:
+      'https://static.wixstatic.com/media/9356bd_72b4de6522874b8cb019957a09d9fb79~mv2.jpg',
+  },
+  {
+    id: 'card-6',
+    company: 'Tech Tammina',
+    people: '30 ppl',
+    package: 'Night Stay (Full Retreat)',
+    transport: 'Own Arrangement',
+    image:
+      'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
+  },
+  {
+    id: 'card-7',
+    company: 'Muthoot Finance',
+    people: '30 ppl',
+    package: 'Night Stay (Full Retreat)',
+    transport: 'Own Arrangement',
+    image:
+      'https://static.wixstatic.com/media/9356bd_3c005c17da944e3e9f9c73647e1c5d51~mv2.jpg',
+  },
 ];
 
-const ITINERARY_ITEMS = [
-  {
-    id: 'it-1',
-    time: '9:30 AM',
-    title: 'Arrival & Welcome Drink',
-    image: 'https://static.wixstatic.com/media/9356bd_cf3a8a3d18cf48e8897bc3c754cba84b~mv2.jpg',
-  },
-  {
-    id: 'it-2',
-    time: '10:00 AM',
-    title: 'Team Games & Sports',
-    image: 'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
-  },
-  {
-    id: 'it-3',
-    time: '11:30 AM',
-    title: 'Pool & Rain Dance',
-    image: 'https://static.wixstatic.com/media/9356bd_d054a7523ffe40a19119b7d594c1dc32~mv2.webp',
-  },
-  {
-    id: 'it-4',
-    time: '1:30 PM',
-    title: 'Andhra Lunch Buffet',
-    image: 'https://static.wixstatic.com/media/9356bd_2bd050337a89460eb03a3ae211182d6a~mv2.webp',
-  },
-  {
-    id: 'it-5',
-    time: '3:00 PM',
-    title: 'Boating & Team Activities',
-    image: 'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
-  },
-  {
-    id: 'it-6',
-    time: '5:00 PM',
-    title: 'Tea & Snacks',
-    image: 'https://static.wixstatic.com/media/9356bd_b9b735c1f92f4b2a94d7db8cfe09eba1~mv2.webp',
-  },
-  {
-    id: 'it-7',
-    time: '6:30 PM',
-    title: 'Wrap Up & Departures',
-    image: 'https://static.wixstatic.com/media/9356bd_cb187cfabdf14aab8cf12939d9b5346d~mv2.jpg',
-  },
+const ITINERARY_STEPS = [
+  { id: 'it-1', time: '9:30 AM', title: 'Arrival & welcome drink' },
+  { id: 'it-2', time: '10:00 AM', title: 'Team games & sports' },
+  { id: 'it-3', time: '11:30 AM', title: 'Pool & rain dance' },
+  { id: 'it-4', time: '1:30 PM', title: 'Andhra lunch buffet' },
+  { id: 'it-5', time: '3:00 PM', title: 'Boating / team activities' },
+  { id: 'it-6', time: '5:00 PM', title: 'Tea & snacks' },
+  { id: 'it-7', time: '6:30 PM', title: 'Wrap up & departures' },
+] as const;
+
+const ITINERARY_ITEMS = ITINERARY_STEPS.map((step, index) => ({
+  ...step,
+  image: CORPORATE_ITINERARY_IMAGE_URLS[index],
+}));
+
+const CLONE_COUNT = 1;
+const MOBILE_LOOP_CARDS = [
+  ...TRUSTED_CARDS.slice(-CLONE_COUNT).map((c, i) => ({ ...c, _key: `clone-tail-${i}` })),
+  ...TRUSTED_CARDS.map((c) => ({ ...c, _key: c.id })),
+  ...TRUSTED_CARDS.slice(0, CLONE_COUNT).map((c, i) => ({ ...c, _key: `clone-head-${i}` })),
 ];
 
 export const Corporate: React.FC = () => {
-  const trustedCarouselRef = useRef<HTMLDivElement | null>(null);
-  const itineraryCarouselRef = useRef<HTMLDivElement | null>(null);
+  const trustedDesktopRef = useRef<HTMLDivElement | null>(null);
+  const trustedMobileRef = useRef<HTMLDivElement | null>(null);
+  const isRepositioning = useRef(false);
 
-  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
-    const el = ref.current;
+  const scrollToCardIndex = useCallback((el: HTMLDivElement, idx: number, smooth = false) => {
+    const card = el.children[idx] as HTMLElement | undefined;
+    if (!card) return;
+    const offset = card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2;
+    el.scrollTo({ left: offset, behavior: smooth ? 'smooth' : 'auto' });
+  }, []);
+
+  useEffect(() => {
+    const el = trustedMobileRef.current;
     if (!el) return;
-    const amount = el.clientWidth * 0.85;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el.scrollBy({
-      left: direction === 'left' ? -amount : amount,
-      behavior: prefersReducedMotion ? 'auto' : 'smooth',
-    });
-  };
+    scrollToCardIndex(el, CLONE_COUNT, false);
+  }, [scrollToCardIndex]);
 
-  const scrollTrusted = (direction: 'left' | 'right') => scrollCarousel(trustedCarouselRef, direction);
-  const scrollItinerary = (direction: 'left' | 'right') => scrollCarousel(itineraryCarouselRef, direction);
+  useEffect(() => {
+    const el = trustedMobileRef.current;
+    if (!el) return;
+
+    let timeout: ReturnType<typeof setTimeout>;
+    const reposition = () => {
+      if (isRepositioning.current) return;
+      const cards = Array.from(el.children) as HTMLElement[];
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const totalReal = TRUSTED_CARDS.length;
+
+      let idx = 0;
+      let best = Infinity;
+      cards.forEach((c, i) => {
+        const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - center);
+        if (d < best) { best = d; idx = i; }
+      });
+
+      if (idx < CLONE_COUNT) {
+        isRepositioning.current = true;
+        scrollToCardIndex(el, idx + totalReal, false);
+        requestAnimationFrame(() => { isRepositioning.current = false; });
+      } else if (idx >= CLONE_COUNT + totalReal) {
+        isRepositioning.current = true;
+        scrollToCardIndex(el, idx - totalReal, false);
+        requestAnimationFrame(() => { isRepositioning.current = false; });
+      }
+    };
+
+    const onScroll = () => { clearTimeout(timeout); timeout = setTimeout(reposition, 120); };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => { el.removeEventListener('scroll', onScroll); clearTimeout(timeout); };
+  }, [scrollToCardIndex]);
+
+  const scrollMobile = useCallback((direction: 'left' | 'right') => {
+    const el = trustedMobileRef.current;
+    if (!el) return;
+    const card = el.children[0] as HTMLElement | undefined;
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(el).gap) || 0;
+    const amount = card.offsetWidth + gap;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: reduced ? 'auto' : 'smooth' });
+  }, []);
+
+  const scrollDesktop = useCallback((direction: 'left' | 'right') => {
+    const el = trustedDesktopRef.current;
+    if (!el) return;
+    const card = el.querySelector('article') as HTMLElement | null;
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(el).gap) || 0;
+    const amount = card.offsetWidth + gap;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+    const atStart = el.scrollLeft <= 2;
+    if (direction === 'right' && atEnd) {
+      el.scrollTo({ left: 0, behavior: reduced ? 'auto' : 'smooth' });
+    } else if (direction === 'left' && atStart) {
+      el.scrollTo({ left: el.scrollWidth, behavior: reduced ? 'auto' : 'smooth' });
+    } else {
+      el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: reduced ? 'auto' : 'smooth' });
+    }
+  }, []);
 
   return (
     <main id="main-content" className="pt-12 sm:pt-16 bg-white">
       {/* 1. Hero banner */}
       <section
-        className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
+        className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
         aria-labelledby="corporate-hero-heading"
       >
         <div className="absolute inset-0" aria-hidden="true">
@@ -152,56 +232,46 @@ export const Corporate: React.FC = () => {
             fetchPriority="high"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 to-black/35" aria-hidden="true" />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-          <p className="text-white/80 text-xs sm:text-sm font-semibold tracking-[0.3em] uppercase">
-            For Corporates
-          </p>
-          <h1
-            id="corporate-hero-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-tight"
-          >
-            Corporate team outing near Vizag
-          </h1>
-          <p className="text-white/90 text-sm sm:text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
-            A refreshing day in nature with activities, food, and team bonding at Salsons Retreat.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/30 px-4 py-2 text-xs sm:text-sm">
-              <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
-                distance
-              </span>
-              <span>70 km from Vizag</span>
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/30 px-4 py-2 text-xs sm:text-sm">
-              <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
-                currency_rupee
-              </span>
-              <span>Packages from ₹990</span>
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/30 px-4 py-2 text-xs sm:text-sm">
-              <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
-                groups
-              </span>
-              <span>Ideal for 30–150 teams</span>
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-4">
-            <Link
-              to="/book-now"
-              className="inline-flex items-center justify-center rounded-full px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base font-semibold bg-white text-primary shadow-lg hover:bg-[rgba(255,255,255,0.9)] hover:shadow-xl transition-colors"
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-8 sm:gap-10">
+          <div className="max-w-3xl space-y-4 sm:space-y-6 text-left">
+            <h1
+              id="corporate-hero-heading"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight"
             >
-              Book Now
-            </Link>
-            <a
-              href={BROCHURE_URL}
-              target={BROCHURE_URL === '#' ? undefined : '_blank'}
-              rel={BROCHURE_URL === '#' ? undefined : 'noopener noreferrer'}
-              className="inline-flex items-center justify-center rounded-full border border-white/80 bg-white/5 px-7 sm:px-9 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-white hover:bg-white/10 transition-colors"
-            >
-              Download Brochure
-            </a>
+              <span className="block lg:whitespace-nowrap">Corporate team outing near Vizag</span>
+            </h1>
+            <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-xl leading-relaxed">
+              A refreshing day in nature with activities, food, and team bonding at Salsons Retreat.
+            </p>
+            <ul className="list-disc list-outside pl-5 sm:pl-6 max-w-xl space-y-2 text-base sm:text-lg text-white/80 marker:text-white/50">
+              <li>70 km from Vizag</li>
+              <li>Packages from ₹990</li>
+              <li>Ideal for 30–150 teams</li>
+            </ul>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link
+                to="/book-now"
+                className="bg-white text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:shadow-xl hover:shadow-black/20 hover:translate-y-[-2px] active:translate-y-0 transition-all duration-300 inline-flex items-center justify-center gap-2 [@media(prefers-reduced-motion:reduce)]:hover:translate-y-0 [@media(prefers-reduced-motion:reduce)]:transition-none"
+              >
+                Book Now
+                <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
+                  north_east
+                </span>
+              </Link>
+              <a
+                href={BROCHURE_URL}
+                target={BROCHURE_URL === '#' ? undefined : '_blank'}
+                rel={BROCHURE_URL === '#' ? undefined : 'noopener noreferrer'}
+                className="border-2 border-white/70 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:bg-white/10 hover:border-white transition-all duration-300 inline-flex items-center justify-center gap-2 [@media(prefers-reduced-motion:reduce)]:transition-colors"
+              >
+                Download Brochure
+                <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
+                  arrow_forward
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -213,14 +283,11 @@ export const Corporate: React.FC = () => {
       >
         <div className="max-w-7xl mx-auto space-y-10 lg:space-y-12">
           <header className="text-center max-w-3xl mx-auto space-y-4">
-            <p className="text-primary/70 text-xs sm:text-sm font-semibold uppercase tracking-[0.3em]">
-              Trusted by leading teams
-            </p>
             <h2
               id="trusted-heading"
               className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900"
             >
-              A nature-first venue for your next offsite
+              Trusted by leading teams
             </h2>
             <p className="text-sm sm:text-base lg:text-lg text-gray-600">
               From small leadership huddles to full-team outings, Salsons Retreat gives your teams space to connect,
@@ -228,17 +295,17 @@ export const Corporate: React.FC = () => {
             </p>
           </header>
 
-          {/* Mobile carousel */}
-          <div className="md:hidden -mx-4 px-4 relative">
+          {/* Mobile infinite-loop carousel */}
+          <div className="relative md:hidden">
             <div
-              ref={trustedCarouselRef}
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+              ref={trustedMobileRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide px-[5%]"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {TRUSTED_CARDS.map((card) => (
+              {MOBILE_LOOP_CARDS.map((card) => (
                 <article
-                  key={card.id}
-                  className="min-w-[280px] max-w-[85%] rounded-2xl overflow-hidden bg-white shadow-md snap-start border border-gray-100"
+                  key={card._key}
+                  className="w-[87%] flex-shrink-0 rounded-2xl overflow-hidden bg-white shadow-md border border-gray-100 snap-center"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
@@ -249,160 +316,306 @@ export const Corporate: React.FC = () => {
                     />
                   </div>
                   <div className="p-5 space-y-3">
-                    <h3 className="text-base font-bold text-gray-900">{card.company}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed italic">&ldquo;{card.testimonial}&rdquo;</p>
+                    <h3 className="text-lg font-bold text-gray-900">{card.company}</h3>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">group</span>
+                        <span><span className="font-semibold text-gray-800">People:</span> {card.people}</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">inventory_2</span>
+                        <span><span className="font-semibold text-gray-800">Package:</span> {card.package}</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">directions_bus</span>
+                        <span><span className="font-semibold text-gray-800">Transport:</span> {card.transport}</span>
+                      </li>
+                    </ul>
                   </div>
                 </article>
               ))}
             </div>
             <button
               type="button"
-              onClick={() => scrollTrusted('left')}
-              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-700 hover:bg-gray-50"
-              aria-label="Scroll previous"
+              onClick={() => scrollMobile('left')}
+              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Previous card"
             >
               <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
             </button>
             <button
               type="button"
-              onClick={() => scrollTrusted('right')}
-              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-200 text-gray-700 hover:bg-gray-50"
-              aria-label="Scroll next"
+              onClick={() => scrollMobile('right')}
+              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Next card"
             >
               <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
             </button>
           </div>
 
-          {/* Desktop grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
-            {TRUSTED_CARDS.map((card) => (
-              <article
-                key={card.id}
-                className="flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={card.image}
-                    alt={`${card.company} team at Salsons Retreat`}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="p-5 lg:p-6 space-y-3 flex-1">
-                  <h3 className="text-lg font-bold text-gray-900">{card.company}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed italic">&ldquo;{card.testimonial}&rdquo;</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Sample corporate itinerary — Expansion Gallery */}
-      <section
-        className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-white overflow-hidden"
-        aria-labelledby="itinerary-heading"
-      >
-        <div className="max-w-[1400px] mx-auto space-y-10 lg:space-y-14">
-          <h2
-            id="itinerary-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900 text-center"
-          >
-            Sample Corporate Itinerary
-          </h2>
-
-          {/* ── Mobile / Tablet: snap carousel with arrows ── */}
-          <div className="lg:hidden relative">
+          {/* Desktop carousel */}
+          <div className="relative hidden md:block -mx-4 px-4">
             <div
-              ref={itineraryCarouselRef}
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide"
+              ref={trustedDesktopRef}
+              className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {ITINERARY_ITEMS.map((item) => (
-                <div
-                  key={item.id}
-                  className="relative min-w-[75vw] max-w-[320px] aspect-[3/4] rounded-3xl overflow-hidden snap-center shrink-0"
+              {TRUSTED_CARDS.map((card) => (
+                <article
+                  key={card.id}
+                  className="w-[32%] lg:w-[30%] flex-shrink-0 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 space-y-1.5">
-                    <p className="text-xs font-semibold text-violet-300 tracking-wide">{item.time}</p>
-                    <h3 className="text-base font-semibold text-white leading-snug">{item.title}</h3>
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={card.image}
+                      alt={`${card.company} team at Salsons Retreat`}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
-                </div>
+                  <div className="p-5 lg:p-6 space-y-3">
+                    <h3 className="text-lg font-bold text-gray-900">{card.company}</h3>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">group</span>
+                        <span><span className="font-semibold text-gray-800">People:</span> {card.people}</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">inventory_2</span>
+                        <span><span className="font-semibold text-gray-800">Package:</span> {card.package}</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">directions_bus</span>
+                        <span><span className="font-semibold text-gray-800">Transport:</span> {card.transport}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </article>
               ))}
             </div>
             <button
               type="button"
-              onClick={() => scrollItinerary('left')}
-              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg border border-white/20 text-gray-800 hover:bg-white transition-colors"
-              aria-label="Previous"
+              onClick={() => scrollDesktop('left')}
+              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Scroll previous"
             >
               <span className="material-symbols-outlined text-xl" aria-hidden="true">chevron_left</span>
             </button>
             <button
               type="button"
-              onClick={() => scrollItinerary('right')}
-              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg border border-white/20 text-gray-800 hover:bg-white transition-colors"
-              aria-label="Next"
+              onClick={() => scrollDesktop('right')}
+              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Scroll next"
             >
               <span className="material-symbols-outlined text-xl" aria-hidden="true">chevron_right</span>
             </button>
           </div>
+        </div>
+      </section>
 
-          {/* ── Desktop: Expansion gallery ── */}
-          <div className="hidden lg:block">
-            <style>{`
-              .exp-gallery { display: flex; gap: 12px; height: 480px; }
-              .exp-card {
-                flex: 1; position: relative; border-radius: 24px; overflow: hidden; cursor: pointer;
-                transition: flex 0.5s cubic-bezier(0.16,1,0.3,1);
-              }
-              @media (prefers-reduced-motion: reduce) {
-                .exp-card { transition: none; }
-                .exp-card img { transition: none !important; }
-                .exp-card .exp-time-label { transition: none !important; }
-              }
-              .exp-card:hover { flex: 2.5; }
-              .exp-card::after {
-                content: ''; position: absolute; inset: 0;
-                background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 45%, transparent 100%);
-                transition: background 0.5s cubic-bezier(0.16,1,0.3,1);
-              }
-              .exp-card:hover::after {
-                background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
-              }
-              .exp-card img {
-                width: 100%; height: 100%; object-fit: cover;
-                transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
-              }
-              .exp-card:hover img { transform: scale(1.05); }
-              .exp-card .exp-time-label {
-                transform: translateY(8px); opacity: 0.7;
-                transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
-              }
-              .exp-card:hover .exp-time-label { transform: translateY(0); opacity: 1; }
-            `}</style>
-            <div className="exp-gallery">
+      {/* 3. Sample corporate itinerary — horizontal timeline (desktop) / vertical (mobile) */}
+      <section
+        className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-itinerary-bg overflow-x-clip overflow-y-visible"
+        aria-labelledby="itinerary-heading"
+      >
+        <div className="max-w-[1400px] mx-auto space-y-8 lg:space-y-10">
+          <header className="text-left">
+            <h2
+              id="itinerary-heading"
+              className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-itinerary-text"
+            >
+              Sample corporate itinerary
+            </h2>
+          </header>
+
+          {/* Mobile & tablet: vertical straight spine (between first/last circle centres) */}
+          <div className="relative isolate min-h-0 overflow-visible lg:hidden">
+            <span
+              className="pointer-events-none absolute left-[48px] top-[48px] bottom-[48px] z-0 w-0.5 -translate-x-1/2 rounded-full bg-itinerary-spine sm:left-[56px] sm:top-[56px] sm:bottom-[56px]"
+              aria-hidden="true"
+            />
+            <ol className="relative z-[1] m-0 list-none space-y-8 p-0" aria-label="Itinerary schedule">
               {ITINERARY_ITEMS.map((item) => (
-                <div key={item.id} className="exp-card" role="img" aria-label={`${item.time} — ${item.title}`}>
-                  <img src={item.image} alt="" loading="lazy" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 z-10 flex flex-col">
-                    <span className="exp-time-label text-violet-300 text-sm font-semibold mb-1.5">
-                      {item.time}
-                    </span>
-                    <h3 className="text-white text-base font-semibold leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
-                      {item.title}
-                    </h3>
+                <li key={item.id} className="relative z-[1] flex gap-4 sm:gap-5">
+                  <div className="relative z-[2] flex h-24 w-24 shrink-0 items-center justify-center sm:h-28 sm:w-28">
+                    <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-itinerary-line bg-background-light shadow-md sm:h-28 sm:w-28">
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-300 ease-out [@media(prefers-reduced-motion:no-preference)]:hover:scale-105 [@media(prefers-reduced-motion:reduce)]:transition-none"
+                        loading="lazy"
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div className="min-w-0 flex flex-col justify-center gap-1 py-0.5">
+                    <p className="text-sm font-bold leading-tight text-itinerary-text">{item.time}</p>
+                    <p className="text-sm font-normal leading-snug text-itinerary-text-soft">
+                      {item.title}
+                    </p>
+                  </div>
+                </li>
               ))}
+            </ol>
+          </div>
+
+          {/* Desktop: horizontal straight line through circle centres (no extension past first/last) */}
+          <div className="hidden lg:block">
+            <div className="relative pb-4 pt-2">
+              <span
+                className="pointer-events-none absolute left-[calc((100%-3rem)/14)] right-[calc((100%-3rem)/14)] top-[56px] z-0 h-0.5 -translate-y-1/2 rounded-full bg-itinerary-spine xl:left-[calc((100%-4.5rem)/14)] xl:right-[calc((100%-4.5rem)/14)] xl:top-[64px]"
+                aria-hidden="true"
+              />
+              <ul className="relative z-10 m-0 flex list-none flex-row gap-2 p-0 xl:gap-3 [&>li]:min-w-0 [&>li]:flex-1">
+                {ITINERARY_ITEMS.map((item) => (
+                  <li
+                    key={item.id}
+                    className="group flex min-w-0 flex-1 flex-col items-center text-center"
+                  >
+                    <div className="mb-4 flex h-24 w-24 shrink-0 items-center justify-center xl:h-28 xl:w-28">
+                      <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-itinerary-line bg-background-light shadow-md xl:h-28 xl:w-28">
+                        <img
+                          src={item.image}
+                          alt=""
+                          className="h-full w-full object-cover transition-transform duration-300 ease-out [@media(prefers-reduced-motion:no-preference)]:group-hover:scale-105 [@media(prefers-reduced-motion:reduce)]:transition-none"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+                    <p className="mb-2 text-xs font-bold leading-tight text-itinerary-text xl:text-sm">
+                      {item.time}
+                    </p>
+                    <p className="max-w-[9rem] text-xs font-normal leading-snug text-itinerary-text-soft xl:max-w-[10.5rem] xl:text-sm">
+                      {item.title}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing packages */}
+      <section
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-white"
+        aria-labelledby="pricing-heading"
+      >
+        <div className="max-w-7xl mx-auto">
+          <header className="text-center max-w-3xl mx-auto space-y-4 mb-12 lg:mb-16">
+            <h2
+              id="pricing-heading"
+              className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900"
+            >
+              Packages for every team
+            </h2>
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600">
+              Choose the experience that fits your team&apos;s vibe and budget.
+            </p>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            {/* Basic */}
+            <article className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-6">
+                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Basic</h3>
+                <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">diamond</span>
+              </div>
+              <div className="mb-4">
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹990</span>
+                <span className="text-base text-gray-500 ml-1">/person</span>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                Entry, pool access, farm-to-table lunch, and sports. Perfect for a relaxed day in nature.
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Entry & welcome drink',
+                  'Pool access',
+                  'Lunch (farm-to-table, fresh hot Andhra food)',
+                  'Sports (Cricket, Basketball, Football, Volleyball, Throwball)',
+                  'Evening tea & cookies',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/book-now"
+                className="mt-auto w-full inline-flex items-center justify-center rounded-full border-2 border-gray-300 px-8 py-3.5 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-colors [@media(prefers-reduced-motion:reduce)]:transition-none"
+              >
+                Book Now
+              </Link>
+            </article>
+
+            {/* Adventure — TOP PICK */}
+            <article className="relative flex flex-col rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
+                Top Pick
+              </span>
+              <div className="flex items-start justify-between mb-6">
+                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
+                <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">landscape</span>
+              </div>
+              <div className="mb-4">
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
+                <span className="text-base text-gray-500 ml-1">/person</span>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Everything in Basic',
+                  'Barbecue (veg & non-veg options available)',
+                  'Boating at Thatipudi Reservoir',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/book-now"
+                className="mt-auto w-full inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors [@media(prefers-reduced-motion:reduce)]:transition-none"
+              >
+                Book Now
+              </Link>
+            </article>
+
+            {/* Value */}
+            <article className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-6">
+                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Value</h3>
+                <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">equalizer</span>
+              </div>
+              <div className="mb-4">
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
+                <span className="text-base text-gray-500 ml-1">/person</span>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Everything in Basic',
+                  'Barbecue (veg & non-veg options available)',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/book-now"
+                className="mt-auto w-full inline-flex items-center justify-center rounded-full border-2 border-gray-300 px-8 py-3.5 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-colors [@media(prefers-reduced-motion:reduce)]:transition-none"
+              >
+                Book Now
+              </Link>
+            </article>
           </div>
         </div>
       </section>
@@ -413,7 +626,7 @@ export const Corporate: React.FC = () => {
         aria-labelledby="activities-heading"
       >
         <div className="max-w-7xl mx-auto space-y-8 lg:space-y-10">
-          <header className="max-w-3xl space-y-4">
+          <header className="max-w-3xl mx-auto text-center space-y-4">
             <h2
               id="activities-heading"
               className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900"

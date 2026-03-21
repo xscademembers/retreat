@@ -222,6 +222,17 @@ export const AMENITY_IMAGES: Record<string, string[]> = {
   ],
 };
 
+/** Corporate itinerary — one Wix image per time slot (order matches ITINERARY_STEPS on Corporate page). */
+export const CORPORATE_ITINERARY_IMAGE_URLS: readonly string[] = [
+  'https://static.wixstatic.com/media/9356bd_9752a23d2504471a949c5daba691786f~mv2.webp',
+  'https://static.wixstatic.com/media/9356bd_75ec10051ec54605ae9d9fe6e4120f09~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_2c55477f7b2b49418bb8803c60a9d69b~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_2fb82818c9d6435ab9e222f6859749e6~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_0480cd18d6af417d8bc176e3f7e4ab56~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_08e3e730b5e349f38a11777d9e9f4861~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_e93684880bac4eb78b558e0dc41cd9cc~mv2.jpg',
+];
+
 export const SANCTUARIES: Sanctuary[] = [
   {
     id: 'cabana',

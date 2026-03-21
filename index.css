@@ -17,7 +17,16 @@ html {
   --color-background-soft: #F7F7F7;
   --color-text: #141515;
   --color-text-muted: rgba(20, 21, 21, 0.7);
-  
+  /* Corporate itinerary section */
+  --color-itinerary-bg: #f8f9fa;
+  --color-itinerary-line: #d1d5db;
+  /* Slightly stronger for thin SVG strokes on small screens */
+  --color-itinerary-line-strong: #9ca3af;
+  /* Timeline spine — high contrast on itinerary bg for 1–2px lines */
+  --color-itinerary-spine: #64748b;
+  --color-itinerary-text: #111827;
+  --color-itinerary-text-soft: rgba(17, 24, 39, 0.88);
+
   /* 8px grid spacing tokens */
   --space-1: 8px;
   --space-2: 16px;
