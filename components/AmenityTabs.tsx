@@ -5,9 +5,10 @@ import { wixImg } from '../utils/wixImage';
 
 interface AmenityTabsProps {
   features: Feature[];
+  imageAlign?: 'center' | 'left';
 }
 
-export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
+export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features, imageAlign = 'center' }) => {
   const defaultId = (features[0] && features[0].id) || '5';
   const [activeId, setActiveId] = useState<string>(defaultId);
   const activeFeature = features.find((f) => f.id === activeId) ?? features[0];
@@ -153,7 +154,9 @@ export const AmenityTabs: React.FC<AmenityTabsProps> = ({ features }) => {
 
         <div
           ref={trackRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide justify-center"
+          className={`flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide ${
+            imageAlign === 'left' ? 'justify-start' : 'justify-center'
+          }`}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {images.map((src, idx) => {

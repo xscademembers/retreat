@@ -18,6 +18,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     description: 'Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.',
     image: 'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
     icon: 'restaurant',
+    recommended: true,
     features: ['Everything in Basic', 'Barbecue (veg & non-veg options available)']
   },
   {
@@ -26,7 +27,6 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
     price: 1499,
     description: 'Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.',
     image: 'https://static.wixstatic.com/media/9356bd_3b34eead3ee14eb8ac3a8cb75ea1d6ce~mv2.webp',
-    recommended: true,
     icon: 'sailing',
     features: ['Everything in Basic', 'Barbecue (veg & non-veg options available)', 'Boating at Thatipudi Reservoir']
   }

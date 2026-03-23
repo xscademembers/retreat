@@ -13,6 +13,16 @@ export const LazySection: React.FC<LazySectionProps> = ({ id, className, childre
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // If user navigated using a hash (e.g. "/#testimonials"), ensure content is mounted
+    // immediately so hash scroll doesn't land on an empty placeholder.
+    if (typeof window !== 'undefined' && id) {
+      const currentHash = window.location.hash?.slice(1);
+      if (currentHash && currentHash === id) {
+        setIsVisible(true);
+        return;
+      }
+    }
+
     // If IntersectionObserver is not supported, render immediately
     if (!('IntersectionObserver' in window)) {
       setIsVisible(true);
@@ -42,7 +52,17 @@ export const LazySection: React.FC<LazySectionProps> = ({ id, className, childre
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    const onHashChange = () => {
+      const currentHash = window.location.hash?.slice(1);
+      if (currentHash && currentHash === id) setIsVisible(true);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [id]);
 
   return (
     <section

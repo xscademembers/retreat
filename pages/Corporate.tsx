@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
+import { LazySection } from '../components/LazySection';
 import { Feature } from '../types';
 import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES } from '../constants';
+import { useInView } from '../hooks/useInView';
 
 const BROCHURE_URL = '#'; // replace with actual brochure link when available
 
@@ -53,7 +55,7 @@ const TRUSTED_CARDS = [
     package: 'Day Spend (Basic – ₹990)',
     transport: 'Arranged by Retreat',
     image:
-      'https://static.wixstatic.com/media/9356bd_6208e3777f554b45bac8222ec20c614f~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_9263a380c43f47029d97d3ca7448116c~mv2.jpeg',
   },
   {
     id: 'card-2',
@@ -132,6 +134,29 @@ const MOBILE_LOOP_CARDS = [
   ...TRUSTED_CARDS.map((c) => ({ ...c, _key: c.id })),
   ...TRUSTED_CARDS.slice(0, CLONE_COUNT).map((c, i) => ({ ...c, _key: `clone-head-${i}` })),
 ];
+
+const LazyMapEmbed: React.FC = () => {
+  const { ref, isInView } = useInView({ threshold: 0.1, rootMargin: '300px 0px' });
+  return (
+    <div ref={ref} className="w-full h-full relative">
+      {isInView ? (
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741747!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Salsons Retreat location on Google Maps"
+        />
+      ) : (
+        // Placeholder to keep layout stable while iframe loads
+        <div className="absolute inset-0 bg-background-soft" aria-hidden="true" />
+      )}
+    </div>
+  );
+};
 
 export const Corporate: React.FC = () => {
   const trustedDesktopRef = useRef<HTMLDivElement | null>(null);
@@ -549,27 +574,26 @@ export const Corporate: React.FC = () => {
               </Link>
             </article>
 
-            {/* Adventure — TOP PICK */}
+            {/* Value — TOP PICK */}
             <article className="relative flex flex-col rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
               <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
                 Top Pick
               </span>
               <div className="flex items-start justify-between mb-6">
-                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
-                <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">landscape</span>
+                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Value</h3>
+                <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">equalizer</span>
               </div>
               <div className="mb-4">
-                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.
+                Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.
               </p>
               <ul className="space-y-3 mb-8 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
-                  'Boating at Thatipudi Reservoir',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                     <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
@@ -585,23 +609,24 @@ export const Corporate: React.FC = () => {
               </Link>
             </article>
 
-            {/* Value */}
+            {/* Adventure */}
             <article className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
               <div className="flex items-start justify-between mb-6">
-                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Value</h3>
-                <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">equalizer</span>
+                <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
+                <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">landscape</span>
               </div>
               <div className="mb-4">
-                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
-                Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.
+                Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.
               </p>
               <ul className="space-y-3 mb-8 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
+                  'Boating at Thatipudi Reservoir',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                     <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
@@ -640,13 +665,18 @@ export const Corporate: React.FC = () => {
           </header>
 
           <AnimateOnScroll animation="fade-up">
-            <AmenityTabs features={CORPORATE_ACTIVITIES.length ? CORPORATE_ACTIVITIES : INCLUDED_FEATURES} />
+            <AmenityTabs
+              features={CORPORATE_ACTIVITIES.length ? CORPORATE_ACTIVITIES : INCLUDED_FEATURES}
+              imageAlign="left"
+            />
           </AnimateOnScroll>
         </div>
       </section>
 
       {/* 5. Testimonials (same as home) */}
-      <Testimonials />
+      <LazySection id="testimonials" minHeight={420}>
+        <Testimonials />
+      </LazySection>
 
       {/* 6. Find us here (same layout as home) */}
       <section
@@ -727,17 +757,8 @@ export const Corporate: React.FC = () => {
             </AnimateOnScroll>
 
             <AnimateOnScroll animation="fade-left">
-              <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 bg-white aspect-[4/3] min-h-[280px]">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3790.9033241741747!2d83.2187149!3d18.168366900000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3bc263d91a65e9%3A0x3b1d67813f341ee4!2sSalsons%20Retreat!5e0!3m2!1sen!2sin!4v1771088032329!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Salsons Retreat location on Google Maps"
-                />
+              <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 bg-white aspect-[4/3] min-h-[280px] relative">
+                <LazyMapEmbed />
               </div>
             </AnimateOnScroll>
           </div>

@@ -872,11 +872,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                 {/* Mobile: one card at a time with arrows */}
                 <div className="sm:hidden">
                   {(() => {
-                    const mobileOrder = [
-                      EXPERIENCE_TIERS.find((t) => t.id === 'basic')!,
-                      EXPERIENCE_TIERS.find((t) => t.recommended)!,
-                      EXPERIENCE_TIERS.find((t) => t.id === 'value')!,
-                    ];
+                    const basicTier = EXPERIENCE_TIERS.find((t) => t.id === 'basic')!;
+                    const recommendedTier = EXPERIENCE_TIERS.find((t) => t.recommended)!;
+                    const otherTier = EXPERIENCE_TIERS.find(
+                      (t) => t.id !== 'basic' && t.id !== recommendedTier.id,
+                    )!;
+                    const mobileOrder = [basicTier, recommendedTier, otherTier];
                     const tier = mobileOrder[mobileCardIndex];
                     const isSelected = selectedDayTier === tier.id;
                     const isTopPick = !!tier.recommended;

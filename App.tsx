@@ -29,6 +29,22 @@ const AppShell: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Preload the Corporate route chunk during idle time so clicking
+    // "Corporate Events" doesn't show a long blank Suspense fallback.
+    if (typeof window === 'undefined') return;
+    const schedule = (cb: () => void) => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(cb);
+      } else {
+        window.setTimeout(cb, 300);
+      }
+    };
+    schedule(() => {
+      import('./pages/Corporate').catch(() => {});
+    });
+  }, []);
+
+  useEffect(() => {
     // Smooth scroll to hash targets when route or hash changes
     if (location.hash) {
       const id = location.hash.slice(1);
