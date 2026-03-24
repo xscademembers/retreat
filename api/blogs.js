@@ -31,6 +31,15 @@ function normalizePost(doc) {
   };
 }
 
+function toPostDocument(result) {
+  // Mongo drivers may return either the updated document directly
+  // or a wrapper object with `value`.
+  if (!result) return null;
+  if (result._id) return result;
+  if (result.value && result.value._id) return result.value;
+  return null;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
@@ -68,7 +77,14 @@ export default async function handler(req, res) {
       const payload = {
         title: body.title,
         slug: body.slug,
-        blocks: Array.isArray(body.blocks) ? body.blocks : [],
+        blocks: Array.isArray(body.blocks)
+          ? body.blocks.map((block) => ({
+              id: String(block?.id || ''),
+              type: block?.type,
+              content: String(block?.content || ''),
+              align: block?.align,
+            }))
+          : [],
         featuredImage: body.featuredImage || '',
         createdAt: body.createdAt || new Date().toISOString(),
         published: !!body.published,
@@ -81,12 +97,15 @@ export default async function handler(req, res) {
       let resultDoc;
 
       if (body.id) {
-        // MongoDB driver v6+ returns the document directly from findOneAndUpdate
-        resultDoc = await collection.findOneAndUpdate(
+        const updateResult = await collection.findOneAndUpdate(
           { _id: new ObjectId(body.id) },
           { $set: payload },
           { returnDocument: 'after' }
         );
+        resultDoc = toPostDocument(updateResult);
+        if (!resultDoc) {
+          return res.status(404).json({ error: 'Post not found for update' });
+        }
       } else {
         const insertResult = await collection.insertOne(payload);
         resultDoc = { _id: insertResult.insertedId, ...payload };
