@@ -4,57 +4,71 @@ import { getPostBySlug, BlogPost as BlogPostType, BlogBlock } from '../utils/blo
 
 function sanitizeRichText(html: string): string {
   if (typeof window === 'undefined') return html;
+  if (!html || !html.trim()) return '';
+
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html || '', 'text/html');
-  const allowedTags = new Set(['STRONG', 'B', 'EM', 'I', 'U', 'A', 'SPAN', 'BR']);
+  const doc = parser.parseFromString(html, 'text/html');
+  const allowedTags = new Set(['STRONG', 'B', 'EM', 'I', 'U', 'A', 'SPAN', 'BR', 'DIV', 'P']);
+  const containerTags = new Set(['BODY', 'HTML', 'HEAD', 'DIV', 'P']);
 
   const cleanNode = (node: Node) => {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as HTMLElement;
-      if (!allowedTags.has(el.tagName)) {
-        const parent = el.parentNode;
-        if (!parent) return;
-        while (el.firstChild) parent.insertBefore(el.firstChild, el);
-        parent.removeChild(el);
-        return;
-      }
+    const children = Array.from(node.childNodes);
 
-      // Preserve only safe attributes required for links/colors.
-      const attrs = Array.from(el.attributes);
-      for (const attr of attrs) {
-        const name = attr.name.toLowerCase();
-        if (el.tagName === 'A' && (name === 'href' || name === 'target' || name === 'rel')) continue;
-        if (el.tagName === 'SPAN' && name === 'style') continue;
-        el.removeAttribute(attr.name);
-      }
+    for (const child of children) {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        const el = child as HTMLElement;
 
-      if (el.tagName === 'A') {
-        const href = el.getAttribute('href') || '';
-        const isSafe = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:');
-        if (!isSafe) {
-          el.removeAttribute('href');
-        } else {
-          el.setAttribute('target', '_blank');
-          el.setAttribute('rel', 'noopener noreferrer');
+        cleanNode(el);
+
+        if (!allowedTags.has(el.tagName) && !containerTags.has(el.tagName)) {
+          const parent = el.parentNode;
+          if (!parent) continue;
+          while (el.firstChild) parent.insertBefore(el.firstChild, el);
+          parent.removeChild(el);
+          continue;
         }
-      }
 
-      if (el.tagName === 'SPAN') {
-        const style = el.getAttribute('style') || '';
-        const colorMatch = style.match(/color\s*:\s*#[0-9a-fA-F]{3,6}|color\s*:\s*rgb\([^)]+\)/);
-        if (colorMatch) {
-          el.setAttribute('style', colorMatch[0]);
-        } else {
-          el.removeAttribute('style');
+        if (el.tagName === 'A') {
+          const attrs = Array.from(el.attributes);
+          for (const attr of attrs) {
+            const name = attr.name.toLowerCase();
+            if (name === 'href' || name === 'target' || name === 'rel') continue;
+            el.removeAttribute(attr.name);
+          }
+          const href = el.getAttribute('href') || '';
+          const isSafe = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:');
+          if (!isSafe) {
+            el.removeAttribute('href');
+          } else {
+            el.setAttribute('target', '_blank');
+            el.setAttribute('rel', 'noopener noreferrer');
+          }
+        } else if (el.tagName === 'SPAN') {
+          const style = el.getAttribute('style') || '';
+          const colorMatch = style.match(/color\s*:\s*#[0-9a-fA-F]{3,8}|color\s*:\s*rgb\([^)]+\)/);
+          const attrs = Array.from(el.attributes);
+          for (const attr of attrs) {
+            if (attr.name.toLowerCase() !== 'style') el.removeAttribute(attr.name);
+          }
+          if (colorMatch) {
+            el.setAttribute('style', colorMatch[0]);
+          } else {
+            el.removeAttribute('style');
+          }
+        } else if (!containerTags.has(el.tagName)) {
+          const attrs = Array.from(el.attributes);
+          for (const attr of attrs) el.removeAttribute(attr.name);
         }
       }
     }
-
-    Array.from(node.childNodes).forEach(cleanNode);
   };
 
-  cleanNode(doc.body);
-  return doc.body.innerHTML;
+  try {
+    cleanNode(doc.body);
+    return doc.body.innerHTML;
+  } catch {
+    return html;
+  }
 }
 
 const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
@@ -219,7 +233,7 @@ export const BlogPost: React.FC = () => {
 
         <div className="prose-content">
           {post.blocks.map((block) => (
-            <BlockRenderer key={block.id} block={block} />
+            <SafeBlockRenderer key={block.id} block={block} />
           ))}
         </div>
 
@@ -236,5 +250,33 @@ export const BlogPost: React.FC = () => {
     </main>
   );
 };
+
+class BlogErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
+const SafeBlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => (
+  <BlogErrorBoundary
+    fallback={
+      block.type === 'heading' || block.type === 'paragraph' ? (
+        <p className="text-base text-text-muted leading-relaxed mb-6 whitespace-pre-line">
+          {block.content.replace(/<[^>]*>/g, '')}
+        </p>
+      ) : null
+    }
+  >
+    <BlockRenderer block={block} />
+  </BlogErrorBoundary>
+);
 
 export default BlogPost;
