@@ -2,6 +2,7 @@ export interface BlogBlock {
   id: string;
   type: 'heading' | 'paragraph' | 'image' | 'video';
   content: string;
+  align?: 'left' | 'center' | 'right';
 }
 
 export interface BlogPost {

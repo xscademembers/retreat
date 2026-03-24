@@ -2,19 +2,78 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getPostBySlug, BlogPost as BlogPostType, BlogBlock } from '../utils/blogStore';
 
+function sanitizeRichText(html: string): string {
+  if (typeof window === 'undefined') return html;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html || '', 'text/html');
+  const allowedTags = new Set(['STRONG', 'B', 'EM', 'I', 'U', 'A', 'SPAN', 'BR']);
+
+  const cleanNode = (node: Node) => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      if (!allowedTags.has(el.tagName)) {
+        const parent = el.parentNode;
+        if (!parent) return;
+        while (el.firstChild) parent.insertBefore(el.firstChild, el);
+        parent.removeChild(el);
+        return;
+      }
+
+      // Preserve only safe attributes required for links/colors.
+      const attrs = Array.from(el.attributes);
+      for (const attr of attrs) {
+        const name = attr.name.toLowerCase();
+        if (el.tagName === 'A' && (name === 'href' || name === 'target' || name === 'rel')) continue;
+        if (el.tagName === 'SPAN' && name === 'style') continue;
+        el.removeAttribute(attr.name);
+      }
+
+      if (el.tagName === 'A') {
+        const href = el.getAttribute('href') || '';
+        const isSafe = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:');
+        if (!isSafe) {
+          el.removeAttribute('href');
+        } else {
+          el.setAttribute('target', '_blank');
+          el.setAttribute('rel', 'noopener noreferrer');
+        }
+      }
+
+      if (el.tagName === 'SPAN') {
+        const style = el.getAttribute('style') || '';
+        const colorMatch = style.match(/color\s*:\s*#[0-9a-fA-F]{3,6}|color\s*:\s*rgb\([^)]+\)/);
+        if (colorMatch) {
+          el.setAttribute('style', colorMatch[0]);
+        } else {
+          el.removeAttribute('style');
+        }
+      }
+    }
+
+    Array.from(node.childNodes).forEach(cleanNode);
+  };
+
+  cleanNode(doc.body);
+  return doc.body.innerHTML;
+}
+
 const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
   switch (block.type) {
     case 'heading':
       return (
-        <h2 className="text-2xl sm:text-3xl font-semibold text-primary mt-10 mb-4 leading-snug">
-          {block.content}
-        </h2>
+        <h2
+          className="text-2xl sm:text-3xl font-semibold text-primary mt-10 mb-4 leading-snug"
+          style={{ textAlign: block.align || 'left' }}
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
+        />
       );
     case 'paragraph':
       return (
-        <p className="text-base sm:text-lg text-text-muted leading-relaxed mb-6 whitespace-pre-line">
-          {block.content}
-        </p>
+        <p
+          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6 whitespace-pre-line"
+          style={{ textAlign: block.align || 'left' }}
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
+        />
       );
     case 'image':
       return (

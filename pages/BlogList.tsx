@@ -31,9 +31,10 @@ export const BlogList: React.FC = () => {
   const getExcerpt = (post: BlogPost): string => {
     const paraBlock = post.blocks.find((b) => b.type === 'paragraph');
     if (!paraBlock) return '';
-    return paraBlock.content.length > 160
-      ? paraBlock.content.slice(0, 160) + '...'
-      : paraBlock.content;
+    const plainText = paraBlock.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    return plainText.length > 160
+      ? plainText.slice(0, 160) + '...'
+      : plainText;
   };
 
   return (
