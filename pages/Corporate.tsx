@@ -283,7 +283,7 @@ export const Corporate: React.FC = () => {
             <ul className="list-disc list-outside pl-5 sm:pl-6 max-w-xl space-y-2 text-base sm:text-lg text-white/80 marker:text-white/50">
               <li>70 km from Vizag</li>
               <li>Packages from ₹990</li>
-              <li>Ideal for 30–150 teams</li>
+              <li>Ideal for 30–300 teams</li>
             </ul>
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
