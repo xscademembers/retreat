@@ -15,6 +15,17 @@ export interface BlogPost {
   published: boolean;
 }
 
+async function parseJsonResponse(res: Response, action: string) {
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const body = await res.text().catch(() => '');
+    throw new Error(
+      `${action} returned non-JSON response. Check /api/blogs deployment. ${body.slice(0, 120)}`
+    );
+  }
+  return res.json();
+}
+
 const AUTH_KEY = 'salsons_admin_auth';
 const ADMIN_PASSWORD = 'admin123';
 
@@ -30,20 +41,20 @@ export function slugify(text: string): string {
 export async function getAllPosts(): Promise<BlogPost[]> {
   const res = await fetch('/api/blogs');
   if (!res.ok) throw new Error(`Failed to load posts (${res.status})`);
-  return res.json();
+  return parseJsonResponse(res, 'Load all posts');
 }
 
 export async function getPublishedPosts(): Promise<BlogPost[]> {
   const res = await fetch('/api/blogs?published=true');
   if (!res.ok) throw new Error(`Failed to load posts (${res.status})`);
-  return res.json();
+  return parseJsonResponse(res, 'Load published posts');
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Failed to load post (${res.status})`);
-  return res.json();
+  return parseJsonResponse(res, 'Load post by slug');
 }
 
 export async function savePost(
@@ -59,7 +70,7 @@ export async function savePost(
     const errBody = await res.text().catch(() => '');
     throw new Error(errBody || `Failed to save post (${res.status})`);
   }
-  return res.json();
+  return parseJsonResponse(res, 'Save post');
 }
 
 export async function deletePost(id: string): Promise<void> {

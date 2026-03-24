@@ -5,14 +5,22 @@ import { getPublishedPosts, BlogPost } from '../utils/blogStore';
 export const BlogList: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     getPublishedPosts()
       .then((data) => {
-        if (!cancelled) setPosts(data);
+        if (!cancelled) {
+          setPosts(data);
+          setError(null);
+        }
       })
-      .catch(() => {})
+      .catch((err: any) => {
+        if (!cancelled) {
+          setError(err?.message || 'Unable to load blog posts right now.');
+        }
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
@@ -53,6 +61,10 @@ export const BlogList: React.FC = () => {
         {loading ? (
           <div className="text-center py-20">
             <p className="text-lg text-text-muted">Loading posts...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20 bg-white border border-primary/10 rounded-2xl">
+            <p className="text-sm sm:text-base text-red-700">{error}</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20">
