@@ -113,6 +113,20 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
           </video>
         </figure>
       );
+    case 'button':
+      return (
+        <div className="my-8">
+          <a
+            href={block.linkUrl || '#'}
+            target={block.linkUrl?.startsWith('/') ? '_self' : '_blank'}
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full text-base font-medium hover:bg-primary/90 transition-colors"
+          >
+            {block.content}
+            <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+          </a>
+        </div>
+      );
     default:
       return null;
   }

@@ -224,6 +224,10 @@ const BlogEditor: React.FC<{
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, align } : b)));
   };
 
+  const updateBlockLink = (id: string, linkUrl: string) => {
+    setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, linkUrl } : b)));
+  };
+
   const removeBlock = (id: string) => {
     setBlocks((prev) => prev.filter((b) => b.id !== id));
   };
@@ -388,6 +392,8 @@ const BlogEditor: React.FC<{
                           ? 'image'
                           : block.type === 'video'
                           ? 'videocam'
+                          : block.type === 'button'
+                          ? 'smart_button'
                           : 'notes'}
                       </span>
                       {block.type}
@@ -464,6 +470,30 @@ const BlogEditor: React.FC<{
                           </video>
                         </div>
                       )}
+                    </div>
+                  ) : block.type === 'button' ? (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-text-muted mb-1">Button Text</label>
+                        <input
+                          type="text"
+                          value={block.content}
+                          onChange={(e) => updateBlock(block.id, e.target.value)}
+                          placeholder="e.g. Book Now"
+                          className="w-full px-3 py-2 border border-primary/15 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-text-muted mb-1">Button Link URL</label>
+                        <input
+                          type="text"
+                          inputMode="url"
+                          value={block.linkUrl || ''}
+                          onChange={(e) => updateBlockLink(block.id, e.target.value)}
+                          placeholder="https://example.com or /contact"
+                          className="w-full px-3 py-2 border border-primary/15 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                        />
+                      </div>
                     </div>
                   ) : block.type === 'heading' || block.type === 'paragraph' ? (
                     <div className="space-y-2">
@@ -547,6 +577,14 @@ const BlogEditor: React.FC<{
                 <span className="material-symbols-outlined text-base" aria-hidden="true">videocam</span>
                 Add Video
               </button>
+              <button
+                type="button"
+                onClick={() => addBlock('button')}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary/5 text-primary text-sm font-medium rounded-lg hover:bg-primary/10 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">smart_button</span>
+                Add Button
+              </button>
             </div>
           </fieldset>
         </section>
@@ -612,6 +650,22 @@ const BlogEditor: React.FC<{
                           Your browser does not support the video tag.
                         </video>
                       </figure>
+                    );
+                  }
+                  if (block.type === 'button') {
+                    return (
+                      <div key={block.id} className="my-4">
+                        <a
+                          href={block.linkUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          {block.content}
+                          <span className="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+                        </a>
+                      </div>
                     );
                   }
                   return null;

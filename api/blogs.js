@@ -83,6 +83,7 @@ export default async function handler(req, res) {
               type: block?.type,
               content: String(block?.content || ''),
               align: block?.align,
+              linkUrl: block?.linkUrl || undefined,
             }))
           : [],
         featuredImage: body.featuredImage || '',

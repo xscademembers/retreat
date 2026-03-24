@@ -1,8 +1,9 @@
 export interface BlogBlock {
   id: string;
-  type: 'heading' | 'paragraph' | 'image' | 'video';
+  type: 'heading' | 'paragraph' | 'image' | 'video' | 'button';
   content: string;
   align?: 'left' | 'center' | 'right';
+  linkUrl?: string;
 }
 
 export interface BlogPost {
