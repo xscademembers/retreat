@@ -1,6 +1,6 @@
 export interface BlogBlock {
   id: string;
-  type: 'heading' | 'paragraph' | 'image';
+  type: 'heading' | 'paragraph' | 'image' | 'video';
   content: string;
 }
 

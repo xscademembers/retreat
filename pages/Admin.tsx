@@ -258,7 +258,13 @@ const BlogEditor: React.FC<{
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-sm" aria-hidden="true">
-                    {block.type === 'heading' ? 'title' : block.type === 'image' ? 'image' : 'notes'}
+                    {block.type === 'heading'
+                      ? 'title'
+                      : block.type === 'image'
+                      ? 'image'
+                      : block.type === 'video'
+                      ? 'videocam'
+                      : 'notes'}
                   </span>
                   {block.type}
                 </span>
@@ -313,6 +319,28 @@ const BlogEditor: React.FC<{
                     </div>
                   )}
                 </div>
+              ) : block.type === 'video' ? (
+                <div>
+                  <input
+                    type="url"
+                    value={block.content}
+                    onChange={(e) => updateBlock(block.id, e.target.value)}
+                    placeholder="Enter video URL"
+                    className="w-full px-3 py-2 border border-primary/15 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                  />
+                  {block.content && (
+                    <div className="mt-2 rounded-lg overflow-hidden bg-black">
+                      <video
+                        src={block.content}
+                        controls
+                        preload="metadata"
+                        className="w-full max-h-72"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  )}
+                </div>
               ) : block.type === 'heading' ? (
                 <input
                   type="text"
@@ -357,6 +385,14 @@ const BlogEditor: React.FC<{
           >
             <span className="material-symbols-outlined text-base" aria-hidden="true">image</span>
             Add Image
+          </button>
+          <button
+            type="button"
+            onClick={() => addBlock('video')}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary/5 text-primary text-sm font-medium rounded-lg hover:bg-primary/10 transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-base" aria-hidden="true">videocam</span>
+            Add Video
           </button>
         </div>
       </fieldset>

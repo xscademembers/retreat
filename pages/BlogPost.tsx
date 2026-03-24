@@ -27,6 +27,19 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
           />
         </figure>
       );
+    case 'video':
+      return (
+        <figure className="my-8 rounded-xl overflow-hidden shadow-sm bg-black">
+          <video
+            src={block.content}
+            controls
+            preload="metadata"
+            className="w-full h-auto"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </figure>
+      );
     default:
       return null;
   }
