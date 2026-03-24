@@ -75,6 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           </div>
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/amenities">Amenities</Link>
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/#testimonials">Testimonials</Link>
+          <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/blogs">Blogs</Link>
           <Link className={`text-sm font-semibold transition-colors hover:underline underline-offset-4 min-h-[44px] flex items-center ${navLinkBase}`} to="/corporate">Corporate Events</Link>
         </nav>
 
@@ -153,6 +154,7 @@ export const Navbar: React.FC<NavbarProps> = ({ isScrolled, isHome }) => {
           </div>
           <Link to="/amenities" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Amenities</Link>
           <Link to="/#testimonials" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Testimonials</Link>
+          <Link to="/blogs" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Blogs</Link>
           <Link to="/corporate" className="block py-3 px-4 rounded-xl text-primary font-semibold hover:bg-primary/5" onClick={closeMenu}>Corporate Events</Link>
           <Link to="/book-now" className="block mt-4 py-4 px-4 rounded-xl bg-primary text-white font-bold text-center hover:bg-primary/90" onClick={closeMenu}>Book Now</Link>
         </nav>

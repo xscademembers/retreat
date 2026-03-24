@@ -16,6 +16,44 @@ const BlogList = lazy(() => import('./pages/BlogList').then((m) => ({ default: m
 const BlogPost = lazy(() => import('./pages/BlogPost').then((m) => ({ default: m.BlogPost })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
+const SEO_BY_PATH: Record<string, { title: string; description: string }> = {
+  '/': {
+    title: 'Salsons Retreat Thatipudi | Farmstay & Resort Near Vizag | Day Outings & Stays',
+    description:
+      'Salsons Retreat is a 6-acre lakeside farmstay near Vizag. Enjoy pool parties, BBQ, boating, cricket & farm-to-table Andhra meals. Day outings from ₹990. Book now.',
+  },
+  '/day-spend': {
+    title: 'Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ₹990',
+    description:
+      'Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ₹990/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.',
+  },
+  '/day-pass': {
+    title: 'Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ₹990',
+    description:
+      'Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ₹990/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.',
+  },
+  '/accommodation': {
+    title: 'Rooms & Stays at Salsons Retreat | Villa, Cottage & Lake-View Cabana Near Vizag',
+    description:
+      'Stay at Salsons Retreat Thatipudi in a lake-view Cabana, cosy Cottage, or private Villa. Overnight stays from ₹1,999/night with farm-to-table meals and resort amenities.',
+  },
+  '/rooms': {
+    title: 'Rooms & Stays at Salsons Retreat | Villa, Cottage & Lake-View Cabana Near Vizag',
+    description:
+      'Stay at Salsons Retreat Thatipudi in a lake-view Cabana, cosy Cottage, or private Villa. Overnight stays from ₹1,999/night with farm-to-table meals and resort amenities.',
+  },
+  '/corporate': {
+    title: 'Corporate Team Outing Near Vizag | Salsons Retreat | Day & Overnight Packages',
+    description:
+      'Plan your corporate team outing at Salsons Retreat, a 6-acre farmstay 70 km from Vizag. Pool, BBQ, cricket, boating for groups of 10–50. Custom packages. Get a free quote.',
+  },
+  '/about': {
+    title: 'About Salsons Retreat | 6-Acre Lakeside Farmstay in Thatipudi, Andhra Pradesh',
+    description:
+      'Salsons Retreat is a family-run 6-acre farmstay near Thatipudi Reservoir, blending homestay warmth with resort amenities. Eco-conscious, pet-friendly, and 70 km from Vizag.',
+  },
+};
+
 const AppShell: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
@@ -43,6 +81,21 @@ const AppShell: React.FC = () => {
       import('./pages/Corporate').catch(() => {});
     });
   }, []);
+
+  useEffect(() => {
+    const seo = SEO_BY_PATH[location.pathname];
+    if (!seo) return;
+
+    document.title = seo.title;
+
+    let descriptionMeta = document.querySelector('meta[name="description"]');
+    if (!descriptionMeta) {
+      descriptionMeta = document.createElement('meta');
+      descriptionMeta.setAttribute('name', 'description');
+      document.head.appendChild(descriptionMeta);
+    }
+    descriptionMeta.setAttribute('content', seo.description);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Smooth scroll to hash targets when route or hash changes
