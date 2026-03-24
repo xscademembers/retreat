@@ -8,8 +8,6 @@ import { Feature } from '../types';
 import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES } from '../constants';
 import { useInView } from '../hooks/useInView';
 
-const BROCHURE_URL = '#'; // replace with actual brochure link when available
-
 /** Hero banner — team / outdoor image (same CDN as itinerary section) */
 const CORPORATE_HERO_IMAGE =
   'https://static.wixstatic.com/media/9356bd_71c8625bb8644c82970cefa10b21629c~mv2.jpg';
@@ -161,6 +159,7 @@ const LazyMapEmbed: React.FC = () => {
 export const Corporate: React.FC = () => {
   const trustedDesktopRef = useRef<HTMLDivElement | null>(null);
   const trustedMobileRef = useRef<HTMLDivElement | null>(null);
+  const pricingMobileRef = useRef<HTMLDivElement | null>(null);
   const isRepositioning = useRef(false);
 
   const scrollToCardIndex = useCallback((el: HTMLDivElement, idx: number, smooth = false) => {
@@ -240,6 +239,17 @@ export const Corporate: React.FC = () => {
     }
   }, []);
 
+  const scrollPricingMobile = useCallback((direction: 'left' | 'right') => {
+    const el = pricingMobileRef.current;
+    if (!el) return;
+    const card = el.querySelector('article') as HTMLElement | null;
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(el).gap) || 0;
+    const amount = card.offsetWidth + gap;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: reduced ? 'auto' : 'smooth' });
+  }, []);
+
   return (
     <main id="main-content" className="pt-12 sm:pt-16 bg-white">
       {/* 1. Hero banner */}
@@ -285,17 +295,6 @@ export const Corporate: React.FC = () => {
                   north_east
                 </span>
               </Link>
-              <a
-                href={BROCHURE_URL}
-                target={BROCHURE_URL === '#' ? undefined : '_blank'}
-                rel={BROCHURE_URL === '#' ? undefined : 'noopener noreferrer'}
-                className="border-2 border-white/70 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-sm sm:text-base lg:text-lg font-bold hover:bg-white/10 hover:border-white transition-all duration-300 inline-flex items-center justify-center gap-2 [@media(prefers-reduced-motion:reduce)]:transition-colors"
-              >
-                Download Brochure
-                <span className="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">
-                  arrow_forward
-                </span>
-              </a>
             </div>
           </div>
         </div>
@@ -538,9 +537,14 @@ export const Corporate: React.FC = () => {
             </p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          <div className="relative">
+            <div
+              ref={pricingMobileRef}
+              className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 scrollbar-hide px-[5%] md:px-0"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
             {/* Basic */}
-            <article className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
               <div className="flex items-start justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Basic</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">diamond</span>
@@ -575,7 +579,7 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Value — TOP PICK */}
-            <article className="relative flex flex-col rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg snap-center md:snap-start transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
               <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
                 Top Pick
               </span>
@@ -610,7 +614,7 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Adventure */}
-            <article className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
               <div className="flex items-start justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">landscape</span>
@@ -641,6 +645,23 @@ export const Corporate: React.FC = () => {
                 Book Now
               </Link>
             </article>
+            </div>
+            <button
+              type="button"
+              onClick={() => scrollPricingMobile('left')}
+              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex md:hidden items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Previous package"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollPricingMobile('right')}
+              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex md:hidden items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-label="Next package"
+            >
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">chevron_right</span>
+            </button>
           </div>
         </div>
       </section>
@@ -765,19 +786,6 @@ export const Corporate: React.FC = () => {
         </div>
       </section>
 
-      {/* Floating Download Brochure button (replaces WhatsApp on this page) */}
-      <a
-        href={BROCHURE_URL}
-        target={BROCHURE_URL === '#' ? undefined : '_blank'}
-        rel={BROCHURE_URL === '#' ? undefined : 'noopener noreferrer'}
-        className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 rounded-full bg-primary text-white px-5 py-3.5 shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 [@media(prefers-reduced-motion:reduce)]:transition-none"
-        aria-label="Download brochure"
-      >
-        <span className="material-symbols-outlined text-xl" aria-hidden="true">
-          download
-        </span>
-        <span className="text-sm font-semibold hidden sm:inline">Download Brochure</span>
-      </a>
     </main>
   );
 };
