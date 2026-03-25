@@ -148,12 +148,6 @@ html {
   margin-bottom: var(--space-2);
 }
 
-.prose-content br {
-  display: block;
-  content: "";
-  margin-top: 0.35em;
-}
-
 .prose-content strong,
 .prose-content b {
   color: var(--color-text);
