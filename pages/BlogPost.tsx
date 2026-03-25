@@ -85,7 +85,7 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
     case 'paragraph':
       return (
         <p
-          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6 whitespace-pre-line"
+          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6"
           style={{ textAlign: block.align || 'left' }}
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
         />
@@ -284,7 +284,7 @@ const SafeBlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => (
   <BlogErrorBoundary
     fallback={
       block.type === 'heading' || block.type === 'paragraph' ? (
-        <p className="text-base text-text-muted leading-relaxed mb-6 whitespace-pre-line">
+        <p className="text-base text-text-muted leading-relaxed mb-6">
           {block.content.replace(/<[^>]*>/g, '')}
         </p>
       ) : null
