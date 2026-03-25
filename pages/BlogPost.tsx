@@ -66,7 +66,11 @@ function sanitizeRichText(html: string): string {
 
   try {
     cleanNode(doc.body);
-    return doc.body.innerHTML;
+    let result = doc.body.innerHTML;
+    // Convert literal newlines to <br> so line breaks from the editor
+    // are preserved without needing whitespace-pre-line (which broke alignment).
+    result = result.replace(/\n/g, '<br>');
+    return result;
   } catch {
     return html;
   }
