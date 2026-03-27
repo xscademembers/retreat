@@ -201,12 +201,18 @@ export const AMENITY_IMAGES: Record<string, string[]> = {
   ],
   // Corporate activities (reuse existing visuals for now)
   swim: [
-    'https://static.wixstatic.com/media/9356bd_0cd3be2497a84062bbec961c4d4f8755~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_1b567a24944e48629856d1a120267c05~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_2f754596e62b44bfbaf4bf5cb4d09b76~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_f39cd8e50b1a480099b496fa6fb47487~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_adea74abfb0d4973bd34629b30fe09ad~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_6208e3777f554b45bac8222ec20c614f~mv2.jpg',
   ],
   'cricket-activity': [
+    'https://static.wixstatic.com/media/9356bd_3a66f512aa404e84b79835873cce2588~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_39ed45567c694bfbb79666f8e8ebec71~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_1fc6679cbe034ab59e379ea02d8e176a~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_42454770c7414c349377883005435124~mv2.jpg',
     'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
-    'https://static.wixstatic.com/media/9356bd_0b96740b7f94421390f2ef977fb2966d~mv2.jpg',
   ],
   'volleyball-activity': [
     'https://static.wixstatic.com/media/9356bd_72b4de6522874b8cb019957a09d9fb79~mv2.jpg',
@@ -214,7 +220,10 @@ export const AMENITY_IMAGES: Record<string, string[]> = {
   ],
   'boating-activity': [
     'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
-    'https://static.wixstatic.com/media/9356bd_cf3a8a3d18cf48e8897bc3c754cba84b~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_0480cd18d6af417d8bc176e3f7e4ab56~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_2c051a01ea864ef7a45e33b1d78a1307~mv2.png',
+    'https://static.wixstatic.com/media/9356bd_e1e0a105ac3f48f7a2de686f47f79369~mv2.jpg',
+    'https://static.wixstatic.com/media/9356bd_757a69df2e4e4649ba5cefb06a2c68a8~mv2.jpg',
   ],
   'bonfire-activity': [
     'https://static.wixstatic.com/media/9356bd_b9b735c1f92f4b2a94d7db8cfe09eba1~mv2.webp',

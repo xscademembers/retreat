@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimateOnScroll } from '../components/AnimateOnScroll';
 import { AmenityTabs } from '../components/AmenityTabs';
@@ -9,8 +9,13 @@ import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES } from '../constants'
 import { useInView } from '../hooks/useInView';
 
 /** Hero banner — team / outdoor image (same CDN as itinerary section) */
-const CORPORATE_HERO_IMAGE =
-  'https://static.wixstatic.com/media/9356bd_2c051a01ea864ef7a45e33b1d78a1307~mv2.png';
+const CORPORATE_HERO_SLIDES = [
+  'https://static.wixstatic.com/media/9356bd_0540c6e003c4431196bb860cf2e75788~mv2.jpeg',
+  'https://static.wixstatic.com/media/9356bd_2e8447e74f414111ae882b10a5d847e6~mv2.jpg',
+  'https://static.wixstatic.com/media/9356bd_f455af77133a4c6994310db742e2ce5e~mv2.png',
+  'https://static.wixstatic.com/media/9356bd_6981d04039334562867459b3230d91d4~mv2.jpeg',
+  'https://static.wixstatic.com/media/9356bd_9263a380c43f47029d97d3ca7448116c~mv2.jpeg',
+];
 
 const CORPORATE_ACTIVITIES: Feature[] = [
   {
@@ -53,7 +58,7 @@ const TRUSTED_CARDS = [
     package: 'Day Spend (Basic – ₹990)',
     transport: 'Arranged by Retreat',
     image:
-      'https://static.wixstatic.com/media/9356bd_9263a380c43f47029d97d3ca7448116c~mv2.jpeg',
+      'https://static.wixstatic.com/media/9356bd_a4032ed2e7564804ace3ff755615e5b5~mv2.png',
   },
   {
     id: 'card-2',
@@ -62,7 +67,7 @@ const TRUSTED_CARDS = [
     package: 'Day Spend (Basic – ₹990)',
     transport: 'Arranged by Retreat',
     image:
-      'https://static.wixstatic.com/media/9356bd_0b96740b7f94421390f2ef977fb2966d~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_6bbf867ffa5847c8ab35ad2b8c13767a~mv2.png',
   },
   {
     id: 'card-3',
@@ -71,7 +76,7 @@ const TRUSTED_CARDS = [
     package: 'Night Stay (Full Retreat)',
     transport: 'Own Arrangement',
     image:
-      'https://static.wixstatic.com/media/9356bd_b4992d19dffc46869c5b07039e4b47cb~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_ca517e4080fd4ff585b4142f19dfbc4b~mv2.png',
   },
   {
     id: 'card-4',
@@ -80,7 +85,7 @@ const TRUSTED_CARDS = [
     package: 'Day Spend (Basic – ₹990)',
     transport: 'Own Arrangement',
     image:
-      'https://static.wixstatic.com/media/9356bd_37765711a58044968ecb66adb3beff87~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_eb33ff10bd744511ac122b729c831739~mv2.png',
   },
   {
     id: 'card-5',
@@ -89,7 +94,7 @@ const TRUSTED_CARDS = [
     package: 'Day Spend (Basic – ₹990)',
     transport: 'Own Arrangement',
     image:
-      'https://static.wixstatic.com/media/9356bd_72b4de6522874b8cb019957a09d9fb79~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_873f2df37a9c473a9d45fb6b3436e402~mv2.png',
   },
   {
     id: 'card-6',
@@ -98,7 +103,7 @@ const TRUSTED_CARDS = [
     package: 'Night Stay (Full Retreat)',
     transport: 'Own Arrangement',
     image:
-      'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_88335b9c3abe46a9ad31622b537ddad8~mv2.png',
   },
   {
     id: 'card-7',
@@ -107,7 +112,7 @@ const TRUSTED_CARDS = [
     package: 'Night Stay (Full Retreat)',
     transport: 'Own Arrangement',
     image:
-      'https://static.wixstatic.com/media/9356bd_3c005c17da944e3e9f9c73647e1c5d51~mv2.jpg',
+      'https://static.wixstatic.com/media/9356bd_5a42707967ec4728ac7fb426ff3117b0~mv2.png',
   },
 ];
 
@@ -161,6 +166,9 @@ export const Corporate: React.FC = () => {
   const trustedMobileRef = useRef<HTMLDivElement | null>(null);
   const pricingMobileRef = useRef<HTMLDivElement | null>(null);
   const isRepositioning = useRef(false);
+  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const heroSlides = CORPORATE_HERO_SLIDES;
+  const heroSlidesCount = heroSlides.length;
 
   const scrollToCardIndex = useCallback((el: HTMLDivElement, idx: number, smooth = false) => {
     const card = el.children[idx] as HTMLElement | undefined;
@@ -168,6 +176,28 @@ export const Corporate: React.FC = () => {
     const offset = card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2;
     el.scrollTo({ left: offset, behavior: smooth ? 'smooth' : 'auto' });
   }, []);
+
+  const prevHeroSlide = useCallback(() => {
+    if (heroSlidesCount <= 1) return;
+    setHeroSlideIndex((i) => (i - 1 + heroSlidesCount) % heroSlidesCount);
+  }, [heroSlidesCount]);
+
+  const nextHeroSlide = useCallback(() => {
+    if (heroSlidesCount <= 1) return;
+    setHeroSlideIndex((i) => (i + 1) % heroSlidesCount);
+  }, [heroSlidesCount]);
+
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    if (heroSlidesCount <= 1) return;
+
+    const id = window.setInterval(() => {
+      setHeroSlideIndex((i) => (i + 1) % heroSlidesCount);
+    }, 5000);
+
+    return () => window.clearInterval(id);
+  }, [heroSlidesCount]);
 
   useEffect(() => {
     const el = trustedMobileRef.current;
@@ -265,16 +295,45 @@ export const Corporate: React.FC = () => {
         aria-labelledby="corporate-hero-heading"
       >
         <div className="absolute inset-0" aria-hidden="true">
-          <img
-            src={CORPORATE_HERO_IMAGE}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-center"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
+          {heroSlides.map((src, idx) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={[
+                'absolute inset-0 h-full w-full object-cover object-center',
+                'transition-opacity duration-700',
+                idx === heroSlideIndex ? 'opacity-100' : 'opacity-0',
+                '[@media(prefers-reduced-motion:reduce)]:transition-none',
+              ].join(' ')}
+              loading={idx === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              fetchPriority={idx === 0 ? 'high' : 'auto'}
+            />
+          ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 to-black/35" aria-hidden="true" />
+
+        <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 pointer-events-none">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={prevHeroSlide}
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur border border-white/20 text-white grid place-items-center hover:bg-white/25 transition-colors [@media(prefers-reduced-motion:reduce)]:transition-none"
+              aria-label="Previous background image"
+            >
+              <span className="material-symbols-outlined text-2xl" aria-hidden="true">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              onClick={nextHeroSlide}
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur border border-white/20 text-white grid place-items-center hover:bg-white/25 transition-colors [@media(prefers-reduced-motion:reduce)]:transition-none"
+              aria-label="Next background image"
+            >
+              <span className="material-symbols-outlined text-2xl" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+        </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-8 sm:gap-10">
           <div className="max-w-3xl space-y-4 sm:space-y-6 text-left">
@@ -338,15 +397,15 @@ export const Corporate: React.FC = () => {
                   key={card._key}
                   className="w-[87%] flex-shrink-0 rounded-2xl overflow-hidden bg-white shadow-md border border-gray-100 snap-center"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-white">
                     <img
                       src={card.image}
                       alt={`${card.company} team at Salsons Retreat`}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-contain p-5"
                       loading="lazy"
                     />
                   </div>
-                  <div className="p-5 space-y-3">
+                  <div className="p-4 space-y-2">
                     <h3 className="text-lg font-bold text-gray-900">{card.company}</h3>
                     <ul className="space-y-2 text-sm text-gray-600">
                       <li className="flex items-center gap-2">
@@ -396,15 +455,15 @@ export const Corporate: React.FC = () => {
                   key={card.id}
                   className="w-[32%] lg:w-[30%] flex-shrink-0 rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-white">
                     <img
                       src={card.image}
                       alt={`${card.company} team at Salsons Retreat`}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-contain p-6"
                       loading="lazy"
                     />
                   </div>
-                  <div className="p-5 lg:p-6 space-y-3">
+                  <div className="p-4 lg:p-5 space-y-2">
                     <h3 className="text-lg font-bold text-gray-900">{card.company}</h3>
                     <ul className="space-y-2 text-sm text-gray-600">
                       <li className="flex items-center gap-2">
