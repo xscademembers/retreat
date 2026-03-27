@@ -10,7 +10,7 @@ import { useInView } from '../hooks/useInView';
 
 /** Hero banner — team / outdoor image (same CDN as itinerary section) */
 const CORPORATE_HERO_IMAGE =
-  'https://static.wixstatic.com/media/9356bd_71c8625bb8644c82970cefa10b21629c~mv2.jpg';
+  'https://static.wixstatic.com/media/9356bd_2c051a01ea864ef7a45e33b1d78a1307~mv2.png';
 
 const CORPORATE_ACTIVITIES: Feature[] = [
   {
@@ -254,7 +254,7 @@ export const Corporate: React.FC = () => {
     <main id="main-content" className="pt-12 sm:pt-16 bg-white">
       {/* 1. Hero banner */}
       <section
-        className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
+        className="relative min-h-screen flex items-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
         aria-labelledby="corporate-hero-heading"
       >
         <div className="absolute inset-0" aria-hidden="true">
@@ -448,7 +448,7 @@ export const Corporate: React.FC = () => {
               id="itinerary-heading"
               className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-itinerary-text"
             >
-              Sample corporate itinerary
+              Your team&apos;s day at Salsons
             </h2>
           </header>
 
@@ -544,8 +544,8 @@ export const Corporate: React.FC = () => {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
             {/* Basic */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <div className="flex items-start justify-between mb-6">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Basic</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">diamond</span>
               </div>
@@ -553,10 +553,10 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹990</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              <p className="text-sm text-gray-500 leading-relaxed mb-5">
                 Entry, pool access, farm-to-table lunch, and sports. Perfect for a relaxed day in nature.
               </p>
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2 mb-6 flex-1">
                 {[
                   'Entry & welcome drink',
                   'Pool access',
@@ -564,9 +564,11 @@ export const Corporate: React.FC = () => {
                   'Sports (Cricket, Basketball, Football, Volleyball, Throwball)',
                   'Evening tea & cookies',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
-                    {item}
+                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
+                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
+                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
+                    </span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -579,11 +581,11 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Value — TOP PICK */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg snap-center md:snap-start transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <span className="absolute top-3 md:-top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full z-10">
                 Top Pick
               </span>
-              <div className="flex items-start justify-between mb-6">
+              <div className="flex items-start justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Value</h3>
                 <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">equalizer</span>
               </div>
@@ -591,17 +593,19 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              <p className="text-sm text-gray-500 leading-relaxed mb-5">
                 Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.
               </p>
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2 mb-6 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
-                    {item}
+                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
+                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
+                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
+                    </span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -614,8 +618,8 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Adventure */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <div className="flex items-start justify-between mb-6">
+            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">landscape</span>
               </div>
@@ -623,18 +627,20 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              <p className="text-sm text-gray-500 leading-relaxed mb-5">
                 Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.
               </p>
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2 mb-6 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
                   'Boating at Thatipudi Reservoir',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span className="material-symbols-outlined text-primary text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>
-                    {item}
+                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
+                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
+                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
+                    </span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
