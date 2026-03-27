@@ -175,6 +175,13 @@ export const Corporate: React.FC = () => {
     scrollToCardIndex(el, CLONE_COUNT, false);
   }, [scrollToCardIndex]);
 
+  /** Mobile pricing strip: open on Value (second card), not Basic */
+  useEffect(() => {
+    const el = pricingMobileRef.current;
+    if (!el) return;
+    scrollToCardIndex(el, 1, false);
+  }, [scrollToCardIndex]);
+
   useEffect(() => {
     const el = trustedMobileRef.current;
     if (!el) return;
