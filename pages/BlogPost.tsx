@@ -46,15 +46,16 @@ function sanitizeRichText(html: string): string {
         } else if (el.tagName === 'SPAN') {
           const style = el.getAttribute('style') || '';
           const colorMatch = style.match(/color\s*:\s*#[0-9a-fA-F]{3,8}|color\s*:\s*rgb\([^)]+\)/);
+          const textAlignMatch = style.match(/text-align\s*:\s*(left|center|right|justify)\s*;?/i);
           const attrs = Array.from(el.attributes);
           for (const attr of attrs) {
             if (attr.name.toLowerCase() !== 'style') el.removeAttribute(attr.name);
           }
-          if (colorMatch) {
-            el.setAttribute('style', colorMatch[0]);
-          } else {
-            el.removeAttribute('style');
-          }
+          const styleParts: string[] = [];
+          if (colorMatch) styleParts.push(colorMatch[0]);
+          if (textAlignMatch) styleParts.push(textAlignMatch[0]);
+          if (styleParts.length > 0) el.setAttribute('style', styleParts.join('; '));
+          else el.removeAttribute('style');
         } else if (!containerTags.has(el.tagName)) {
           const attrs = Array.from(el.attributes);
           for (const attr of attrs) el.removeAttribute(attr.name);
@@ -65,7 +66,11 @@ function sanitizeRichText(html: string): string {
 
   try {
     cleanNode(doc.body);
-    return doc.body.innerHTML;
+    let result = doc.body.innerHTML;
+    // Strip literal \n characters — they are editor wrapping artifacts,
+    // not intentional line breaks. Real breaks use <br> tags.
+    result = result.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ');
+    return result;
   } catch {
     return html;
   }
@@ -84,7 +89,7 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
     case 'paragraph':
       return (
         <p
-          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6 whitespace-pre-line"
+          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6"
           style={{ textAlign: block.align || 'left' }}
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
         />
@@ -283,7 +288,7 @@ const SafeBlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => (
   <BlogErrorBoundary
     fallback={
       block.type === 'heading' || block.type === 'paragraph' ? (
-        <p className="text-base text-text-muted leading-relaxed mb-6 whitespace-pre-line">
+        <p className="text-base text-text-muted leading-relaxed mb-6">
           {block.content.replace(/<[^>]*>/g, '')}
         </p>
       ) : null

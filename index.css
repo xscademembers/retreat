@@ -132,6 +132,27 @@ html {
   }
 }
 
+/* Blog prose content — consistent typography regardless of source */
+.prose-content {
+  line-height: 1.8;
+  word-spacing: 0.02em;
+}
+
+.prose-content p {
+  line-height: 1.8;
+  margin-bottom: var(--space-3);
+}
+
+.prose-content h2 {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+
+.prose-content strong,
+.prose-content b {
+  color: var(--color-text);
+}
+
 /* Hero entrance animation */
 @keyframes hero-fade-in {
   from {
