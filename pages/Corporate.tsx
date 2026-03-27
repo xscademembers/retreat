@@ -254,7 +254,7 @@ export const Corporate: React.FC = () => {
     <main id="main-content" className="pt-12 sm:pt-16 bg-white">
       {/* 1. Hero banner */}
       <section
-        className="relative min-h-screen flex items-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
+        className="relative min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen flex items-center text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden"
         aria-labelledby="corporate-hero-heading"
       >
         <div className="absolute inset-0" aria-hidden="true">
@@ -283,7 +283,7 @@ export const Corporate: React.FC = () => {
             <ul className="list-disc list-outside pl-5 sm:pl-6 max-w-xl space-y-2 text-base sm:text-lg text-white/80 marker:text-white/50">
               <li>70 km from Vizag</li>
               <li>Packages from ₹990</li>
-              <li>Ideal for 30–300 members</li>
+              <li>Ideal for 30–300 teams</li>
             </ul>
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
@@ -540,12 +540,12 @@ export const Corporate: React.FC = () => {
           <div className="relative">
             <div
               ref={pricingMobileRef}
-              className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2 md:pb-0 scrollbar-hide px-[5%] md:px-0"
+              className="flex md:grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pt-4 md:pt-0 pb-2 md:pb-0 scrollbar-hide px-[5%] md:px-0"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
             {/* Basic */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <div className="flex items-start justify-between mb-4">
+            <article className="relative w-[87%] md:w-auto min-h-[560px] sm:min-h-[592px] md:min-h-0 h-full flex flex-col flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Basic</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">diamond</span>
               </div>
@@ -553,10 +553,10 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹990</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-5">
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
                 Entry, pool access, farm-to-table lunch, and sports. Perfect for a relaxed day in nature.
               </p>
-              <ul className="space-y-2 mb-6 flex-1">
+              <ul className="space-y-3 mb-8 flex-1">
                 {[
                   'Entry & welcome drink',
                   'Pool access',
@@ -564,11 +564,9 @@ export const Corporate: React.FC = () => {
                   'Sports (Cricket, Basketball, Football, Volleyball, Throwball)',
                   'Evening tea & cookies',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
-                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
-                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
-                    </span>
-                    <span>{item}</span>
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-[18px] leading-none mt-[2px] shrink-0" aria-hidden="true">check_circle</span>
+                    <span className="block leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -581,11 +579,11 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Value — TOP PICK */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <span className="absolute top-3 md:-top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full z-10">
+            <article className="relative w-[87%] md:w-auto min-h-[560px] sm:min-h-[592px] md:min-h-0 h-full flex flex-col flex-shrink-0 md:flex-shrink rounded-2xl border-2 border-primary bg-white p-6 sm:p-8 shadow-lg snap-center md:snap-start transition-shadow duration-300 hover:shadow-xl [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <span className="absolute top-3 md:-top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
                 Top Pick
               </span>
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Value</h3>
                 <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">equalizer</span>
               </div>
@@ -593,19 +591,17 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-5">
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
                 Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.
               </p>
-              <ul className="space-y-2 mb-6 flex-1">
+              <ul className="space-y-3 mb-8 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
-                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
-                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
-                    </span>
-                    <span>{item}</span>
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-[18px] leading-none mt-[2px] shrink-0" aria-hidden="true">check_circle</span>
+                    <span className="block leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -618,8 +614,8 @@ export const Corporate: React.FC = () => {
             </article>
 
             {/* Adventure */}
-            <article className="relative w-[87%] md:w-auto flex-shrink-0 md:flex-shrink flex flex-col rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start md:min-h-[520px] transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
-              <div className="flex items-start justify-between mb-4">
+            <article className="relative w-[87%] md:w-auto min-h-[560px] sm:min-h-[592px] md:min-h-0 h-full flex flex-col flex-shrink-0 md:flex-shrink rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm snap-center md:snap-start transition-shadow duration-300 hover:shadow-lg [@media(prefers-reduced-motion:reduce)]:transition-none">
+              <div className="flex items-start justify-between mb-6">
                 <h3 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-900">Adventure</h3>
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">landscape</span>
               </div>
@@ -627,20 +623,18 @@ export const Corporate: React.FC = () => {
                 <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-5">
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
                 Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.
               </p>
-              <ul className="space-y-2 mb-6 flex-1">
+              <ul className="space-y-3 mb-8 flex-1">
                 {[
                   'Everything in Basic',
                   'Barbecue (veg & non-veg options available)',
                   'Boating at Thatipudi Reservoir',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-gray-700">
-                    <span className="inline-flex h-5 w-5 items-center justify-center shrink-0 mt-0.5" aria-hidden="true">
-                      <span className="material-symbols-outlined text-primary text-base leading-none">check_circle</span>
-                    </span>
-                    <span>{item}</span>
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="material-symbols-outlined text-primary text-[18px] leading-none mt-[2px] shrink-0" aria-hidden="true">check_circle</span>
+                    <span className="block leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
