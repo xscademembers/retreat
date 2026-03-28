@@ -1,97 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getPostBySlug, BlogPost as BlogPostType, BlogBlock } from '../utils/blogStore';
-
-function sanitizeRichText(html: string): string {
-  if (typeof window === 'undefined') return html;
-  if (!html || !html.trim()) return '';
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const allowedTags = new Set(['STRONG', 'B', 'EM', 'I', 'U', 'A', 'SPAN', 'BR', 'DIV', 'P']);
-  const containerTags = new Set(['BODY', 'HTML', 'HEAD', 'DIV', 'P']);
-
-  const cleanNode = (node: Node) => {
-    const children = Array.from(node.childNodes);
-
-    for (const child of children) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        const el = child as HTMLElement;
-
-        cleanNode(el);
-
-        if (!allowedTags.has(el.tagName) && !containerTags.has(el.tagName)) {
-          const parent = el.parentNode;
-          if (!parent) continue;
-          while (el.firstChild) parent.insertBefore(el.firstChild, el);
-          parent.removeChild(el);
-          continue;
-        }
-
-        if (el.tagName === 'A') {
-          const attrs = Array.from(el.attributes);
-          for (const attr of attrs) {
-            const name = attr.name.toLowerCase();
-            if (name === 'href' || name === 'target' || name === 'rel') continue;
-            el.removeAttribute(attr.name);
-          }
-          const href = el.getAttribute('href') || '';
-          const isSafe = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:');
-          if (!isSafe) {
-            el.removeAttribute('href');
-          } else {
-            el.setAttribute('target', '_blank');
-            el.setAttribute('rel', 'noopener noreferrer');
-          }
-        } else if (el.tagName === 'SPAN') {
-          const style = el.getAttribute('style') || '';
-          const colorMatch = style.match(/color\s*:\s*#[0-9a-fA-F]{3,8}|color\s*:\s*rgb\([^)]+\)/);
-          const textAlignMatch = style.match(/text-align\s*:\s*(left|center|right|justify)\s*;?/i);
-          const attrs = Array.from(el.attributes);
-          for (const attr of attrs) {
-            if (attr.name.toLowerCase() !== 'style') el.removeAttribute(attr.name);
-          }
-          const styleParts: string[] = [];
-          if (colorMatch) styleParts.push(colorMatch[0]);
-          if (textAlignMatch) styleParts.push(textAlignMatch[0]);
-          if (styleParts.length > 0) el.setAttribute('style', styleParts.join('; '));
-          else el.removeAttribute('style');
-        } else if (!containerTags.has(el.tagName)) {
-          const attrs = Array.from(el.attributes);
-          for (const attr of attrs) el.removeAttribute(attr.name);
-        }
-      }
-    }
-  };
-
-  try {
-    cleanNode(doc.body);
-    let result = doc.body.innerHTML;
-    // Strip literal \n characters — they are editor wrapping artifacts,
-    // not intentional line breaks. Real breaks use <br> tags.
-    result = result.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ');
-    return result;
-  } catch {
-    return html;
-  }
-}
+import { sanitizeBlogHtml } from '../utils/sanitizeBlogHtml';
 
 const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
   switch (block.type) {
     case 'heading':
       return (
         <h2
-          className="text-2xl sm:text-3xl font-semibold text-primary mt-10 mb-4 leading-snug"
+          className="blog-prose-heading text-2xl sm:text-3xl font-semibold text-primary mt-10 mb-4 leading-snug"
           style={{ textAlign: block.align || 'left' }}
-          dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
+          dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(block.content) }}
         />
       );
     case 'paragraph':
       return (
         <p
-          className="text-base sm:text-lg text-text-muted leading-relaxed mb-6"
+          className="blog-prose-body text-base sm:text-lg text-text-muted leading-relaxed mb-6"
           style={{ textAlign: block.align || 'left' }}
-          dangerouslySetInnerHTML={{ __html: sanitizeRichText(block.content) }}
+          dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(block.content) }}
         />
       );
     case 'image':
@@ -288,7 +215,7 @@ const SafeBlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => (
   <BlogErrorBoundary
     fallback={
       block.type === 'heading' || block.type === 'paragraph' ? (
-        <p className="text-base text-text-muted leading-relaxed mb-6">
+        <p className="blog-prose-body text-base text-text-muted leading-relaxed mb-6">
           {block.content.replace(/<[^>]*>/g, '')}
         </p>
       ) : null

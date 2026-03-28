@@ -10,6 +10,7 @@ import {
   BlogPost,
   BlogBlock,
 } from '../utils/blogStore';
+import { sanitizeBlogHtml } from '../utils/sanitizeBlogHtml';
 
 function generateBlockId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -614,15 +615,15 @@ const BlogEditor: React.FC<{
                 </figure>
               )}
 
-              <div className="space-y-4">
+              <div className="prose-content space-y-4">
                 {blocks.filter((b) => b.content.trim()).map((block) => {
                   if (block.type === 'heading') {
                     return (
                       <h3
                         key={block.id}
-                        className="text-xl sm:text-2xl font-semibold text-primary leading-snug break-words"
+                        className="blog-prose-heading text-xl sm:text-2xl font-semibold text-primary leading-snug break-words"
                         style={{ textAlign: block.align || 'left' }}
-                        dangerouslySetInnerHTML={{ __html: block.content }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(block.content) }}
                       />
                     );
                   }
@@ -630,9 +631,9 @@ const BlogEditor: React.FC<{
                     return (
                       <p
                         key={block.id}
-                        className="text-sm sm:text-base text-text-muted leading-relaxed break-words"
+                        className="blog-prose-body text-sm sm:text-base text-text-muted leading-relaxed break-words"
                         style={{ textAlign: block.align || 'left' }}
-                        dangerouslySetInnerHTML={{ __html: block.content }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(block.content) }}
                       />
                     );
                   }

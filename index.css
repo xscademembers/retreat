@@ -37,6 +37,15 @@ html {
   --space-8: 64px;
   --space-10: 80px;
   --space-12: 96px;
+
+  /* Blog article body — single source for spacing/size (overrides pasted inline styles) */
+  --blog-prose-body-size: 1rem;
+  --blog-prose-body-size-sm: 1.125rem;
+  --blog-prose-body-line-height: 1.75;
+  --blog-prose-body-word-spacing: 0.025em;
+  --blog-prose-heading-size: 1.5rem;
+  --blog-prose-heading-size-sm: 1.875rem;
+  --blog-prose-heading-line-height: 1.3;
 }
 
 /* Scroll-triggered animations */
@@ -132,20 +141,45 @@ html {
   }
 }
 
-/* Blog prose content — consistent typography regardless of source */
-.prose-content {
-  line-height: 1.8;
-  word-spacing: 0.02em;
+/* Blog prose — scoped only under .prose-content; wins over pasted inline font metrics */
+.prose-content .blog-prose-body {
+  font-size: var(--blog-prose-body-size) !important;
+  line-height: var(--blog-prose-body-line-height) !important;
+  word-spacing: var(--blog-prose-body-word-spacing) !important;
+  letter-spacing: normal !important;
 }
 
-.prose-content p {
-  line-height: 1.8;
-  margin-bottom: var(--space-3);
+@media (min-width: 640px) {
+  .prose-content .blog-prose-body {
+    font-size: var(--blog-prose-body-size-sm) !important;
+  }
 }
 
-.prose-content h2 {
-  margin-top: var(--space-5);
-  margin-bottom: var(--space-2);
+.prose-content .blog-prose-body * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  word-spacing: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+.prose-content .blog-prose-heading {
+  font-size: var(--blog-prose-heading-size) !important;
+  line-height: var(--blog-prose-heading-line-height) !important;
+  word-spacing: normal !important;
+  letter-spacing: normal !important;
+}
+
+@media (min-width: 640px) {
+  .prose-content .blog-prose-heading {
+    font-size: var(--blog-prose-heading-size-sm) !important;
+  }
+}
+
+.prose-content .blog-prose-heading * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  word-spacing: inherit !important;
+  letter-spacing: inherit !important;
 }
 
 .prose-content strong,
