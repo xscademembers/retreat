@@ -621,6 +621,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/918555079190?text=${encodedMessage}`;
 
+    // Report Meta Pixel Contact conversion
+    if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'Contact');
+    }
+
     // Report Google Ads conversion
     if (typeof window !== 'undefined' && typeof (window as any).gtag_report_conversion === 'function') {
       (window as any).gtag_report_conversion(whatsappUrl);
