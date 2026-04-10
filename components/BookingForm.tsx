@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EXPERIENCE_TIERS, SANCTUARIES } from '../constants';
+import { getNightRoom, NIGHT_ROOMS, type NightRoomId } from '../nightRoomDetails';
+import { NightStayRoomGallery } from './NightStayRoomGallery';
+import { NightStayRoomTabs, type NightStayRoomTab } from './NightStayRoomTabs';
 import { wixImg } from '../utils/wixImage';
 
 const EXTRA_PERSON_PRICE = 999;
@@ -25,7 +28,6 @@ const inputClass =
 const labelClass = 'block text-sm font-semibold text-gray-700 mb-1';
 
 const validPassIds = new Set(EXPERIENCE_TIERS.map((t) => t.id));
-const validRoomIds = new Set(SANCTUARIES.map((s) => s.id));
 const initialDayAddonRooms: Record<string, number> = SANCTUARIES.reduce((acc, s) => ({ ...acc, [s.id]: 0 }), {});
 
 function Stepper({
@@ -90,7 +92,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   const [dayPassGuests, setDayPassGuests] = useState(1);
   const [dayAddonRooms, setDayAddonRooms] = useState<Record<string, number>>(initialDayAddonRooms);
   const [dayAddonDorm, setDayAddonDorm] = useState(0);
-  const [nightActiveType, setNightActiveType] = useState<'cabana' | 'cottage' | 'villa'>('cabana');
   // Night stay: per-room selections
   const [cabanaRoom1Selected, setCabanaRoom1Selected] = useState(false);
   const [cabanaRoom1Persons, setCabanaRoom1Persons] = useState<number>(CABANA_VILLA_DEFAULT_PERSONS);
@@ -110,6 +111,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   const [cottageDormSelected, setCottageDormSelected] = useState(false);
   const [cottageDormPersons, setCottageDormPersons] = useState<number>(1);
 
+  const [nightStayTabs, setNightStayTabs] = useState<Record<NightRoomId, NightStayRoomTab>>({
+    cabana: 'select',
+    cottage: 'select',
+    villa: 'select',
+  });
+  const [nightStayNavActive, setNightStayNavActive] = useState<NightRoomId>('cabana');
+
   const [entryDate, setEntryDate] = useState('');
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
@@ -118,7 +126,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   useEffect(() => {
     const visit = searchParams.get('visit');
     const pass = searchParams.get('pass');
-    const room = searchParams.get('room');
     if (visit === 'day') {
       setVisitType('day');
       if (pass && validPassIds.has(pass)) {
@@ -127,11 +134,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
       }
     } else if (visit === 'night') {
       setVisitType('night');
-      if (room && validRoomIds.has(room)) {
-        if (room === 'cabana' || room === 'villa' || room === 'cottage') {
-          setNightActiveType(room);
-        }
-      }
     }
   }, [searchParams]);
 
@@ -411,7 +413,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     setEntryDate('');
   };
   const resetNight = () => {
-    setNightActiveType('cabana');
     setCabanaRoom1Selected(false);
     setCabanaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
     setCabanaRoom2Selected(false);
@@ -430,29 +431,86 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     setCottageDormSelected(false);
     setCottageDormPersons(1);
 
+    setNightStayTabs({ cabana: 'select', cottage: 'select', villa: 'select' });
+    setNightStayNavActive('cabana');
+
     setCheckInDate('');
     setCheckOutDate('');
   };
 
   const [showDayAddons, setShowDayAddons] = useState(false);
   const [mobileCardIndex, setMobileCardIndex] = useState(0);
-  const cabanaSectionRef = useRef<HTMLDivElement | null>(null);
-  const cottageSectionRef = useRef<HTMLDivElement | null>(null);
-  const villaSectionRef = useRef<HTMLDivElement | null>(null);
+  const cabanaSectionRef = useRef<HTMLElement | null>(null);
+  const cottageSectionRef = useRef<HTMLElement | null>(null);
+  const villaSectionRef = useRef<HTMLElement | null>(null);
+  const lastScrolledNightRoom = useRef<string | null>(null);
 
-  const scrollToNightSection = (ref: React.RefObject<HTMLDivElement>) => {
-    if (typeof window === 'undefined') return;
-    if (window.innerWidth >= 640) return; // only adjust scroll on mobile
+  const scrollToNightStaySection = useCallback((id: NightRoomId) => {
+    setNightStayNavActive(id);
+    const ref =
+      id === 'cabana' ? cabanaSectionRef : id === 'cottage' ? cottageSectionRef : villaSectionRef;
     window.requestAnimationFrame(() => {
       const el = ref.current;
       if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const current = window.scrollY || window.pageYOffset;
-      const offset = 80; // keep heading visible
-      const target = rect.top + current - offset;
-      window.scrollTo({ top: target, behavior: 'smooth' });
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (visitType !== 'night') {
+      lastScrolledNightRoom.current = null;
+      return;
+    }
+    const room = searchParams.get('room');
+    if (room === 'cabana' || room === 'cottage' || room === 'villa') {
+      setNightStayNavActive(room);
+    } else {
+      setNightStayNavActive('cabana');
+    }
+    if (room !== 'cabana' && room !== 'cottage' && room !== 'villa') return;
+    if (lastScrolledNightRoom.current === room) return;
+    lastScrolledNightRoom.current = room;
+    const ref =
+      room === 'cabana' ? cabanaSectionRef : room === 'cottage' ? cottageSectionRef : villaSectionRef;
+    window.requestAnimationFrame(() => {
+      const el = ref.current;
+      if (!el) return;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+    });
+  }, [visitType, searchParams]);
+
+  useEffect(() => {
+    if (visitType !== 'night') return;
+    const sections: { id: NightRoomId; el: HTMLElement | null }[] = [
+      { id: 'cabana', el: cabanaSectionRef.current },
+      { id: 'cottage', el: cottageSectionRef.current },
+      { id: 'villa', el: villaSectionRef.current },
+    ];
+    const els = sections.filter((s): s is { id: NightRoomId; el: HTMLElement } => s.el !== null);
+    if (els.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting && e.target instanceof HTMLElement)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible.length === 0) return;
+        const node = visible[0].target;
+        if (!(node instanceof HTMLElement)) return;
+        const id = node.dataset.nightNavId as NightRoomId | undefined;
+        if (id) setNightStayNavActive(id);
+      },
+      { root: null, rootMargin: '-96px 0px -50% 0px', threshold: [0, 0.08, 0.2, 0.35, 0.5] },
+    );
+
+    els.forEach(({ id, el }) => {
+      el.dataset.nightNavId = id;
+      observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [visitType]);
 
   const summaryBlock = shouldShowSummary ? (
     <div className="rounded-2xl border border-primary/20 bg-white shadow-xl px-4 py-4 sm:px-5 sm:py-5">
@@ -632,7 +690,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   if (formSubmitted) {
     return (
       <div className="rounded-2xl overflow-visible">
-        <div className="p-6 sm:p-8 max-w-[820px] mx-auto space-y-10">
+        <div className="p-6 sm:p-8 max-w-screen-2xl mx-auto space-y-10">
           <div className="text-center py-12 sm:py-16 space-y-6">
             <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <span className="material-symbols-outlined text-primary text-4xl" aria-hidden="true">check_circle</span>
@@ -702,15 +760,15 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   return (
     <div className="rounded-2xl overflow-visible">
       <div
-        className={`p-6 sm:p-8 ${
+        className={`p-6 sm:p-8 w-full ${
           shouldShowSummary
-            ? 'md:grid md:grid-cols-[minmax(0,820px)_minmax(260px,360px)] md:gap-8 md:items-start'
-            : 'max-w-[820px] mx-auto'
+            ? 'md:grid md:grid-cols-[1fr_minmax(280px,400px)] md:gap-8 lg:gap-10 md:items-start'
+            : ''
         }`}
       >
         <form
           id="booking-form"
-          className="space-y-8 max-w-[820px] w-full"
+          className="space-y-8 w-full min-w-0"
           onSubmit={handleSubmit}
           aria-label="Booking form"
         >
@@ -1085,68 +1143,65 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                 Stay
               </h2>
 
-              {/* Room cards with images */}
-              <div>
-                <p className={labelClass}>Room type</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {['cabana', 'cottage', 'villa'].map((id) => {
-                    const room = SANCTUARIES.find((s) => s.id === id);
-                    if (!room) return null;
-                    const isActive = nightActiveType === id;
-                    return (
-                      <button
-                        key={room.id}
-                        type="button"
-                        onClick={() => {
-                          setNightActiveType(id as 'cabana' | 'cottage' | 'villa');
-                          if (id === 'cabana') {
-                            scrollToNightSection(cabanaSectionRef);
-                          } else if (id === 'cottage') {
-                            scrollToNightSection(cottageSectionRef);
-                          } else {
-                            scrollToNightSection(villaSectionRef);
-                          }
-                        }}
-                        className={`rounded-xl border-2 overflow-hidden text-left transition-all ${
-                          isActive
-                            ? 'border-primary ring-2 ring-primary/20'
-                            : 'border-gray-200 hover:border-primary/40'
-                        }`}
-                      >
-                        <div className="aspect-[4/3] bg-gray-100">
-                          <img src={wixImg(room.image, 240, 180)} alt={room.name} className="w-full h-full object-cover" loading="lazy" />
+              <p className={labelClass}>Room type</p>
+              <nav className="flex flex-wrap gap-3" aria-label="Jump to a room type">
+                {NIGHT_ROOMS.map((room) => {
+                  const isActive = nightStayNavActive === room.id;
+                  return (
+                    <button
+                      key={room.id}
+                      type="button"
+                      onClick={() => scrollToNightStaySection(room.id)}
+                      className={`rounded-full px-4 sm:px-6 py-2 text-sm font-semibold border transition-colors min-h-[44px] motion-safe:transition-shadow ${
+                        isActive
+                          ? 'bg-primary text-white border-primary shadow-md'
+                          : 'bg-white text-primary border-gray-200 hover:border-primary/60 hover:bg-primary/5'
+                      }`}
+                    >
+                      {room.title}
+                    </button>
+                  );
+                })}
+              </nav>
+              <div className="space-y-6">
+                {/* Cabana — image left, rooms right */}
+                <article
+                  ref={cabanaSectionRef}
+                  id="book-night-cabana"
+                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
+                >
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
+                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
+                      <NightStayRoomGallery images={getNightRoom('cabana').images} title="The Cabana" />
+                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
+                        <div>
+                          <h3 className="font-bold text-primary text-base sm:text-lg">The Cabana</h3>
+                          <p className="text-sm font-semibold text-gray-600">
+                            ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night
+                          </p>
                         </div>
-                        <div className="p-3">
-                          <span className="font-bold text-primary">{room.name}</span>
-                          <div className="flex items-center justify-between mt-0.5">
-                            <span className="text-sm font-semibold text-gray-600">
-                              ₹{(room.nightPrice ?? room.price).toLocaleString('en-IN')}/night
+                        <div className="flex items-center gap-0 shrink-0" aria-label="3 persons base capacity">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
+                              person
                             </span>
-                            <div className="flex items-center gap-0" aria-label={`${id === 'cottage' ? 2 : 3} persons`}>
-                              {Array.from({ length: id === 'cottage' ? 2 : 3 }).map((_, i) => (
-                                <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">person</span>
-                              ))}
-                            </div>
-                          </div>
+                          ))}
                         </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 1. Cabana */}
-              {nightActiveType === 'cabana' && (
-                <div ref={cabanaSectionRef} className="space-y-3">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-semibold text-primary">1. Cabana</h3>
-                    <p className="text-xs text-gray-500">
-                      ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS} persons
-                      included
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
+                      <NightStayRoomTabs
+                        roomId="cabana"
+                        activeTab={nightStayTabs.cabana}
+                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, cabana: t }))}
+                        roomDetails={getNightRoom('cabana')}
+                        selectPanel={
+                          <>
+                            <p className="text-xs text-gray-500 mb-3">
+                              ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS}{' '}
+                              persons included
+                            </p>
+                            <div className="space-y-2">
                     {/* Cabana room 1 */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
                       <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -1250,22 +1305,52 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         ))}
                       </div>
                     </div>
+                            </div>
+                          </>
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                </article>
 
-              {/* 2. Cottage */}
-              {nightActiveType === 'cottage' && (
-                <div ref={cottageSectionRef} className="space-y-3">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-semibold text-primary">2. Cottage</h3>
-                    <p className="text-xs text-gray-500">
-                      ₹{NIGHT_COTTAGE_BASE_PRICE.toLocaleString('en-IN')}/night · 2–3 persons included
-                      per room
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
+                {/* Cottage — image left, rooms right */}
+                <article
+                  ref={cottageSectionRef}
+                  id="book-night-cottage"
+                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
+                >
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
+                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
+                      <NightStayRoomGallery images={getNightRoom('cottage').images} title="The Cottage" />
+                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
+                        <div>
+                          <h3 className="font-bold text-primary text-base sm:text-lg">The Cottage</h3>
+                          <p className="text-sm font-semibold text-gray-600">
+                            ₹{NIGHT_COTTAGE_BASE_PRICE.toLocaleString('en-IN')}/night
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-0 shrink-0" aria-label="2–3 persons per room">
+                          {Array.from({ length: 2 }).map((_, i) => (
+                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
+                              person
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
+                      <NightStayRoomTabs
+                        roomId="cottage"
+                        activeTab={nightStayTabs.cottage}
+                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, cottage: t }))}
+                        roomDetails={getNightRoom('cottage')}
+                        selectPanel={
+                          <>
+                            <p className="text-xs text-gray-500 mb-3">
+                              ₹{NIGHT_COTTAGE_BASE_PRICE.toLocaleString('en-IN')}/night · 2–3 persons included per
+                              room
+                            </p>
+                            <div className="space-y-2">
                     {/* Cottage room 1 */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
                       <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -1421,22 +1506,52 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         ))}
                       </div>
                     </div>
+                            </div>
+                          </>
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                </article>
 
-              {/* 3. Villa */}
-              {nightActiveType === 'villa' && (
-                <div ref={villaSectionRef} className="space-y-3">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-semibold text-primary">3. Villa</h3>
-                    <p className="text-xs text-gray-500">
-                      ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS} persons
-                      included
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
+                {/* Villa — image left, rooms right */}
+                <article
+                  ref={villaSectionRef}
+                  id="book-night-villa"
+                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
+                >
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
+                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
+                      <NightStayRoomGallery images={getNightRoom('villa').images} title="The Villa" />
+                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
+                        <div>
+                          <h3 className="font-bold text-primary text-base sm:text-lg">The Villa</h3>
+                          <p className="text-sm font-semibold text-gray-600">
+                            ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-0 shrink-0" aria-label="3 persons base capacity">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
+                              person
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
+                      <NightStayRoomTabs
+                        roomId="villa"
+                        activeTab={nightStayTabs.villa}
+                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, villa: t }))}
+                        roomDetails={getNightRoom('villa')}
+                        selectPanel={
+                          <>
+                            <p className="text-xs text-gray-500 mb-3">
+                              ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS}{' '}
+                              persons included
+                            </p>
+                            <div className="space-y-2">
                     {/* Villa room 1 */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
                       <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -1540,9 +1655,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                         ))}
                       </div>
                     </div>
+                            </div>
+                          </>
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                </article>
+              </div>
             </section>
           )}
 

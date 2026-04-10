@@ -207,6 +207,37 @@ html {
 .hero-animate-in-delay-2 { animation-delay: 0.3s; opacity: 0; }
 .hero-animate-in-delay-3 { animation-delay: 0.45s; opacity: 0; }
 
+/* Night stay room gallery — slide in on prev/next (BookingForm) */
+@keyframes night-gallery-slide-in-next {
+  from {
+    opacity: 0.55;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes night-gallery-slide-in-prev {
+  from {
+    opacity: 0.55;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.night-gallery-slide-next {
+  animation: night-gallery-slide-in-next 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.night-gallery-slide-prev {
+  animation: night-gallery-slide-in-prev 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* Hide scrollbar for carousel */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -234,6 +265,13 @@ html {
   .hero-animate-in-delay-1,
   .hero-animate-in-delay-2,
   .hero-animate-in-delay-3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .night-gallery-slide-next,
+  .night-gallery-slide-prev {
     animation: none;
     opacity: 1;
     transform: none;
