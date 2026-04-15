@@ -1435,20 +1435,18 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
           )}
 
           {/* Submit button (after contact form) */}
-          <section className="pt-4 border-t-2 border-gray-100">
-            <button
-              type="submit"
-              form="booking-form"
-              disabled={
-                !visitType ||
-                (visitType === 'day' && !selectedDayTier) ||
-                (visitType === 'night' && !hasNightSelection)
-              }
-              className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
-            >
-              Submit booking request
-            </button>
-          </section>
+          {visitType !== 'night' && (
+            <section className="pt-4 border-t-2 border-gray-100">
+              <button
+                type="submit"
+                form="booking-form"
+                disabled={!visitType || (visitType === 'day' && !selectedDayTier)}
+                className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
+              >
+                Submit booking request
+              </button>
+            </section>
+          )}
         </form>
 
         {/* Booking summary: desktop only, sticky beside the form */}

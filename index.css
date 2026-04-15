@@ -406,7 +406,7 @@ html {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transform: translateY(-50%);
-  opacity: 0;
+  opacity: 1;
   transition: all 0.2s ease;
   border: none;
 }
@@ -414,14 +414,20 @@ html {
 .night-gallery-arrow-left { left: 16px; }
 .night-gallery-arrow-right { right: 16px; }
 
-.night-gallery-hero:hover .night-gallery-arrow,
-.night-gallery-arrow:focus-visible {
-  opacity: 1;
-}
+.night-gallery-arrow:focus-visible { opacity: 1; }
 
 .night-gallery-arrow:hover {
   background: white;
   transform: translateY(-50%) scale(1.05);
+}
+
+@media (max-width: 640px) {
+  .night-gallery-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  .night-gallery-arrow-left { left: 12px; }
+  .night-gallery-arrow-right { right: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
