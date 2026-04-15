@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { EXPERIENCE_TIERS, SANCTUARIES } from '../constants';
 import { getNightRoom, NIGHT_ROOMS, type NightRoomId } from '../nightRoomDetails';
 import { NightStayRoomGallery } from './NightStayRoomGallery';
-import { NightStayRoomTabs, type NightStayRoomTab } from './NightStayRoomTabs';
+import { NightStayRoomTabs } from './NightStayRoomTabs';
 import { wixImg } from '../utils/wixImage';
 
 const EXTRA_PERSON_PRICE = 999;
@@ -111,11 +111,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   const [cottageDormSelected, setCottageDormSelected] = useState(false);
   const [cottageDormPersons, setCottageDormPersons] = useState<number>(1);
 
-  const [nightStayTabs, setNightStayTabs] = useState<Record<NightRoomId, NightStayRoomTab>>({
-    cabana: 'select',
-    cottage: 'select',
-    villa: 'select',
-  });
   const [nightStayNavActive, setNightStayNavActive] = useState<NightRoomId>('cabana');
 
   const [entryDate, setEntryDate] = useState('');
@@ -431,7 +426,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     setCottageDormSelected(false);
     setCottageDormPersons(1);
 
-    setNightStayTabs({ cabana: 'select', cottage: 'select', villa: 'select' });
     setNightStayNavActive('cabana');
 
     setCheckInDate('');
@@ -1147,12 +1141,18 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
 
           {visitType === 'night' && (
             <section aria-labelledby="night-stay-heading" className="space-y-6">
-              <h2 id="night-stay-heading" className="text-lg font-bold text-primary">
+              <h2 id="night-stay-heading" className="text-lg font-bold text-primary flex items-center gap-2">
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">hotel</span>
                 Stay
               </h2>
 
               <p className={labelClass}>Room type</p>
-              <nav className="flex flex-wrap gap-3" aria-label="Jump to a room type">
+
+              {/* ─── Premium Room Type Tabs (Pill style) ─── */}
+              <nav
+                className="night-room-tabs-nav"
+                aria-label="Jump to a room type"
+              >
                 {NIGHT_ROOMS.map((room) => {
                   const isActive = nightStayNavActive === room.id;
                   return (
@@ -1160,514 +1160,64 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
                       key={room.id}
                       type="button"
                       onClick={() => scrollToNightStaySection(room.id)}
-                      className={`rounded-full px-4 sm:px-6 py-2 text-sm font-semibold border transition-colors min-h-[44px] motion-safe:transition-shadow ${
-                        isActive
-                          ? 'bg-primary text-white border-primary shadow-md'
-                          : 'bg-white text-primary border-gray-200 hover:border-primary/60 hover:bg-primary/5'
-                      }`}
+                      className={`night-room-tab ${isActive ? 'night-room-tab--active' : ''}`}
                     >
                       {room.title}
                     </button>
                   );
                 })}
               </nav>
-              <div className="space-y-6">
-                {/* Cabana — image left, rooms right */}
+
+              {/* ─── Room Cards ─── */}
+              <div className="night-rooms-grid">
+                {/* Cabana */}
                 <article
                   ref={cabanaSectionRef}
                   id="book-night-cabana"
-                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
+                  className="night-room-card scroll-mt-24 sm:scroll-mt-28"
                 >
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
+                  <div className="night-room-card__body">
+                    <div className="min-w-0">
                       <NightStayRoomGallery images={getNightRoom('cabana').images} title="The Cabana" />
-                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
-                        <div>
-                          <h3 className="font-bold text-primary text-base sm:text-lg">The Cabana</h3>
-                          <p className="text-sm font-semibold text-gray-600">
-                            ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-0 shrink-0" aria-label="3 persons base capacity">
-                          {Array.from({ length: 3 }).map((_, i) => (
-                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
-                              person
-                            </span>
-                          ))}
-                        </div>
-                      </div>
                     </div>
-                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
-                      <NightStayRoomTabs
-                        roomId="cabana"
-                        activeTab={nightStayTabs.cabana}
-                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, cabana: t }))}
-                        roomDetails={getNightRoom('cabana')}
-                        selectPanel={
-                          <>
-                            <p className="text-xs text-gray-500 mb-3">
-                              ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS}{' '}
-                              persons included
-                            </p>
-                            <div className="space-y-2">
-                    {/* Cabana room 1 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={cabanaRoom1Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setCabanaRoom1Selected(checked);
-                            if (checked) {
-                              setCabanaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                            }
-                          }}
-                        />
-                        <span>Room 1</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[3, 4, 5].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              cabanaRoom1Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="cabana-room1-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={cabanaRoom1Persons === count}
-                              onChange={() => {
-                                setCabanaRoom1Selected(true);
-                                setCabanaRoom1Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === CABANA_VILLA_DEFAULT_PERSONS && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Cabana room 2 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={cabanaRoom2Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setCabanaRoom2Selected(checked);
-                            if (checked) {
-                              setCabanaRoom2Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                            }
-                          }}
-                        />
-                        <span>Room 2</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[3, 4, 5].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              cabanaRoom2Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="cabana-room2-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={cabanaRoom2Persons === count}
-                              onChange={() => {
-                                setCabanaRoom2Selected(true);
-                                setCabanaRoom2Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === CABANA_VILLA_DEFAULT_PERSONS && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                            </div>
-                          </>
-                        }
-                      />
-                    </div>
+                    <footer className="night-room-card__footer">
+                      <h3 className="night-room-card__title">The Cabana</h3>
+                      <NightStayRoomTabs className="night-room-card__cta" />
+                    </footer>
                   </div>
                 </article>
 
-                {/* Cottage — image left, rooms right */}
-                <article
-                  ref={cottageSectionRef}
-                  id="book-night-cottage"
-                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
-                >
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
-                      <NightStayRoomGallery images={getNightRoom('cottage').images} title="The Cottage" />
-                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
-                        <div>
-                          <h3 className="font-bold text-primary text-base sm:text-lg">The Cottage</h3>
-                          <p className="text-sm font-semibold text-gray-600">
-                            ₹{NIGHT_COTTAGE_BASE_PRICE.toLocaleString('en-IN')}/night
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-0 shrink-0" aria-label="2–3 persons per room">
-                          {Array.from({ length: 2 }).map((_, i) => (
-                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
-                              person
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
-                      <NightStayRoomTabs
-                        roomId="cottage"
-                        activeTab={nightStayTabs.cottage}
-                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, cottage: t }))}
-                        roomDetails={getNightRoom('cottage')}
-                        selectPanel={
-                          <>
-                            <p className="text-xs text-gray-500 mb-3">
-                              ₹{NIGHT_COTTAGE_BASE_PRICE.toLocaleString('en-IN')}/night · 2–3 persons included per
-                              room
-                            </p>
-                            <div className="space-y-2">
-                    {/* Cottage room 1 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={cottageRoom1Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setCottageRoom1Selected(checked);
-                            if (checked) {
-                              setCottageRoom1Persons(COTTAGE_ROOM1_DEFAULT);
-                            }
-                          }}
-                        />
-                        <span>Room 1</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[2, 3].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              cottageRoom1Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="cottage-room1-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={cottageRoom1Persons === count}
-                              onChange={() => {
-                                setCottageRoom1Selected(true);
-                                setCottageRoom1Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === COTTAGE_ROOM1_DEFAULT && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Cottage room 2 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={cottageRoom2Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setCottageRoom2Selected(checked);
-                            if (checked) {
-                              setCottageRoom2Persons(COTTAGE_ROOM2_DEFAULT);
-                            }
-                          }}
-                        />
-                        <span>Room 2</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[3, 4].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              cottageRoom2Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="cottage-room2-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={cottageRoom2Persons === count}
-                              onChange={() => {
-                                setCottageRoom2Selected(true);
-                                setCottageRoom2Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === COTTAGE_ROOM2_DEFAULT && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Cottage dorm */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={cottageDormSelected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setCottageDormSelected(checked);
-                            if (checked && cottageDormPersons < 1) {
-                              setCottageDormPersons(1);
-                            }
-                          }}
-                        />
-                        <span>Dorm</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[1, 2, 3, 4].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              cottageDormPersons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="cottage-dorm-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={cottageDormPersons === count}
-                              onChange={() => {
-                                setCottageDormSelected(true);
-                                setCottageDormPersons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === 1 && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                            </div>
-                          </>
-                        }
-                      />
-                    </div>
-                  </div>
-                </article>
-
-                {/* Villa — image left, rooms right */}
+                {/* Villa */}
                 <article
                   ref={villaSectionRef}
                   id="book-night-villa"
-                  className="scroll-mt-24 sm:scroll-mt-28 rounded-2xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm"
+                  className="night-room-card scroll-mt-24 sm:scroll-mt-28"
                 >
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-                    <div className="w-full sm:max-w-[360px] md:max-w-[380px] shrink-0 flex flex-col gap-3">
+                  <div className="night-room-card__body">
+                    <div className="min-w-0">
                       <NightStayRoomGallery images={getNightRoom('villa').images} title="The Villa" />
-                      <div className="flex items-start justify-between gap-2 px-0 sm:px-1">
-                        <div>
-                          <h3 className="font-bold text-primary text-base sm:text-lg">The Villa</h3>
-                          <p className="text-sm font-semibold text-gray-600">
-                            ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-0 shrink-0" aria-label="3 persons base capacity">
-                          {Array.from({ length: 3 }).map((_, i) => (
-                            <span key={i} className="material-symbols-outlined text-primary/60 text-sm" aria-hidden="true">
-                              person
-                            </span>
-                          ))}
-                        </div>
-                      </div>
                     </div>
-                    <div className="flex-1 min-w-0 border-t border-gray-100 pt-4 sm:border-t-0 sm:border-l sm:border-gray-100 sm:pt-0 sm:pl-6">
-                      <NightStayRoomTabs
-                        roomId="villa"
-                        activeTab={nightStayTabs.villa}
-                        onTabChange={(t) => setNightStayTabs((p) => ({ ...p, villa: t }))}
-                        roomDetails={getNightRoom('villa')}
-                        selectPanel={
-                          <>
-                            <p className="text-xs text-gray-500 mb-3">
-                              ₹{NIGHT_BASE_PRICE.toLocaleString('en-IN')}/night · {CABANA_VILLA_DEFAULT_PERSONS}{' '}
-                              persons included
-                            </p>
-                            <div className="space-y-2">
-                    {/* Villa room 1 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={villaRoom1Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setVillaRoom1Selected(checked);
-                            if (checked) {
-                              setVillaRoom1Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                            }
-                          }}
-                        />
-                        <span>Room 1</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[3, 4, 5].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              villaRoom1Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="villa-room1-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={villaRoom1Persons === count}
-                              onChange={() => {
-                                setVillaRoom1Selected(true);
-                                setVillaRoom1Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === CABANA_VILLA_DEFAULT_PERSONS && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                    <footer className="night-room-card__footer">
+                      <h3 className="night-room-card__title">The Villa</h3>
+                      <NightStayRoomTabs className="night-room-card__cta" />
+                    </footer>
+                  </div>
+                </article>
 
-                    {/* Villa room 2 */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl border border-gray-200 bg-gray-50/70 px-3 py-3">
-                      <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={villaRoom2Selected}
-                          onChange={(e) => {
-                            const checked = e.target.checked;
-                            setVillaRoom2Selected(checked);
-                            if (checked) {
-                              setVillaRoom2Persons(CABANA_VILLA_DEFAULT_PERSONS);
-                            }
-                          }}
-                        />
-                        <span>Room 2</span>
-                      </label>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Persons:</span>
-                        {[3, 4, 5].map((count) => (
-                          <label
-                            key={count}
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs sm:text-sm cursor-pointer transition-colors ${
-                              villaRoom2Persons === count
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50'
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name="villa-room2-persons"
-                              value={count}
-                              className="sr-only"
-                              checked={villaRoom2Persons === count}
-                              onChange={() => {
-                                setVillaRoom2Selected(true);
-                                setVillaRoom2Persons(count);
-                              }}
-                            />
-                            <span>
-                              {count} {count === 1 ? 'person' : 'persons'}
-                            </span>
-                            {count === CABANA_VILLA_DEFAULT_PERSONS && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">
-                                (default)
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
+                {/* Cottage */}
+                <article
+                  ref={cottageSectionRef}
+                  id="book-night-cottage"
+                  className="night-room-card scroll-mt-24 sm:scroll-mt-28"
+                >
+                  <div className="night-room-card__body">
+                    <div className="min-w-0">
+                      <NightStayRoomGallery images={getNightRoom('cottage').images} title="The Cottage" />
                     </div>
-                            </div>
-                          </>
-                        }
-                      />
-                    </div>
+                    <footer className="night-room-card__footer">
+                      <h3 className="night-room-card__title">The Cottage</h3>
+                      <NightStayRoomTabs className="night-room-card__cta" />
+                    </footer>
                   </div>
                 </article>
               </div>

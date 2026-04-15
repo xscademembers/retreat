@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { wixImg } from '../utils/wixImage';
 
-const MAIN_W = 560;
-const MAIN_H = 364;
+const MAIN_W = 720;
+const MAIN_H = 405; // 16:9 roughly
 
 type SlideDirection = 'next' | 'prev' | null;
 
@@ -53,9 +53,10 @@ export const NightStayRoomGallery: React.FC<NightStayRoomGalleryProps> = ({ imag
   if (count === 0) return null;
 
   return (
-    <div className="min-w-0">
-      <div className="relative overflow-hidden rounded-xl bg-gray-100 shadow-sm border border-gray-200">
-        <div className="relative pb-[65%]">
+    <div className="min-w-0 night-gallery-root">
+      {/* Main hero image */}
+      <div className="relative overflow-hidden night-gallery-hero group">
+        <div className="relative" style={{ paddingBottom: '66.67%' }}>
           <img
             key={`${slidesKey}-${safeIndex}`}
             src={wixImg(current, MAIN_W, MAIN_H)}
@@ -65,30 +66,56 @@ export const NightStayRoomGallery: React.FC<NightStayRoomGalleryProps> = ({ imag
             decoding="async"
             fetchPriority={safeIndex === 0 ? 'high' : undefined}
           />
+          {/* Subtle gradient overlay for navigation contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
         </div>
+
+        {/* Navigation arrows */}
         {count > 1 && (
           <>
             <button
               type="button"
               onClick={() => go(-1)}
-              className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200/90 bg-white/95 text-primary shadow-md hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-safe:transition-colors"
+              className="night-gallery-arrow night-gallery-arrow-left"
               aria-label="Previous photo"
             >
-              <span className="material-symbols-outlined text-2xl" aria-hidden="true">
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">
                 chevron_left
               </span>
             </button>
             <button
               type="button"
               onClick={() => go(1)}
-              className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200/90 bg-white/95 text-primary shadow-md hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-safe:transition-colors"
+              className="night-gallery-arrow night-gallery-arrow-right"
               aria-label="Next photo"
             >
-              <span className="material-symbols-outlined text-2xl" aria-hidden="true">
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">
                 chevron_right
               </span>
             </button>
           </>
+        )}
+
+        {/* Dot indicators */}
+        {count > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setSlideDirection(idx > safeIndex ? 'next' : 'prev');
+                  setActive(idx);
+                }}
+                className={`rounded-full transition-all duration-300 ${
+                  idx === safeIndex
+                    ? 'w-2 h-2 bg-white scale-110 shadow-sm'
+                    : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Go to photo ${idx + 1}`}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

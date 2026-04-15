@@ -260,6 +260,170 @@ html {
   transform: scale(1.02);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Night Stay Room Section — Premium Redesign
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Room Type Tabs (Pill Style) ── */
+.night-room-tabs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.night-room-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  background: white;
+  color: var(--color-primary);
+  border: 1px solid rgba(57, 81, 72, 0.15);
+  cursor: pointer;
+}
+
+.night-room-tab:hover:not(.night-room-tab--active) {
+  border-color: rgba(57, 81, 72, 0.4);
+  background: rgba(57, 81, 72, 0.02);
+}
+
+.night-room-tab--active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(57, 81, 72, 0.2);
+}
+
+/* ── Room Cards Grid ── */
+.night-rooms-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+  .night-rooms-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* ── Room Cards ── */
+.night-room-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.night-room-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.night-room-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.night-room-card__footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 12px;
+}
+
+.night-room-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .night-room-card__title {
+    font-size: 1.2rem;
+  }
+}
+
+.night-room-card__cta {
+  flex-shrink: 0;
+  width: auto !important;
+  min-height: 38px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  padding: 8px 14px !important;
+  background: var(--color-primary) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .night-room-card__cta {
+    font-size: 0.875rem !important;
+    padding: 8px 18px !important;
+  }
+}
+
+.night-room-card__cta:hover {
+  background: #2a3e36 !important;
+}
+
+/* ── Gallery Nav Arrows (Minimal) ── */
+.night-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.night-gallery-arrow-left { left: 16px; }
+.night-gallery-arrow-right { right: 16px; }
+
+.night-gallery-hero:hover .night-gallery-arrow,
+.night-gallery-arrow:focus-visible {
+  opacity: 1;
+}
+
+.night-gallery-arrow:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.05);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-animate-in,
   .hero-animate-in-delay-1,
@@ -281,4 +445,24 @@ html {
   .hover-scale:hover {
     transform: none;
   }
+
+  .night-room-tab,
+  .night-room-card,
+  .night-gallery-arrow,
+  .night-gallery-thumb {
+    transition: none;
+  }
+
+  .night-room-card__accent {
+    animation: none;
+  }
+
+  .night-room-tab__indicator {
+    animation: none;
+  }
+
+  .night-room-card:hover {
+    transform: none;
+  }
 }
+
