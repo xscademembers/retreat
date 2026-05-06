@@ -206,13 +206,15 @@ export const Accommodation: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleBookNow}
-                  className="w-full sm:w-auto rounded-full bg-primary px-8 py-3.5 text-sm sm:text-base font-bold text-white hover:bg-primary/90 transition-colors"
+                <a
+                  href="https://www.makemytrip.com/hotels/hotel-details/?hotelId=201608111801426694"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-full bg-primary px-8 py-3.5 text-sm sm:text-base font-bold text-white hover:bg-primary/90 transition-colors"
                 >
-                  Book this night stay
-                </button>
+                  Book with MakeMyTrip
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">open_in_new</span>
+                </a>
               </div>
             </div>
           </div>

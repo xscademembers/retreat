@@ -15,12 +15,18 @@ const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m
 const BlogList = lazy(() => import('./pages/BlogList').then((m) => ({ default: m.BlogList })));
 const BlogPost = lazy(() => import('./pages/BlogPost').then((m) => ({ default: m.BlogPost })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
+const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
 
 const SEO_BY_PATH: Record<string, { title: string; description: string }> = {
   '/': {
     title: 'Salsons Retreat Thatipudi | Farmstay & Resort Near Vizag | Day Outings & Stays',
     description:
       'Salsons Retreat is a 6-acre lakeside farmstay near Vizag. Enjoy pool parties, BBQ, boating, cricket & farm-to-table Andhra meals. Day outings from ₹990. Book now.',
+  },
+  '/landing': {
+    title: 'Salsons Retreat | Resort Near Vizag — Day Outings from ₹990 & Weekend Stays',
+    description:
+      'A 6-acre lakeside resort 90 minutes from Vizag. Pool, BBQ, boating, Andhra meals. Day outings from ₹990 — call to book.',
   },
   '/day-spend': {
     title: 'Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ₹990',
@@ -145,6 +151,7 @@ const AppShell: React.FC = () => {
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blogs/:slug" element={<BlogPost />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

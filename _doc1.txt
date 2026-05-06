@@ -1,0 +1,1074 @@
+AI BUILD PROMPT
+Salsons Retreat
+Landing Page Build — End-to-End Specification
+This document is a prompt. Hand it to a coding-capable AI model (Claude Opus 4.7 or equivalent) along with the ability to write files. The AI will read it as both the goal and the full context, and produce a production-ready landing page that lifts Google Ads Quality Score from 3/10 toward 10/10.
+How to use this document
+1. Paste the entire document (or attach as a file) into your AI session.
+2. Add a one-line instruction: "Read this document end-to-end. Treat it as your role, goal, and constraints. Confirm understanding by summarising back the success criteria, then begin building."
+3. Provide the AI with file-write capability and any photos/assets it asks for.
+4. Review the output against §17 (Self-Check Before Delivery) before launch.
+
+Table of Contents
+
+
+
+1. Role
+<role>
+You are a senior full-stack web engineer and conversion-rate optimisation specialist. You have shipped landing pages for hospitality, travel, and Indian D2C brands. You write production-grade HTML, CSS, and JavaScript. You understand Google Quality Score mechanics in depth — specifically how Expected CTR, Ad Relevance, and Landing Page Experience combine, and which on-page signals move each one.
+You design mobile-first for Indian users on mid-range Android phones over patchy 4G. You optimise ruthlessly for Core Web Vitals. You write copy that is warm, clear, and confidence-inspiring — not florid. You implement schema.org structured data correctly. You instrument tracking properly so future Quality Score has real conversion signal.
+You do not skip steps to ship faster. You do not invent facts; if a property detail is missing you flag it as TODO. You ask clarifying questions only when blocked, and otherwise you make the best decision available with the data provided and document your assumption.
+</role>
+2. Primary Goal
+<goal>
+Build a new single-page landing experience for Salsons Retreat that, when used as the Final URL for the existing Google Ads campaign "C1: Stay Seekers", causes the keyword "resort near vizag" — currently Quality Score 3 with "Below average" Landing Page Experience and "Below average" Ad Relevance — to climb to Quality Score 7 or higher within 30 days, and 9–10 within 60 days.
+The page must convert a meaningful share of paid search visitors into phone calls (the chosen primary CTA). The campaign has produced ZERO conversions across 221 clicks and ₹2,861.50 spend on the current page. The new page must reverse that.
+</goal>
+
+2.1 Success criteria (measurable)
+Metric
+Current
+30-day target
+60-day target
+How measured
+Quality Score: "resort near vizag"
+3 / 10
+≥ 7
+≥ 9
+Google Ads keyword view
+Landing Page Experience
+Below average
+Average
+Above average
+Google Ads QS column
+Ad Relevance
+Below average
+Average
+Above average
+Google Ads QS column
+CTR — top 5 keywords
+1.5–4%
+5–7%
+7–10%
+Google Ads
+Conversion rate (call clicks)
+0%
+3–5%
+5–8%
+GTM → Google Ads conversions
+Cost per call
+Infinite
+≤ ₹600
+≤ ₹400
+Google Ads
+Mobile Lighthouse Performance
+Unknown / low
+≥ 85
+≥ 90
+Lighthouse mobile
+LCP (mobile, 4G)
+> 3s likely
+< 2.5s
+< 2.0s
+Lighthouse / CrUX
+CLS
+Unknown
+< 0.1
+< 0.05
+Lighthouse / CrUX
+Bounce rate
+High (likely > 70%)
+< 55%
+< 45%
+GA4 / Clarity
+
+3. Context — The Property
+<property>
+Field
+Value
+Brand name
+Salsons Retreat
+Type
+Lakeside farmstay & resort
+Location
+Thatipudi, Andhra Pradesh — approximately 70–80 km from Visakhapatnam (Vizag) city
+Drive time from Vizag city
+~90 minutes
+Property size
+6 acres on the Thatipudi Reservoir
+Existing URL
+https://salsonsretreat.com/
+Existing pricing anchor
+Day outings from ₹990 per person
+Core experiences
+Pool parties, BBQ, boating on the lake, cricket pitch, indoor games, bonfire, farm-to-table Andhra meals
+Target audience
+MIXED — Day-outing groups (friends, families, office groups) AND weekend overnight stays (couples, families). Page must address both with a segmented hero.
+Primary conversion
+Phone call (click-to-call). Lead form is secondary.
+Brand position
+"A 90-minute lakeside escape from Vizag — worth the drive." Honest about the distance; reframes it as the appeal.
+Items the AI must request from the property owner if not already supplied:
+Final phone number for click-to-call CTAs
+Confirmed pet policy (yes/no/with deposit) — has very high CTR signal in search data
+Confirmed alcohol policy (allowed / BYOB / dry property)
+Final day-outing inclusions list and current price (confirm ₹990)
+Room types for stays: name, capacity, starting price, A/C status
+12–20 high-resolution photos: hero (drone shot of lake), pool, food, rooms, families enjoying themselves, sunset over the lake
+Google Business Profile URL (for reviews + map)
+Logo as SVG, brand colours if defined
+Exact distances from Vizag city / Vizag Airport / Vizag Railway Station / Anakapalle (verify on Google Maps)
+If any of these are missing, the AI should still build the page using clearly-marked placeholders (e.g., {{PHONE_NUMBER}}, {{HERO_IMAGE_URL}}) and produce a separate file CONTENT_NEEDED.md listing every placeholder.
+</property>
+
+4. Context — The Data You Are Optimising Against
+<campaign_data>
+Read this section carefully. Your design decisions must be defensible against this data.
+4.1 Account-level totals (Google Ads, all-time)
+Metric
+Value
+Total impressions
+6,256
+Total clicks
+221
+Account CTR
+3.53%
+Total spend
+₹2,861.50
+Total conversions
+0
+Conversion rate
+0.00%
+Cost per conversion
+Undefined (infinite)
+4.2 Keyword-level Quality Score (the only keyword Google has scored)
+DIAGNOSTIC — Google's own assessment of the current page
+Keyword: "resort near vizag" (phrase match)
+Impressions: 5,277  •  Clicks: 193  •  CTR: 3.66%  •  Spend: ₹2,501.73
+Quality Score: 3 / 10
+Landing Page Experience: BELOW AVERAGE  ←  the biggest lever
+Ad Relevance: BELOW AVERAGE  ←  fix via H1 + above-fold message match
+Expected CTR: AVERAGE  ←  not the bottleneck
+The other enabled keywords are mostly "Not eligible — rarely served," which is itself a Quality Score symptom. Three other keywords are eligible and serving:
+Keyword
+Impr.
+Clicks
+CTR
+Spend
+nature resort vizag
+693
+11
+1.59%
+₹128.75
+villa stay vizag
+257
+11
+4.28%
+₹140.69
+pet friendly resort vizag
+29
+6
+20.69%
+₹90.33
+Note: "pet friendly resort vizag" has a 20.69% CTR — exceptional. If Salsons accepts pets, the new page MUST feature pet-friendliness prominently (badge near hero + dedicated FAQ). If not, this keyword should be added as a negative.
+4.3 The previous "search terms" report (what users actually typed)
+Across 186 clicks on real-user search terms, top categories were:
+Generic "resorts in vizag / vizag resorts" head terms — highest volume, zero conversions on the current page.
+Audience modifiers: "for family", "for couples", "for marriage / wedding".
+Amenity modifiers: "with swimming pool" (10.26% CTR), "with private pool" (14.71% CTR), "pet friendly" (66.67% CTR), "near beach" — to be reframed as "lakeside".
+Budget modifiers: "budget friendly", "low budget", "cheap".
+Branded competitor terms (Novotel, Radisson, Mayfair, Haritha, Sai Priya, Sunray, etc.) — need negative-keyword treatment, not on-page treatment.
+</campaign_data>
+
+5. Root-Cause Diagnosis (What You Are Fixing)
+<diagnosis>
+The current page fails three users at once: the Google Ads quality auction, the human searcher, and the future-state ML loop that learns from conversion signal. Each must be fixed.
+Failure
+Mechanism
+Your fix
+Location-expectation gap
+Searchers type "resorts in vizag" expecting a Vizag-city property. They land on a page about a farmstay in Thatipudi, ~75 km away. Ad Relevance suffers because page H1 doesn't echo the search query. Bounce signal hurts LPE.
+Frame distance positively from above-the-fold; H1 includes both "resort" and "Vizag"; second screen on mobile is a drive-time block; honest "90 min from Vizag" repeats throughout.
+Weak conversion mechanism
+Zero call-tracking events fired. Even when users intend to call, the page may not surface a phone number prominently or measurably.
+Sticky bottom call bar on mobile; click-to-call buttons in hero, after each section, in final CTA; every tel: link wired through GTM dataLayer event into Google Ads as a conversion.
+Slow mobile load
+Current site is a React SPA loading external CDN Tailwind, Wix media, multiple analytics scripts before first paint. LPE penalises this.
+Build as static HTML or pre-rendered. Self-host fonts. AVIF/WebP images preloaded. JS deferred. Target Lighthouse mobile ≥ 90.
+No structured data
+Google can't easily parse what kind of business this is, where it is, or what it costs.
+LodgingBusiness, FAQPage, AggregateRating, BreadcrumbList JSON-LD in the <head>.
+Ad-group/keyword sprawl
+Many enabled keywords are "rarely served" — single ad group too broad.
+On-page fix: lead with the searcher's exact intent (resort + vizag + day outing/stay). Off-page fix (note for marketer): split into ad groups and tighten ad copy.
+No social proof above fold
+Tier-2 Indian audience needs Google review stars, photos, and a real-name brand cue immediately or they bounce.
+Trust bar with star rating (live from GMB if possible), real photo gallery, named Google reviews block above the FAQ.
+</diagnosis>
+
+6. Keyword Strategy (Use This to Drive Copy)
+<keyword_strategy>
+Every Tier-1 keyword must appear naturally in: <title>, <meta description>, H1, and at least one body paragraph. Tier-2 keywords drive section H2s. Tier-3 keywords drive FAQ questions. DO NOT keyword-stuff. Each appearance must read like a human wrote it.
+6.1 Tier 1 — must drive H1, title, hero subhead
+Keyword
+Volume signal
+Use it in
+resort near vizag
+Highest spend, primary QS keyword
+Title, meta, H1, hero subhead, repeated
+resorts in vizag
+Highest impressions in search-term data (483)
+Title, H1, body
+vizag resorts / resorts vizag
+Strong volume, 6.25% CTR
+H1 variant or H2
+nature resort vizag
+693 impressions, untapped CTR
+H2 in nature/lakeside section
+6.2 Tier 2 — must drive section H2s and amenity badges
+Keyword cluster
+Page section it maps to
+resorts in vizag with swimming pool / with private pool
+Pool/amenities section + hero amenity badge
+best resorts in vizag for family
+"For Families" card + family activities block
+resorts in vizag for couples / couple resort near vizag
+"For Couples" card + privacy framing
+pet friendly resort vizag
+Pet badge near hero + dedicated FAQ entry
+day outing resorts in vizag
+Day Outing CTA card with ₹990 anchor
+weekend getaway from vizag
+Weekend Stay CTA card
+villa stay vizag / cottage stay near vizag
+Stay/cottage section H2
+budget friendly resorts in vizag / cheap resort near vizag
+Pricing transparency: "From ₹990" callouts
+kid friendly resort vizag / family resort near visakhapatnam
+Family activities sub-block
+nature resort / eco resort visakhapatnam
+Lake/nature framing in hero or first section
+6.3 Tier 3 — drive FAQ questions and long-tail SEO
+Each of these should be answered as a question in the FAQ schema. The exact-phrase question wording targets featured snippets:
+How far is the resort from Vizag city / airport / station? (drive-time keywords)
+Is Salsons Retreat pet-friendly? (high-CTR signal)
+Do you have a swimming pool open all year?
+What's included in the ₹990 day-outing price?
+Are A/C cottages available for weekend stays?
+Is alcohol allowed at the property?
+Can I host a family function / birthday / small wedding?
+Is the place safe and suitable for kids and elderly guests?
+How do I reach Salsons Retreat by car? Is parking available?
+What is your cancellation policy?
+Do you offer pickup or transport from Vizag?
+Are weekend cottages near Vizag available under ₹3,000?
+6.4 Negative keywords (note for the marketer; AI does not implement these)
+These are bleeding budget. Add as exact/phrase negatives at campaign level:
+novotel | accorhotels | radisson | radisson blu | mayfair | haritha | aptdc | ap tourism | sai priya | sunray | sunray resorts | vasudev | bayleaf | bay leaf ayurveda | pema wellness | sanctum | senora | triangle | sky view | skyview | sunrise village | rocks and greens | rushikonda haritha | spence haven | the bheemli resort | snow paradise | siriki | sea breeze | wander vizag | prakruthi valley | sai priya wedding | jobs | careers | salary | login | owner contact
+Also exclude: villa, villas, villa for rent, villa in vizag, villa visakhapatnam, vizag villas, homes villa, beach villa, vizag villa, villa stay vizag (UNLESS the property markets villa-style cottages — confirm with owner).
+</keyword_strategy>
+
+7. Page Blueprint — What to Build, Section by Section
+<page_blueprint>
+The page is a single scrollable URL. Mobile-first. Each numbered section below is a build unit. Build them in order. Do not add sections not listed here without explicit reason.
+#
+Section
+Specification
+Why / what it serves
+1
+Sticky Header
+Logo (left). Phone CTA (right): ☎ +91-XXXXX. Min height 56px on mobile.
+Always-on call access
+2
+Hero (segmented)
+Full-bleed lakeside photo, soft dark overlay (40%) for text legibility. H1 + subhead + 2 CTAs side-by-side: "Book a Day Outing — from ₹990" and "Plan a Weekend Stay". Both tel: links.
+Audience segmentation in <1s
+3
+Trust Bar
+Single row, 5 chips: 📍 90 min from Vizag • ⭐ 4.X (XXX Google reviews) • 🌊 6-acre lake • 🐾 Pet-friendly* • 🏊 Pool & BBQ included. Pull review count live from GMB if technically feasible; otherwise hard-code with a note to refresh.
+Address top objections immediately
+4
+Distance / Drive-time
+Map embed + drive-time table (Vizag city, Vizag airport, Vizag station, Anakapalle, Bheemili). "Open in Google Maps →" deep-link button below.
+FIXES THE LOCATION GAP — biggest QS lever
+5
+Day Outing card
+Header "Day Outing — from ₹990 per person." Inclusion list. 4 photos (lunch, pool, boating, cricket). CTA: "Call to confirm today's availability."
+Captures day-outing intent searches
+6
+Weekend Stay card
+Room types with photos and starting price each. Sample weekend itinerary (arrival → bonfire → dinner → morning boating → breakfast → checkout). CTA: "Call for stay rates & dates."
+Captures weekend/stay intent
+7
+Amenities Grid
+3×3 icon grid: Pool, BBQ, Boating, Cricket, Indoor games, Bonfire, Farm-to-table Andhra meals, Pet-friendly, Free parking. Each icon has a 1-line label.
+Catches amenity-modifier searches
+8
+Photo Gallery
+9–12 photos. Mobile: swipeable carousel. Desktop: 3-col masonry. Lazy-load. Click-to-zoom. Alt text on every image.
+Emotional pull; reduces bounce
+9
+For Whom
+Three small cards: For Families / For Couples / For Groups. Each card: 1 photo + 2-line description + relevant CTA.
+"for family" / "for couples" search match
+10
+Reviews
+3 short Google review cards (real text + reviewer first name + star rating) + "See all on Google →" link to GMB. Star rating prominent.
+Social proof — biggest trust lever
+11
+FAQ
+10–12 questions in an accordion. FAQPage schema. See §6.3 for exact questions.
+Reduces objection calls; wins SERP snippets
+12
+Final CTA
+Full-bleed lake-at-sunset photo. H2: "Ready for a break? Call us now." One big phone button.
+Last-chance conversion before scroll-end
+13
+Footer
+Address, phone, hours, social links, GMB link, copyright. NAP exactly matches GMB.
+Local SEO consistency
+14
+Sticky Mobile CTA
+Bottom-pinned bar across the page (HIDDEN inside the hero only): "☎ Call Now — Book". 64px tall, accent fill.
+Maximises tap rate
+</page_blueprint>
+
+8. Copy Specifications
+<copy>
+Use these strings (or close paraphrases that preserve keyword density). Do NOT replace key phrases with synonyms unless you are confident the variant retains the keyword(s) noted in §6.
+8.1 Title tag (≤ 60 chars)
+Salsons Retreat | Resort Near Vizag — Day Outings from ₹990
+8.2 Meta description (≤ 158 chars)
+A 6-acre lakeside resort 90 min from Vizag. Pool, BBQ, boating, Andhra meals. Day outings from ₹990. Weekend cottages too. Call to book.
+8.3 H1
+A Lakeside Resort 90 Minutes From Vizag — Day Outings & Weekend Stays at Salsons Retreat
+8.4 Hero subhead
+6 acres on Thatipudi Reservoir. Pool, BBQ, boating, farm-to-table Andhra meals.
+Day plans from ₹990. Weekend cottages too.
+8.5 Hero CTAs
+Two buttons, equal visual weight, side-by-side on desktop, stacked on mobile. Both are tel: links.
+Primary: Call ☎ — Book Day Outing
+Secondary: Call ☎ — Plan a Weekend Stay
+8.6 Trust Bar microcopy
+📍 90 min from Vizag city
+⭐ {{RATING}} on Google ({{REVIEW_COUNT}} reviews)
+🌊 6-acre private lake
+🐾 Pet-friendly
+🏊 Pool, BBQ & boating included
+8.7 Distance block intro line
+Far enough to feel away. Close enough to drive home the same evening.
+8.8 Day Outing card body
+Day Outing — from ₹990 per person
+ 
+What's included:
+• Welcome drink + Andhra-style buffet lunch
+• Pool access (towels provided)
+• Boating on Thatipudi Reservoir
+• Cricket pitch + indoor games
+• Evening tea & snacks
+• Free parking
+ 
+[ Call to confirm today's availability ]
+8.9 Final CTA block
+Ready for a break?
+The lake is waiting. Pick up the phone — we'll handle the rest.
+[ ☎ Call Now to Book ]
+8.10 Voice & tone rules
+Warm, calm, slightly local. Never corporate. Never aggressive.
+Sentences short. Active voice. No fluff adjectives ("world-class", "unmatched").
+Address the reader as "you". Refer to the property as "we" or "Salsons Retreat".
+Numbers as numerals ("6 acres", not "six acres"). Prices with ₹ symbol, no decimals ("₹990").
+No emojis except in the trust bar and where specified above.
+</copy>
+
+9. Technical Stack & Build Approach
+<tech_stack>
+9.1 Stack decision
+Default to a static, statically-rendered build. Reasons: fastest LCP, lowest INP, no hydration cost, easiest to host anywhere, easiest to debug. Acceptable approaches in order of preference:
+Plain HTML + vanilla CSS + minimal vanilla JS (preferred). Tailwind CSS used in build mode (compiled to a single CSS file ≤ 30KB), NOT via CDN.
+Astro (static output). One .astro page, components for each section.
+Next.js with output: 'export' (static export). Acceptable but heavier.
+Do NOT default to a SPA framework with client-side routing. The current site is a Vite/React SPA and that is part of the LPE problem.
+9.2 Performance budget (HARD limits)
+Metric
+Budget
+Enforcement
+Total page weight (initial load)
+≤ 1.2 MB
+Lighthouse, WebPageTest
+Critical JS (blocking)
+≤ 30 KB
+Network tab
+Hero image
+≤ 180 KB (AVIF) / 280 KB (WebP)
+Image audit
+LCP (mobile, 4G simulated)
+≤ 2.0 s
+Lighthouse mobile
+INP
+≤ 200 ms
+Lighthouse / RUM
+CLS
+≤ 0.05
+Lighthouse
+Lighthouse Performance (mobile)
+≥ 90
+Lighthouse
+Lighthouse Accessibility
+≥ 95
+Lighthouse
+Lighthouse SEO
+= 100
+Lighthouse
+Lighthouse Best Practices
+≥ 95
+Lighthouse
+9.3 Image rules
+Serve AVIF first, WebP second, JPG fallback via <picture> element.
+Hero image: <link rel="preload" as="image" type="image/avif"> in <head>.
+Specify width and height on every <img> to prevent CLS.
+Below-the-fold images: loading="lazy" decoding="async".
+Use srcset and sizes for art-direction across breakpoints.
+9.4 Fonts
+Self-host woff2 only. Use Plus Jakarta Sans (already on the brand), Inter, or Manrope.
+Subset to Latin only. Two weights maximum (e.g., 400 + 700).
+font-display: swap. Preload the body font.
+9.5 JavaScript discipline
+No jQuery. No Bootstrap. No carousel libraries. The image gallery should be a CSS scroll-snap carousel, not a JS lib.
+All non-critical JS deferred (defer attribute or type="module").
+FAQ accordion should use <details> + <summary> — no JS needed.
+Sticky mobile call-bar can be pure CSS (position: sticky / fixed).
+9.6 Hosting / deployment
+Recommend Cloudflare Pages, Netlify, or Vercel for static deploys with global edge caching.
+If keeping the Wix domain, host the new page on a subdomain (e.g., book.salsonsretreat.com) and point Google Ads there.
+Set Cache-Control: public, max-age=31536000, immutable on hashed assets.
+</tech_stack>
+
+10. SEO & Structured Data Requirements
+<seo>
+10.1 Required <head> elements (in this order)
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salsons Retreat | Resort Near Vizag — Day Outings from ₹990</title>
+<meta name="description" content="...">
+<link rel="canonical" href="https://salsonsretreat.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" type="image/avif" href="/img/hero.avif">
+<meta property="og:title" content="...">
+<meta property="og:description" content="...">
+<meta property="og:image" content="https://salsonsretreat.com/img/og.jpg">
+<meta property="og:url" content="https://salsonsretreat.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<!-- JSON-LD blocks (see §10.2) -->
+10.2 Required JSON-LD blocks
+Embed all of these in <head> as separate <script type="application/ld+json"> blocks. Validate with Google's Rich Results Test before delivering.
+LodgingBusiness:
+{
+  "@context": "https://schema.org",
+  "@type": "LodgingBusiness",
+  "@id": "https://salsonsretreat.com/#business",
+  "name": "Salsons Retreat",
+  "description": "A 6-acre lakeside resort and farmstay 90 minutes from Vizag.",
+  "image": [
+    "https://salsonsretreat.com/img/hero.jpg"
+  ],
+  "telephone": "{{PHONE_E164}}",
+  "priceRange": "₹₹",
+  "url": "https://salsonsretreat.com/",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{STREET}}",
+    "addressLocality": "Thatipudi",
+    "addressRegion": "Andhra Pradesh",
+    "postalCode": "{{PIN}}",
+    "addressCountry": "IN"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "{{LAT}}",
+    "longitude": "{{LNG}}"
+  },
+  "amenityFeature": [
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Swimming pool",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Pets allowed",
+      "value": "{{PET_BOOL}}"
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Free parking",
+      "value": true
+    }
+  ]
+}
+FAQPage: build from §6.3 questions.
+AggregateRating: pull live from GMB if possible; otherwise hard-code real numbers and refresh quarterly.
+BreadcrumbList: Home > Salsons Retreat (single-level still helps SERP rendering).
+10.3 robots.txt + sitemap.xml
+Even on a single-page site, both files must exist. robots.txt must reference the sitemap. sitemap.xml lists at minimum the homepage with lastmod.
+</seo>
+
+11. Tracking & Analytics Requirements
+<tracking>
+The current campaign has 0 conversions on 221 clicks. Quality Score is partially fed by conversion data, so this gap is hurting the campaign on multiple fronts. Fix it on day one of the new build.
+11.1 Tag Manager setup
+Use Google Tag Manager (GTM). Inject GTM <script> in <head> and <noscript> in <body>.
+Inside GTM: GA4 configuration tag + Google Ads conversion tag, fired by triggers below.
+Microsoft Clarity already exists on the current site; keep it. Add via GTM.
+Meta Pixel exists on current site; keep if the marketer is running Meta Ads, otherwise remove for performance.
+11.2 Events to push to dataLayer
+Event name
+When it fires
+Where it routes
+Conversion?
+call_click_hero
+User taps a hero phone CTA
+GA4 + Google Ads
+YES
+call_click_section
+User taps a phone CTA inside a section
+GA4 + Google Ads
+YES
+call_click_sticky
+User taps the sticky mobile call bar
+GA4 + Google Ads
+YES
+call_click_final
+User taps the final-CTA call button
+GA4 + Google Ads
+YES
+whatsapp_click
+User taps WhatsApp link (if added)
+GA4 + Google Ads
+YES
+scroll_75
+User scrolls past 75% of the page
+GA4 only
+No (engagement)
+faq_open
+User expands an FAQ accordion item
+GA4 only
+No (engagement)
+gallery_swipe
+User swipes the gallery
+GA4 only
+No (engagement)
+11.3 tel: link instrumentation
+Each tel: anchor must push a dataLayer event before navigating. Pattern:
+<a href="tel:+91XXXXXXXXXX"
+   data-event="call_click_hero"
+   onclick="dataLayer.push({event:this.dataset.event, click_text:this.innerText})"
+   aria-label="Call Salsons Retreat at +91 XXXXX XXXXX">
+  ☎ Call to Book
+</a>
+11.4 Google Ads side (note for the marketer, not the AI build)
+In Google Ads → Tools → Conversions, mark call_click_* as the primary conversion action.
+Enable Google Ads call extensions on the campaign in parallel.
+Wait 14 days post-launch to evaluate Quality Score change — the auction needs data.
+</tracking>
+
+12. Accessibility (WCAG 2.2 AA)
+<a11y>
+Colour contrast ≥ 4.5:1 for body text, ≥ 3:1 for large text. Validate with axe or WAVE.
+All interactive elements keyboard-reachable. Visible focus rings (do not remove outline).
+All <img> have meaningful alt text. Decorative images alt="".
+Phone CTAs: aria-label="Call Salsons Retreat at +91 XXXXX XXXXX".
+Heading hierarchy clean: one H1, then H2s in order, no skipping levels.
+Forms (if added later): every <input> has a <label>.
+Reduced-motion users: prefers-reduced-motion media query disables auto-scroll/animations.
+Language declared: <html lang="en">.
+</a11y>
+13. Constraints — Things You Must NOT Do
+<constraints>
+Do NOT use stock photos. Real property photos only.
+Do NOT invent guest reviews or testimonials. Use only real Google reviews; if unavailable, leave the section as a TODO with placeholders.
+Do NOT claim amenities the property doesn't have. If pet policy / alcohol / A/C rooms are unconfirmed, mark with {{}} placeholder and list in CONTENT_NEEDED.md.
+Do NOT use a popup/lightbox lead form on load. It hurts LPE and bounce.
+Do NOT load Tailwind via CDN. Compile it to a single static CSS file.
+Do NOT use a JS-heavy carousel. Use <picture> for art direction and CSS scroll-snap for the gallery.
+Do NOT build as a SPA. The current React SPA is part of the LPE problem.
+Do NOT add icon fonts (FontAwesome, Material Symbols full library). Inline only the SVG icons you actually use.
+Do NOT add chat widgets (Tawk, Drift, etc.) on launch. They tank LCP and the audience prefers calling.
+Do NOT under any circumstance ship without testing on a real Indian-network throttled mobile device profile.
+</constraints>
+
+14. Deliverables
+<deliverables>
+Produce a folder named /salsons-retreat-landing/ containing:
+salsons-retreat-landing/
+├── index.html               (the landing page)
+├── styles/
+│   └── main.css             (compiled, minified, ≤ 30 KB)
+├── scripts/
+│   └── analytics.js         (GTM dataLayer events; deferred)
+├── img/
+│   ├── hero.avif / .webp / .jpg
+│   ├── gallery-01..12.avif/.webp/.jpg
+│   └── og.jpg               (1200×630 social card)
+├── fonts/                   (woff2, subsetted)
+├── robots.txt
+├── sitemap.xml
+├── README.md                (build/deploy instructions)
+└── CONTENT_NEEDED.md        (every {{placeholder}} listed for the owner)
+Plus a one-page LAUNCH_CHECKLIST.md covering: Lighthouse run, Rich Results Test pass, GTM events firing, Google Ads conversion linked, GMB-pull verified, owner-content placeholders all filled.
+</deliverables>
+15. Workflow — How to Approach the Build
+<workflow>
+Read this entire document. Summarise back the success criteria from §2.1 in your own words to confirm understanding.
+List every {{placeholder}} you'll need from the owner (write CONTENT_NEEDED.md early).
+Build a wireframe-as-HTML first: skeleton sections with placeholder text and grey image blocks. Get layout right.
+Add real copy from §8.
+Compile CSS. Run Lighthouse mobile. Iterate to ≥ 90.
+Add JSON-LD blocks. Validate with Google's Rich Results Test.
+Wire tel: links to dataLayer events.
+Run §17 self-check. Don't ship if anything is red.
+Hand off /salsons-retreat-landing/ folder + LAUNCH_CHECKLIST.md.
+</workflow>
+16. Clarifying Questions to Resolve Before Coding
+<questions>
+If the user has not pre-answered these, ask in a single batched message at the start. Do not ask one at a time. If user says "use your best judgement," make a defensible call and document it.
+What is the final phone number for click-to-call?
+Is the property genuinely pet-friendly? (high-CTR keyword opportunity)
+Is alcohol allowed / BYOB / dry?
+Confirm ₹990 is the current day-outing price and list its exact inclusions.
+Names, capacities, and starting prices for stay rooms/cottages.
+Where will the page be hosted (Cloudflare Pages / Netlify / existing Wix subdomain)?
+GTM container ID and Google Ads conversion ID + label.
+Confirmed exact distances/times from Vizag city / airport / station.
+Google Business Profile URL.
+Logo as SVG, brand colours.
+</questions>
+
+17. Self-Check Before Delivery
+<self_check>
+Run this checklist. Every box must be ✅ before handing the build over.
+☐  H1 contains both "resort" and "Vizag"
+☐  Title and meta description match the H1's framing and reference "resort near vizag"
+☐  Distance / drive-time block is visible within the second mobile screen
+☐  Pet-friendliness is reflected on-page (badge + FAQ) OR pet keyword is on the negative list
+☐  Phone CTA is visible above the fold AND in a sticky bar AND in the final block
+
+Performance
+☐  Lighthouse mobile Performance ≥ 90
+☐  LCP < 2.0s on simulated 4G
+☐  Total page weight (initial) < 1.2 MB
+☐  No render-blocking external CSS or JS
+☐  Fonts self-hosted, subsetted, font-display: swap
+
+SEO & schema
+☐  LodgingBusiness JSON-LD validates in Rich Results Test
+FAQPage JSON-LD validates
+☐  Open Graph + Twitter Card tags present
+☐  robots.txt + sitemap.xml exist; sitemap referenced in robots
+Canonical URL set
+
+Tracking
+☐  GTM container live in <head> and <noscript> in <body>
+☐  call_click_hero, _section, _sticky, _final all push to dataLayer on tap
+GA4 receives all events
+☐  Google Ads conversion tag fires for each call_click event
+☐  scroll_75 and faq_open events fire
+
+Accessibility
+☐  axe / WAVE: 0 critical issues
+☐  Keyboard navigation reaches every interactive element
+Visible focus rings present
+☐  Colour contrast verified for body, headings, buttons
+
+Content & UX
+No stock photos used
+☐  No invented reviews or guest names
+☐  All {{placeholders}} listed in CONTENT_NEEDED.md
+☐  Mobile-first wireframe order matches §7
+☐  Sticky bottom call bar hidden inside the hero, visible everywhere else
+
+Hand-off
+☐  README.md explains how to deploy and how to swap placeholders
+☐  LAUNCH_CHECKLIST.md exists and is complete
+Folder structure matches §14
+</self_check>
+
+Appendix A — Full Keyword Performance Reference
+Pulled from the Google Ads Search Keyword Report and Search Terms Report supplied. Use to defend copy and section choices.
+A.1 Enabled keywords (Search Keyword Report)
+Keyword
+Match
+Status
+Impr.
+Clicks
+CTR
+Spend (₹)
+QS
+resort near vizag
+Phrase
+Eligible
+5,277
+193
+3.66%
+2,501.73
+3 ← target
+nature resort vizag
+Phrase
+Eligible
+693
+11
+1.59%
+128.75
+—
+villa stay vizag
+Phrase
+Eligible
+257
+11
+4.28%
+140.69
+—
+pet friendly resort vizag
+Phrase
+Eligible
+29
+6
+20.69%
+90.33
+—
+weekend getaway from vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+kid friendly resort vizag
+Broad
+Rarely served
+0
+0
+—
+0
+—
+[farmstay in thatipudi]
+Exact
+Rarely served
+0
+0
+—
+0
+—
+affordable resort near vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+cheap resort near vizag with pool
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+couple resort near vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+honeymoon resort vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+family resort near visakhapatnam
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+family weekend stay vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+nature stay near vizag with pool
+Broad
+Rarely served
+0
+0
+—
+0
+—
+romantic getaway vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+farmstay near visakhapatnam
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+eco resort visakhapatnam
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+private villa near vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+couple weekend getaway from vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+best resort near vizag for weekend
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+cottages near vizag under 3000
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+cottage stay near vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+budget friendly farmstay vizag
+Phrase
+Rarely served
+0
+0
+—
+0
+—
+Account totals: 6,256 impressions • 221 clicks • 3.53% CTR • ₹2,861.50 spent • 0 conversions.
+A.2 Top real-user search terms (from Search Terms Report)
+These are the exact strings users typed. Sorted by impressions, top 20.
+Search term
+Impr.
+Clicks
+CTR
+Spend (₹)
+Recommendation
+resorts in vizag
+483
+18
+3.73%
+243.37
+Tier-1 head term
+vizag resorts
+203
+5
+2.46%
+70.25
+Tier-1 variant
+resorts vizag
+160
+10
+6.25%
+141.77
+Tier-1 variant
+resorts near vizag
+91
+8
+8.79%
+106.28
+Perfect intent for Thatipudi
+sunray resorts visakhapatnam
+77
+0
+0%
+0
+Negative — competitor
+resort vizag
+59
+0
+0%
+0
+Tier-1
+resorts in visakhapatnam
+52
+1
+1.92%
+12.76
+Tier-1 variant (formal name)
+resort in vizag
+55
+2
+3.64%
+33.49
+Tier-1
+best resorts in vizag for family
+42
+3
+7.14%
+43.77
+Family-section H2
+vizag best resorts
+42
+0
+0%
+0
+Tier-1
+pema wellness resort visakhapatnam
+39
+0
+0%
+0
+Negative — competitor
+resorts in vizag with swimming pool
+39
+4
+10.26%
+54.58
+Pool section H2
+resorts in vizag with private pool for family
+34
+5
+14.71%
+73.95
+Premium stay sub-section
+best resorts vizag
+34
+3
+8.82%
+47.18
+Tier-1
+bheemili resort vizag
+31
+0
+0%
+0
+Negative — Novotel
+resort visakhapatnam
+28
+1
+3.57%
+13.13
+Tier-1
+best resorts in visakhapatnam
+27
+0
+0%
+0
+Tier-1
+villa in vizag
+26
+1
+3.85%
+14.68
+Negative unless villa-style cottages
+pet friendly resorts in vizag
+3
+2
+66.67%
+29.02
+GOLDEN — feature on page
+vizag resorts near beach
+1
+1
+100%
+13.24
+Reframe as 'lakeside'
+
+Appendix B — Example Skeleton (starting point only)
+This is an indicative HTML skeleton showing the section order, ARIA wiring, and CTA pattern. The AI may improve it but must preserve section order, semantic tags, and dataLayer instrumentation.
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- meta + title + description + canonical + preconnect + preload + JSON-LD -->
+</head>
+<body>
+  <header class="sticky-top">
+    <a href="/"><img src="/img/logo.svg" alt="Salsons Retreat"></a>
+    <a href="tel:+91XXXXXXXXXX" data-event="call_click_header"
+       aria-label="Call ...">☎ Call</a>
+  </header>
+ 
+  <section id="hero" aria-labelledby="hero-h1">
+    <picture>...hero AVIF/WebP/JPG...</picture>
+    <h1 id="hero-h1">A Lakeside Resort 90 Minutes From Vizag — Day Outings
+        & Weekend Stays at Salsons Retreat</h1>
+    <p>6 acres on Thatipudi Reservoir...</p>
+    <div class="cta-row">
+      <a href="tel:..." data-event="call_click_hero" class="btn btn-primary">
+        ☎ Book Day Outing</a>
+      <a href="tel:..." data-event="call_click_hero" class="btn btn-secondary">
+        ☎ Plan a Weekend Stay</a>
+    </div>
+  </section>
+ 
+  <section id="trust">...</section>
+  <section id="distance">...</section>
+  <section id="day-outing">...</section>
+  <section id="stay">...</section>
+  <section id="amenities">...</section>
+  <section id="gallery">...</section>
+  <section id="for-whom">...</section>
+  <section id="reviews">...</section>
+  <section id="faq">
+    <details><summary>How far is Salsons Retreat from Vizag?</summary>
+      <p>...</p></details>
+    ...
+  </section>
+  <section id="final-cta">...</section>
+  <footer>...NAP, GMB link, hours, copyright...</footer>
+ 
+  <a href="tel:..." class="sticky-call-bar"
+     data-event="call_click_sticky">☎ Call Now to Book</a>
+ 
+  <script defer src="/scripts/analytics.js"></script>
+</body>
+</html>
+Appendix C — One-Paragraph Handoff
+Read this if you read nothing else
+Build a fast (LCP < 2s, page weight < 1.2 MB) static mobile-first landing page for Salsons Retreat. The Google Ads keyword "resort near vizag" currently scores Quality Score 3 with Below Average Landing Page Experience and Below Average Ad Relevance — fix both. H1 must contain "resort" + "Vizag". Lead with two phone CTAs (Day Outing from ₹990 + Weekend Stay). Above the fold: hero photo + H1 + dual CTAs + trust bar. Second mobile screen: a drive-time/distance block — this single block fixes the location-expectation gap that's killing LPE. Sticky "Call Now" bar pinned to the bottom on mobile, hidden only inside the hero. All tel: clicks fire dataLayer events into Google Ads as conversions before launch. Add LodgingBusiness + FAQPage + AggregateRating JSON-LD; validate in Rich Results Test. Self-host fonts. AVIF/WebP images. Compile Tailwind to ≤ 30 KB CSS — no CDN. Real photos and real reviews only — placeholders for anything you can't verify, listed in CONTENT_NEEDED.md. Run §17 self-check; don't ship anything red. Deliver the folder structure in §14.
+
+— End of AI Build Prompt —
