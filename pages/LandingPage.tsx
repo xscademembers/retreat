@@ -157,7 +157,22 @@ export const LandingPage: React.FC = () => (
           <div className="bg-[#f9f7f4] rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto mb-8">
             <h3 className="font-bold text-lg mb-4 text-center">A Weekend at Salsons</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-700">
-              {[['3:00 PM','Check-in & welcome drink'],['4:00 PM','Pool & rain dance'],['6:30 PM','Bonfire & BBQ by the lake'],['8:30 PM','Andhra dinner under the stars'],['7:00 AM','Morning boating at Thatipudi'],['9:00 AM','Farm-fresh breakfast & checkout']].map(([t,a])=>(<div key={t} className="flex gap-3 py-1.5"><span className="font-bold text-primary whitespace-nowrap">{t}</span><span>{a}</span></div>))}
+              {[
+                ['2:00 PM', 'Check-in'],
+                ['2:30 PM', 'Farm-to-table lunch'],
+                ['4:00 PM', 'Boating'],
+                ['5:00 PM', 'Pool & rain dance'],
+                ['7:00 PM', 'BBQ & bonfire'],
+                ['8:30 PM', 'Dinner'],
+                ['7:00 AM', 'Sports'],
+                ['9:00 AM', 'Breakfast'],
+                ['10:30 AM', 'Check-out'],
+              ].map(([t, a]) => (
+                <div key={t} className="flex gap-3 py-1.5">
+                  <span className="font-bold text-primary whitespace-nowrap">{t}</span>
+                  <span>{a}</span>
+                </div>
+              ))}
             </div>
           </div>
           <div className="text-center"><a href={`tel:${PHONE}`} onClick={() => track('call_click_stay')} className="landing-cta-primary inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-base font-bold" id="stay-cta"><span className="material-symbols-outlined text-lg" aria-hidden="true">call</span>Call for stay rates &amp; dates</a></div>
@@ -169,7 +184,6 @@ export const LandingPage: React.FC = () => (
     <AnimateOnScroll animation="fade-up">
       <section className="landing-section bg-[#f9f7f4]">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-primary/70 text-xs sm:text-sm font-bold uppercase tracking-[0.3em] mb-3">Included in Every Visit</p>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-10">Amenities</h2>
           <div className="grid grid-cols-3 gap-4 sm:gap-6">
             {AMEN.map((a) => (<div key={a.label} className="flex flex-col items-center gap-2 p-4 sm:p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow"><div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/10 flex items-center justify-center"><span className="material-symbols-outlined text-primary text-2xl sm:text-3xl" aria-hidden="true">{a.icon}</span></div><span className="text-xs sm:text-sm font-semibold text-gray-700 text-center">{a.label}</span></div>))}

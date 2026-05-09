@@ -244,12 +244,21 @@ export const CORPORATE_ITINERARY_IMAGE_URLS: readonly string[] = [
 
 export const SANCTUARIES: Sanctuary[] = [
   {
+    id: 'villa',
+    name: 'The Villa',
+    price: 2999,
+    nightPrice: 3999,
+    description: 'An elegant villa with two spacious rooms and large verandahs opening into lush greens. Thoughtfully designed for serene mornings and peaceful stays. 11 am to 7 pm.',
+    image: 'https://static.wixstatic.com/media/9356bd_ff7051479d6d42dcb67197b538b55359~mv2.webp'
+  },
+  {
     id: 'cabana',
     name: 'The Cabana',
     price: 2999,
     nightPrice: 3999,
     description: 'Cozy lake-facing cabanas with a private deck and terrace, perfect for glamping in nature. Enjoy stunning views, open skies, and a unique stay experience. 11 am to 7 pm.',
-    image: 'https://static.wixstatic.com/media/9356bd_463e12e935b94c90b510dd8119516c4a~mv2.jpg'
+    image: 'https://static.wixstatic.com/media/9356bd_463e12e935b94c90b510dd8119516c4a~mv2.jpg',
+    tag: 'Best Value'
   },
   {
     id: 'cottage',
@@ -257,15 +266,6 @@ export const SANCTUARIES: Sanctuary[] = [
     price: 1999,
     nightPrice: 2999,
     description: 'A charming cottage with two rooms and a dormitory, surrounded by gardens and open spaces. Spacious and homely, designed for relaxed stays with family or friends. 11 am to 7 pm.',
-    image: 'https://static.wixstatic.com/media/9356bd_66a79d614dc04d8995eba15e30bf8122~mv2.webp',
-    tag: 'Best Value'
-  },
-  {
-    id: 'villa',
-    name: 'The Villa',
-    price: 2999,
-    nightPrice: 3999,
-    description: 'An elegant villa with two spacious rooms and large verandahs opening into lush greens. Thoughtfully designed for serene mornings and peaceful stays. 11 am to 7 pm.',
-    image: 'https://static.wixstatic.com/media/9356bd_ff7051479d6d42dcb67197b538b55359~mv2.webp'
+    image: 'https://static.wixstatic.com/media/9356bd_66a79d614dc04d8995eba15e30bf8122~mv2.webp'
   }
 ];
