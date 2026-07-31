@@ -5,7 +5,7 @@ import { AmenityTabs } from '../components/AmenityTabs';
 import { Testimonials } from '../components/Testimonials';
 import { LazySection } from '../components/LazySection';
 import { Feature } from '../types';
-import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES } from '../constants';
+import { CORPORATE_ITINERARY_IMAGE_URLS, INCLUDED_FEATURES, EXPERIENCE_TIERS } from '../constants';
 import { useInView } from '../hooks/useInView';
 
 /** Hero banner — team / outdoor image (same CDN as itinerary section) */
@@ -50,12 +50,17 @@ const CORPORATE_ACTIVITIES: Feature[] = [
   },
 ];
 
+const BASIC_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'basic')!.price;
+const VALUE_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'value')!.price;
+const ADVENTURE_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'adventure')!.price;
+const BASIC_DAY_PACKAGE_LABEL = `Day Spend (Basic – ₹${BASIC_DAY_PRICE.toLocaleString('en-IN')})`;
+
 const TRUSTED_CARDS = [
   {
     id: 'card-1',
     company: 'Radisson Blu',
     people: '180 ppl',
-    package: 'Day Spend (Basic – ₹990)',
+    package: BASIC_DAY_PACKAGE_LABEL,
     transport: 'Arranged by Retreat',
     image:
       'https://static.wixstatic.com/media/9356bd_a4032ed2e7564804ace3ff755615e5b5~mv2.png',
@@ -64,7 +69,7 @@ const TRUSTED_CARDS = [
     id: 'card-2',
     company: 'Oxford School',
     people: '120 ppl',
-    package: 'Day Spend (Basic – ₹990)',
+    package: BASIC_DAY_PACKAGE_LABEL,
     transport: 'Arranged by Retreat',
     image:
       'https://static.wixstatic.com/media/9356bd_6bbf867ffa5847c8ab35ad2b8c13767a~mv2.png',
@@ -82,7 +87,7 @@ const TRUSTED_CARDS = [
     id: 'card-4',
     company: 'Kotak School',
     people: '70 ppl',
-    package: 'Day Spend (Basic – ₹990)',
+    package: BASIC_DAY_PACKAGE_LABEL,
     transport: 'Own Arrangement',
     image:
       'https://static.wixstatic.com/media/9356bd_eb33ff10bd744511ac122b729c831739~mv2.png',
@@ -91,7 +96,7 @@ const TRUSTED_CARDS = [
     id: 'card-5',
     company: 'Bothra Shipping',
     people: '250 ppl',
-    package: 'Day Spend (Basic – ₹990)',
+    package: BASIC_DAY_PACKAGE_LABEL,
     transport: 'Own Arrangement',
     image:
       'https://static.wixstatic.com/media/9356bd_873f2df37a9c473a9d45fb6b3436e402~mv2.png',
@@ -348,7 +353,7 @@ export const Corporate: React.FC = () => {
             </p>
             <ul className="list-disc list-outside pl-5 sm:pl-6 max-w-xl space-y-2 text-base sm:text-lg text-white/80 marker:text-white/50">
               <li>70 km from Vizag</li>
-              <li>Packages from ₹990</li>
+              <li>Packages from ₹{BASIC_DAY_PRICE.toLocaleString('en-IN')}</li>
               <li>Ideal for 30–300 members</li>
             </ul>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -616,7 +621,7 @@ export const Corporate: React.FC = () => {
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">diamond</span>
               </div>
               <div className="mb-4">
-                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹990</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹{BASIC_DAY_PRICE.toLocaleString('en-IN')}</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -654,7 +659,7 @@ export const Corporate: React.FC = () => {
                 <span className="material-symbols-outlined text-2xl text-primary" aria-hidden="true">equalizer</span>
               </div>
               <div className="mb-4">
-                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,299</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹{VALUE_DAY_PRICE.toLocaleString('en-IN')}</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -686,7 +691,7 @@ export const Corporate: React.FC = () => {
                 <span className="material-symbols-outlined text-2xl text-gray-400" aria-hidden="true">landscape</span>
               </div>
               <div className="mb-4">
-                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹1,499</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-gray-900">₹{ADVENTURE_DAY_PRICE.toLocaleString('en-IN')}</span>
                 <span className="text-base text-gray-500 ml-1">/person</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">

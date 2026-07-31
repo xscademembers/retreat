@@ -5,7 +5,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
   {
     id: 'basic',
     name: 'Basic',
-    price: 990,
+    price: 1149,
     description: 'Entry, pool access, farm-to-table lunch, and sports. Perfect for a relaxed day in nature.',
     image: 'https://static.wixstatic.com/media/9356bd_3816a1b00f28406f9c5b34e61a665185~mv2.webp',
     icon: 'water_drop',
@@ -14,7 +14,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
   {
     id: 'value',
     name: 'Value',
-    price: 1299,
+    price: 1499,
     description: 'Everything in Basic plus mouth-watering barbecue on our breezy poolside deck.',
     image: 'https://static.wixstatic.com/media/9356bd_614c6420a8ca463db995ca5d6036f950~mv2.jpg',
     icon: 'restaurant',
@@ -24,7 +24,7 @@ export const EXPERIENCE_TIERS: ExperienceTier[] = [
   {
     id: 'adventure',
     name: 'Adventure',
-    price: 1499,
+    price: 1749,
     description: 'Everything in Value plus scenic boating at Thatipudi Reservoir, just 2 minutes away.',
     image: 'https://static.wixstatic.com/media/9356bd_3b34eead3ee14eb8ac3a8cb75ea1d6ce~mv2.webp',
     icon: 'sailing',

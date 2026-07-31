@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { EXPERIENCE_TIERS } from '../constants';
 
 interface FAQItem {
   question: string;
   answer: string;
 }
+
+const BASIC_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'basic')!.price;
+const BASIC_DAY_PRICE_LABEL = `₹${BASIC_DAY_PRICE.toLocaleString('en-IN')}`;
 
 const FAQ_DATA: FAQItem[] = [
   {
@@ -22,9 +26,9 @@ const FAQ_DATA: FAQItem[] = [
       'Yes, we have a party pool and a separate rain dance pool. Both are open year-round and are included in all our packages. Towels are provided.',
   },
   {
-    question: 'What\'s included in the ₹990 day-outing price?',
+    question: `What's included in the ${BASIC_DAY_PRICE_LABEL} day-outing price?`,
     answer:
-      'The Basic day-outing package at ₹990 per person includes: entry & welcome drink, pool access (with towels), farm-to-table Andhra-style lunch, sports (cricket, basketball, football, volleyball, throwball), evening tea & cookies, and free parking.',
+      `The Basic day-outing package at ${BASIC_DAY_PRICE_LABEL} per person includes: entry & welcome drink, pool access (with towels), farm-to-table Andhra-style lunch, sports (cricket, basketball, football, volleyball, throwball), evening tea & cookies, and free parking.`,
   },
   {
     question: 'Do you allow alcohol on the premises?',

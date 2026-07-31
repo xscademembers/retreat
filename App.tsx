@@ -1,6 +1,10 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { EXPERIENCE_TIERS } from './constants';
 import { Navbar } from './components/Navbar';
+
+const BASIC_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'basic')!.price;
+const BASIC_DAY_PRICE_LABEL = `₹${BASIC_DAY_PRICE.toLocaleString('en-IN')}`;
 import { Footer } from './components/Footer';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Home } from './pages/Home';
@@ -21,22 +25,22 @@ const SEO_BY_PATH: Record<string, { title: string; description: string }> = {
   '/': {
     title: 'Salsons Retreat Thatipudi | Farmstay & Resort Near Vizag | Day Outings & Stays',
     description:
-      'Salsons Retreat is a 6-acre lakeside farmstay near Vizag. Enjoy pool parties, BBQ, boating, cricket & farm-to-table Andhra meals. Day outings from ₹990. Book now.',
+      `Salsons Retreat is a 6-acre lakeside farmstay near Vizag. Enjoy pool parties, BBQ, boating, cricket & farm-to-table Andhra meals. Day outings from ${BASIC_DAY_PRICE_LABEL}. Book now.`,
   },
   '/landing': {
-    title: 'Salsons Retreat | Resort Near Vizag — Day Outings from ₹990 & Weekend Stays',
+    title: `Salsons Retreat | Resort Near Vizag — Day Outings from ${BASIC_DAY_PRICE_LABEL} & Weekend Stays`,
     description:
-      'A 6-acre lakeside resort 90 minutes from Vizag. Pool, BBQ, boating, Andhra meals. Day outings from ₹990 — call to book.',
+      `A 6-acre lakeside resort 90 minutes from Vizag. Pool, BBQ, boating, Andhra meals. Day outings from ${BASIC_DAY_PRICE_LABEL} — call to book.`,
   },
   '/day-spend': {
-    title: 'Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ₹990',
+    title: `Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ${BASIC_DAY_PRICE_LABEL}`,
     description:
-      'Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ₹990/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.',
+      `Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ${BASIC_DAY_PRICE_LABEL}/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.`,
   },
   '/day-pass': {
-    title: 'Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ₹990',
+    title: `Day Outing Near Vizag | Salsons Retreat Thatipudi | Pool, BBQ & Boating from ${BASIC_DAY_PRICE_LABEL}`,
     description:
-      'Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ₹990/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.',
+      `Book a day outing at Salsons Retreat, just 70 km from Vizag. Packages from ${BASIC_DAY_PRICE_LABEL}/person include pool access, farm-to-table lunch, sports & activities. Groups of 10–50 welcome.`,
   },
   '/accommodation': {
     title: 'Rooms & Stays at Salsons Retreat | Villa, Cottage & Lake-View Cabana Near Vizag',

@@ -7,6 +7,9 @@ import { AnimateOnScroll } from '../components/AnimateOnScroll';
 import { LazySection } from '../components/LazySection';
 import { StickyCallBar } from '../components/StickyCallBar';
 
+const BASIC_DAY_PRICE = EXPERIENCE_TIERS.find((t) => t.id === 'basic')!.price;
+const BASIC_DAY_PRICE_LABEL = `₹${BASIC_DAY_PRICE.toLocaleString('en-IN')}`;
+
 const PHONE = '+918074799387';
 const PHONE2 = '+917569242082';
 const PHONE_DISPLAY = '+91 80747 99387';
@@ -76,10 +79,10 @@ export const LandingPage: React.FC = () => (
             A Lakeside Resort <span className="text-accent-gold">90 Minutes</span> From Vizag
             <span className="block text-lg sm:text-xl md:text-2xl font-semibold mt-3 text-white/85 leading-snug">Day Outings &amp; Weekend Stays at Salsons Retreat</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/75 max-w-xl leading-relaxed mb-8 sm:mb-10 hero-animate-in hero-animate-in-delay-3">6 acres on Thatipudi Reservoir. Pool, BBQ, boating, farm-to-table Andhra meals. Day plans from ₹990. Weekend cottages too.</p>
+          <p className="text-base sm:text-lg text-white/75 max-w-xl leading-relaxed mb-8 sm:mb-10 hero-animate-in hero-animate-in-delay-3">6 acres on Thatipudi Reservoir. Pool, BBQ, boating, farm-to-table Andhra meals. Day plans from {BASIC_DAY_PRICE_LABEL}. Weekend cottages too.</p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 hero-animate-in hero-animate-in-delay-3">
             <a href={`tel:${PHONE}`} onClick={() => track('call_click_primary')} className="landing-cta-primary inline-flex items-center justify-center gap-2 rounded-full px-7 sm:px-9 py-4 text-base sm:text-lg font-bold transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px]" id="hero-cta-day-outing">
-              <span className="material-symbols-outlined text-xl" aria-hidden="true">call</span>Book a Day Outing — from ₹990
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">call</span>Book a Day Outing — from {BASIC_DAY_PRICE_LABEL}
             </a>
             <a href={`tel:${PHONE}`} onClick={() => track('call_click_primary_stay')} className="landing-cta-secondary inline-flex items-center justify-center gap-2 rounded-full px-7 sm:px-9 py-4 text-base sm:text-lg font-bold transition-all duration-300 hover:bg-white/15" id="hero-cta-weekend-stay">
               <span className="material-symbols-outlined text-xl" aria-hidden="true">call</span>Plan a Weekend Stay
@@ -125,7 +128,7 @@ export const LandingPage: React.FC = () => (
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
           <div>
             <p className="text-primary/70 text-xs sm:text-sm font-bold uppercase tracking-[0.3em] mb-3">Day Outing</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">Day Outing — from <span className="text-accent-gold">₹990</span> per person</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">Day Outing — from <span className="text-accent-gold">{BASIC_DAY_PRICE_LABEL}</span> per person</h2>
             <p className="text-gray-500 mb-6">Everything you need for a perfect day out, all included.</p>
             <ul className="space-y-3 mb-8">{DAY_INC.map((item) => (<li key={item} className="flex items-start gap-3 text-gray-700 text-sm sm:text-base"><span className="material-symbols-outlined text-green-600 text-lg mt-0.5 shrink-0" aria-hidden="true">check_circle</span>{item}</li>))}</ul>
             <a href={`tel:${PHONE}`} onClick={() => track('call_click_day_outing')} className="landing-cta-primary inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold" id="day-outing-cta">
