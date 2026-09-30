@@ -20,6 +20,7 @@ const BlogList = lazy(() => import('./pages/BlogList').then((m) => ({ default: m
 const BlogPost = lazy(() => import('./pages/BlogPost').then((m) => ({ default: m.BlogPost })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 const LandingPage = lazy(() => import('./pages/LandingPage').then((m) => ({ default: m.LandingPage })));
+const Garden = lazy(() => import('./pages/Garden').then((m) => ({ default: m.Garden })));
 
 const SEO_BY_PATH: Record<string, { title: string; description: string }> = {
   '/': {
@@ -61,6 +62,11 @@ const SEO_BY_PATH: Record<string, { title: string; description: string }> = {
     title: 'About Salsons Retreat | 6-Acre Lakeside Farmstay in Thatipudi, Andhra Pradesh',
     description:
       'Salsons Retreat is a family-run 6-acre farmstay near Thatipudi Reservoir, blending homestay warmth with resort amenities. Eco-conscious, pet-friendly, and 70 km from Vizag.',
+  },
+  '/garden': {
+    title: 'Salsons Garden | Event Venue Enquiry',
+    description:
+      'Enquire about hosting your Haldi, Sangeet, Wedding, Birthday, or Anniversary at Salsons Garden. Submit details and connect on WhatsApp.',
   },
 };
 
@@ -131,7 +137,9 @@ const AppShell: React.FC = () => {
 
   const isHome = location.pathname === '/';
   const isAdmin = location.pathname === '/admin';
-  const hideWhatsApp = location.pathname === '/corporate' || isAdmin;
+  const isGarden = location.pathname === '/garden';
+  const hideChrome = isAdmin || isGarden;
+  const hideWhatsApp = location.pathname === '/corporate' || hideChrome;
 
   return (
     <div className="relative min-h-screen bg-white w-full">
@@ -141,7 +149,7 @@ const AppShell: React.FC = () => {
       >
         Skip to main content
       </a>
-      {!isAdmin && <Navbar isScrolled={isScrolled} isHome={isHome} />}
+      {!hideChrome && <Navbar isScrolled={isScrolled} isHome={isHome} />}
 
       <Suspense fallback={<div className="min-h-screen" />}>
         <Routes>
@@ -156,11 +164,12 @@ const AppShell: React.FC = () => {
           <Route path="/blogs/:slug" element={<BlogPost />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/landing" element={<LandingPage />} />
+          <Route path="/garden" element={<Garden />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
 
-      {!isAdmin && <Footer />}
+      {!hideChrome && <Footer />}
       {!hideWhatsApp && <WhatsAppFloat />}
     </div>
   );
