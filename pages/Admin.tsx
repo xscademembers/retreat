@@ -11,6 +11,11 @@ import {
   BlogBlock,
 } from '../utils/blogStore';
 import { sanitizeBlogHtml } from '../utils/sanitizeBlogHtml';
+import {
+  getEnquiries,
+  deleteEnquiry,
+  Enquiry,
+} from '../utils/enquiryStore';
 
 function generateBlockId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -142,7 +147,7 @@ const LoginScreen: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
               lock
             </span>
             <h1 className="text-2xl font-bold text-primary">Admin Login</h1>
-            <p className="text-sm text-text-muted mt-1">Salsons Blog Dashboard</p>
+            <p className="text-sm text-text-muted mt-1">Blogs &amp; contact enquiries</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -680,8 +685,249 @@ const BlogEditor: React.FC<{
   );
 };
 
+/* ─── Enquiries Panel ─── */
+const EnquiriesPanel: React.FC = () => {
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'booking' | 'garden'>('all');
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const loadEnquiries = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const all = await getEnquiries();
+      setEnquiries(all);
+    } catch (err: any) {
+      setError(err?.message || 'Unable to load enquiries. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadEnquiries();
+  }, [loadEnquiries]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      setError(null);
+      await deleteEnquiry(id);
+      setConfirmDelete(null);
+      await loadEnquiries();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to delete enquiry.');
+    }
+  };
+
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const filtered =
+    filter === 'all' ? enquiries : enquiries.filter((e) => e.source === filter);
+
+  const detailRows = (enquiry: Enquiry): { label: string; value: string }[] => {
+    const d = enquiry.details || {};
+    const rows: { label: string; value: string }[] = [];
+
+    if (enquiry.source === 'garden') {
+      if (d.eventDateFormatted || d.eventDate) {
+        rows.push({ label: 'Event date', value: String(d.eventDateFormatted || d.eventDate) });
+      }
+      if (d.eventType) rows.push({ label: 'Event type', value: String(d.eventType) });
+      if (d.expectedPeople) rows.push({ label: 'Expected people', value: String(d.expectedPeople) });
+      return rows;
+    }
+
+    if (d.visitType) rows.push({ label: 'Visit type', value: String(d.visitType) });
+    if (d.pass) rows.push({ label: 'Pass', value: String(d.pass) });
+    if (d.guests != null) rows.push({ label: 'Guests', value: String(d.guests) });
+    if (d.nights != null) rows.push({ label: 'Nights', value: String(d.nights) });
+    if (d.entryDate) rows.push({ label: 'Date', value: String(d.entryDate) });
+    if (d.checkInDate) rows.push({ label: 'Check-in', value: String(d.checkInDate) });
+    if (d.checkOutDate) rows.push({ label: 'Check-out', value: String(d.checkOutDate) });
+    if (d.totalAmount != null && Number(d.totalAmount) > 0) {
+      rows.push({
+        label: 'Estimated total',
+        value: `₹${Number(d.totalAmount).toLocaleString('en-IN')}`,
+      });
+    }
+    return rows;
+  };
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        {([
+          ['all', 'All'],
+          ['booking', 'Booking'],
+          ['garden', 'Garden'],
+        ] as const).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setFilter(value)}
+            className={`px-3 py-1.5 text-sm rounded-lg border transition-colors cursor-pointer ${
+              filter === value
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-primary border-primary/20 hover:bg-primary/5'
+            }`}
+          >
+            {label}
+            <span className="ml-1.5 opacity-70">
+              (
+              {value === 'all'
+                ? enquiries.length
+                : enquiries.filter((e) => e.source === value).length}
+              )
+            </span>
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => void loadEnquiries()}
+          className="ml-auto inline-flex items-center gap-1 px-3 py-1.5 text-sm text-text-muted border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
+          Refresh
+        </button>
+      </div>
+
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-text-muted py-12 text-center">Loading enquiries…</p>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-primary/10 p-12 text-center">
+          <span className="material-symbols-outlined text-4xl text-primary/30 mb-3 block" aria-hidden="true">
+            inbox
+          </span>
+          <p className="text-text-muted">No contact form submissions yet.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((enquiry) => {
+            const rows = detailRows(enquiry);
+            const isExpanded = expandedId === enquiry.id;
+            return (
+              <div
+                key={enquiry.id}
+                className="bg-white rounded-xl border border-primary/10 p-4 sm:p-5"
+              >
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span
+                        className={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full ${
+                          enquiry.source === 'garden'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'bg-sky-50 text-sky-700'
+                        }`}
+                      >
+                        {enquiry.source === 'garden' ? 'Garden' : 'Booking'}
+                      </span>
+                      <span className="text-xs text-text-muted">{formatDate(enquiry.createdAt)}</span>
+                    </div>
+                    <h3 className="font-semibold text-primary text-lg truncate">
+                      {enquiry.name || 'No name'}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-0.5">
+                      <a href={`tel:${enquiry.phone}`} className="hover:text-primary">
+                        {enquiry.phone || 'No phone'}
+                      </a>
+                      {enquiry.company ? (
+                        <span className="text-text-muted"> · {enquiry.company}</span>
+                      ) : null}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(isExpanded ? null : enquiry.id)}
+                      className="px-3 py-1.5 text-xs font-medium text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer"
+                    >
+                      {isExpanded ? 'Hide' : 'Details'}
+                    </button>
+                    {confirmDelete === enquiry.id ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => void handleDelete(enquiry.id)}
+                          className="px-2 py-1.5 text-xs font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 cursor-pointer"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDelete(null)}
+                          className="px-2 py-1.5 text-xs text-text-muted border border-primary/15 rounded-lg cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDelete(enquiry.id)}
+                        className="p-1.5 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
+                        aria-label="Delete enquiry"
+                      >
+                        <span className="material-symbols-outlined text-xl" aria-hidden="true">delete</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {isExpanded && (
+                  <div className="mt-4 pt-4 border-t border-primary/10 space-y-3">
+                    {rows.length > 0 && (
+                      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                        {rows.map((row) => (
+                          <div key={row.label} className="flex justify-between gap-3 sm:block">
+                            <dt className="text-text-muted">{row.label}</dt>
+                            <dd className="font-medium text-gray-900">{row.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
+                    {enquiry.message && (
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-text-muted mb-1">
+                          WhatsApp message
+                        </p>
+                        <pre className="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3 border border-gray-100">
+                          {enquiry.message}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ─── Dashboard ─── */
 const Dashboard: React.FC = () => {
+  const [tab, setTab] = useState<'blogs' | 'enquiries'>('enquiries');
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editing, setEditing] = useState<Partial<BlogPost> | null | 'new'>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -706,8 +952,10 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    void loadPosts();
-  }, [loadPosts]);
+    if (tab === 'blogs') {
+      void loadPosts();
+    }
+  }, [loadPosts, tab]);
 
   const handleSave = async (data: Partial<BlogPost>) => {
     try {
@@ -771,19 +1019,21 @@ const Dashboard: React.FC = () => {
   return (
     <main id="main-content" className="pt-20 sm:pt-24 min-h-screen bg-background-soft">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <header className="flex items-center justify-between flex-wrap gap-4 mb-8">
+        <header className="flex items-center justify-between flex-wrap gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Blog Dashboard</h1>
-            <p className="text-sm text-text-muted mt-1">Manage your blog posts</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Admin Dashboard</h1>
+            <p className="text-sm text-text-muted mt-1">Manage blogs and contact enquiries</p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setEditing('new')}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-base" aria-hidden="true">add</span>
-              New Post
-            </button>
+            {tab === 'blogs' && (
+              <button
+                onClick={() => setEditing('new')}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">add</span>
+                New Post
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm text-text-muted border border-primary/20 rounded-lg hover:text-red-500 hover:border-red-200 transition-colors cursor-pointer"
@@ -793,6 +1043,32 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
         </header>
+
+        <div className="flex gap-1 mb-8 p-1 bg-white rounded-xl border border-primary/10 w-fit">
+          <button
+            type="button"
+            onClick={() => setTab('enquiries')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+              tab === 'enquiries' ? 'bg-primary text-white' : 'text-primary hover:bg-primary/5'
+            }`}
+          >
+            Enquiries
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab('blogs')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+              tab === 'blogs' ? 'bg-primary text-white' : 'text-primary hover:bg-primary/5'
+            }`}
+          >
+            Blogs
+          </button>
+        </div>
+
+        {tab === 'enquiries' ? (
+          <EnquiriesPanel />
+        ) : (
+          <>
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
@@ -885,6 +1161,8 @@ const Dashboard: React.FC = () => {
               </div>
             ))}
           </div>
+        )}
+          </>
         )}
       </div>
     </main>

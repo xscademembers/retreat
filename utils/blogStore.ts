@@ -84,6 +84,8 @@ export async function deletePost(id: string): Promise<void> {
 export function loginAdmin(password: string): boolean {
   if (password === ADMIN_PASSWORD) {
     sessionStorage.setItem(AUTH_KEY, 'true');
+    // Keep password for authenticated API calls (enquiries list/delete)
+    sessionStorage.setItem('salsons_admin_pw', password);
     return true;
   }
   return false;
@@ -95,4 +97,5 @@ export function isAdminLoggedIn(): boolean {
 
 export function logoutAdmin(): void {
   sessionStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem('salsons_admin_pw');
 }

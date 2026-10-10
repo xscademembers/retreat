@@ -5,6 +5,7 @@ import { getNightRoom, NIGHT_ROOMS, type NightRoomId } from '../nightRoomDetails
 import { NightStayRoomGallery } from './NightStayRoomGallery';
 import { NightStayRoomTabs } from './NightStayRoomTabs';
 import { wixImg } from '../utils/wixImage';
+import { saveEnquiry } from '../utils/enquiryStore';
 
 const EXTRA_PERSON_PRICE = 999;
 const MAX_ROOMS_PER_TYPE = 2;
@@ -117,6 +118,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const visit = searchParams.get('visit');
@@ -666,19 +668,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     return lines.join('\n');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const message = buildWhatsAppMessage(form);
+  const openWhatsApp = (message: string) => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/918555079190?text=${encodedMessage}`;
 
-    // Report Meta Pixel Contact conversion
     if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
       (window as any).fbq('track', 'Contact');
     }
 
-    // Report Google Ads conversion
     if (typeof window !== 'undefined' && typeof (window as any).gtag_report_conversion === 'function') {
       (window as any).gtag_report_conversion(whatsappUrl);
     } else if (typeof window !== 'undefined') {
@@ -686,6 +683,72 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
     } else {
       setFormSubmitted(true);
       onSubmitSuccess?.();
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (submitting) return;
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = ((formData.get('name') as string) || '').trim();
+    const phone = ((formData.get('phone') as string) || '').trim();
+    const company = ((formData.get('company') as string) || '').trim();
+    const message = buildWhatsAppMessage(form);
+
+    const tier = EXPERIENCE_TIERS.find((t) => t.id === selectedDayTier);
+    const totalGuests =
+      visitType === 'night'
+        ? (cabanaRoom1Selected ? cabanaRoom1Persons : 0) +
+          (cabanaRoom2Selected ? cabanaRoom2Persons : 0) +
+          (cottageRoom1Selected ? cottageRoom1Persons : 0) +
+          (cottageRoom2Selected ? cottageRoom2Persons : 0) +
+          (cottageDormSelected ? cottageDormPersons : 0) +
+          (villaRoom1Selected ? villaRoom1Persons : 0) +
+          (villaRoom2Selected ? villaRoom2Persons : 0)
+        : dayPassGuests;
+
+    setSubmitting(true);
+    try {
+      await saveEnquiry({
+        source: 'booking',
+        name,
+        phone,
+        company,
+        details: {
+          visitType,
+          pass: tier?.name || selectedDayTier || '',
+          guests: totalGuests,
+          nights: visitType === 'night' ? nightNightsCount : undefined,
+          entryDate: visitType === 'day' ? entryDate : undefined,
+          checkInDate: visitType === 'night' ? checkInDate : undefined,
+          checkOutDate: visitType === 'night' ? checkOutDate : undefined,
+          rooms: {
+            cabana: {
+              room1: cabanaRoom1Selected ? cabanaRoom1Persons : 0,
+              room2: cabanaRoom2Selected ? cabanaRoom2Persons : 0,
+            },
+            villa: {
+              room1: villaRoom1Selected ? villaRoom1Persons : 0,
+              room2: villaRoom2Selected ? villaRoom2Persons : 0,
+            },
+            cottage: {
+              room1: cottageRoom1Selected ? cottageRoom1Persons : 0,
+              room2: cottageRoom2Selected ? cottageRoom2Persons : 0,
+              dorm: cottageDormSelected ? cottageDormPersons : 0,
+            },
+          },
+          breakdown: summaryBreakdown,
+          totalAmount,
+        },
+        message,
+      });
+    } catch (err) {
+      console.error('Failed to save booking enquiry:', err);
+    } finally {
+      setSubmitting(false);
+      openWhatsApp(message);
     }
   };
 
@@ -1435,15 +1498,19 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSubmitSuccess }) => 
           )}
 
           {/* Submit button (after contact form) */}
-          {visitType !== 'night' && (
+          {visitType && (
             <section className="pt-4 border-t-2 border-gray-100">
               <button
                 type="submit"
                 form="booking-form"
-                disabled={!visitType || (visitType === 'day' && !selectedDayTier)}
+                disabled={
+                  submitting ||
+                  !visitType ||
+                  (visitType === 'day' && !selectedDayTier)
+                }
                 className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
               >
-                Submit booking request
+                {submitting ? 'Submitting…' : 'Submit booking request'}
               </button>
             </section>
           )}

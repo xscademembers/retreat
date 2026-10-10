@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { saveEnquiry } from '../utils/enquiryStore';
 
 const WHATSAPP_NUMBER = '918074799387';
 
@@ -20,8 +21,10 @@ const labelClass = 'block text-sm font-semibold text-gray-700 mb-1';
 export const Garden: React.FC = () => {
   const [eventDate, setEventDate] = useState('');
   const [eventType, setEventType] = useState('');
+  const [expectedPeople, setExpectedPeople] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('+91 ');
+  const [submitting, setSubmitting] = useState(false);
 
   const buildWhatsAppMessage = () => {
     const formattedDate = eventDate
@@ -37,6 +40,7 @@ export const Garden: React.FC = () => {
       '',
       `Date of Event: ${formattedDate}`,
       `Type of Event: ${eventType || 'N/A'}`,
+      `Expected No. of People: ${expectedPeople || 'N/A'}`,
       `Name: ${name.trim() || 'N/A'}`,
       `Phone: ${phone.trim() || 'N/A'}`,
     ];
@@ -44,9 +48,7 @@ export const Garden: React.FC = () => {
     return lines.join('\n');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const message = buildWhatsAppMessage();
+  const openWhatsApp = (message: string) => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
@@ -58,6 +60,41 @@ export const Garden: React.FC = () => {
       (window as any).gtag_report_conversion(whatsappUrl);
     } else if (typeof window !== 'undefined') {
       window.location.href = whatsappUrl;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (submitting) return;
+
+    const message = buildWhatsAppMessage();
+    const formattedDate = eventDate
+      ? new Date(eventDate).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        })
+      : '';
+
+    setSubmitting(true);
+    try {
+      await saveEnquiry({
+        source: 'garden',
+        name: name.trim(),
+        phone: phone.trim(),
+        details: {
+          eventDate: eventDate || '',
+          eventDateFormatted: formattedDate,
+          eventType,
+          expectedPeople,
+        },
+        message,
+      });
+    } catch (err) {
+      console.error('Failed to save garden enquiry:', err);
+    } finally {
+      setSubmitting(false);
+      openWhatsApp(message);
     }
   };
 
@@ -133,6 +170,25 @@ export const Garden: React.FC = () => {
             </div>
 
             <div>
+              <label htmlFor="garden-expected-people" className={labelClass}>
+                Expected No. of People
+              </label>
+              <input
+                id="garden-expected-people"
+                type="number"
+                name="expectedPeople"
+                className={inputClass}
+                placeholder="e.g. 50"
+                min={1}
+                step={1}
+                value={expectedPeople}
+                onChange={(e) => setExpectedPeople(e.target.value)}
+                required
+                aria-required="true"
+              />
+            </div>
+
+            <div>
               <label htmlFor="garden-name" className={labelClass}>
                 Name
               </label>
@@ -168,9 +224,10 @@ export const Garden: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all active:scale-[0.99]"
+              disabled={submitting}
+              className="w-full min-h-[52px] bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
             >
-              Submit enquiry
+              {submitting ? 'Submitting…' : 'Submit enquiry'}
             </button>
 
             <p className="text-xs text-center text-gray-400 pt-1">
